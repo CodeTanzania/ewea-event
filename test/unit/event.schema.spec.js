@@ -74,4 +74,16 @@ describe('Event Schema', () => {
     expect(description.options.searchable).to.be.true;
     expect(description.options.fake).to.exist;
   });
+
+  it('should have startedAt field', () => {
+    const startedAt = Event.path('startedAt');
+
+    expect(startedAt).to.exist;
+    expect(startedAt).to.be.instanceof(SchemaTypes.Date);
+    expect(startedAt.options).to.exist;
+    expect(startedAt.options).to.be.an('object');
+    expect(startedAt.options.type).to.exist;
+    expect(startedAt.options.index).to.be.true;
+    expect(startedAt.options.fake).to.exist;
+  });
 });
