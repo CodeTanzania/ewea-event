@@ -242,6 +242,7 @@ const EventSchema = createSchema(
      * 2018-10-19T07:53:32.831Z
      */
     endedAt: {
+      // TODO: ensure after startedAt
       type: Date,
       index: true,
       fake: {
