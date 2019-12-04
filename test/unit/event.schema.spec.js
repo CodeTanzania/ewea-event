@@ -14,10 +14,32 @@ describe('Event Schema', () => {
     expect(group.options.type).to.exist;
     expect(group.options.ref).to.exist;
     expect(group.options.ref).to.be.equal(Predefine.MODEL_NAME);
-    // expect(group.options.required).to.be.true;
-    expect(group.options.default).to.be.undefined;
     expect(group.options.index).to.be.true;
+    // expect(group.options.required).to.be.true;
     expect(group.options.exists).to.be.true;
     expect(group.options.autopopulate).to.exist;
+    expect(group.options.taggable).to.exist;
+    expect(group.options.exportable).to.exist;
+    // expect(group.options.aggregatable).to.exist;
+    expect(group.options.default).to.be.undefined;
+  });
+
+  it('should have type field', () => {
+    const type = Event.path('type');
+
+    expect(type).to.exist;
+    expect(type).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(type.options).to.exist;
+    expect(type.options).to.be.an('object');
+    expect(type.options.type).to.exist;
+    expect(type.options.ref).to.exist;
+    expect(type.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(type.options.required).to.be.true;
+    expect(type.options.exists).to.be.true;
+    expect(type.options.autopopulate).to.exist;
+    expect(type.options.taggable).to.exist;
+    expect(type.options.exportable).to.exist;
+    // expect(type.options.aggregatable).to.exist;
+    expect(type.options.default).to.be.undefined;
   });
 });

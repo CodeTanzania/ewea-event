@@ -1,4 +1,4 @@
-import { compact } from '@lykmapipo/common';
+import { get } from 'lodash';
 import { getString } from '@lykmapipo/env';
 import { createSchema, model, ObjectId } from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
@@ -68,11 +68,44 @@ const EventSchema = createSchema(
       autopopulate: OPTION_AUTOPOPULATE_GROUP,
       taggable: true,
       exportable: {
-        format: v => {
-          return v && v.strings && compact([v.strings.name.en]).join(' - ');
-        },
+        format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name type
+     * @description Human readable type of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Flood
+     */
+    type: {
+      type: ObjectId,
+      ref: Predefine.MODEL_NAME,
+      index: true,
+      // required: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_GROUP,
+      taggable: true,
+      exportable: {
+        format: v => get(v, 'strings.name.en'),
+        default: 'NA',
+      },
+      // aggregatable: true,
       default: undefined,
     },
   },
