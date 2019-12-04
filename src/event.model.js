@@ -164,6 +164,7 @@ const EventSchema = createSchema(
       // required: true,
       searchable: true,
       taggable: true,
+      exportable: true,
       fake: {
         generator: 'random',
         type: 'uuid',
@@ -194,6 +195,7 @@ const EventSchema = createSchema(
       trim: true,
       index: true,
       searchable: true,
+      exportable: true,
       fake: {
         generator: 'lorem',
         type: 'sentence',
@@ -219,6 +221,7 @@ const EventSchema = createSchema(
     startedAt: {
       type: Date,
       index: true,
+      exportable: true,
       fake: {
         generator: 'date',
         type: 'past',
@@ -245,6 +248,7 @@ const EventSchema = createSchema(
       // TODO: ensure after startedAt
       type: Date,
       index: true,
+      exportable: true,
       fake: {
         generator: 'date',
         type: 'recent',
