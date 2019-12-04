@@ -42,4 +42,22 @@ describe('Event Schema', () => {
     // expect(type.options.aggregatable).to.exist;
     expect(type.options.default).to.be.undefined;
   });
+
+  it('should have number field', () => {
+    const number = Event.path('number');
+
+    expect(number).to.exist;
+    expect(number).to.be.instanceof(SchemaTypes.String);
+    expect(number.options).to.exist;
+    expect(number.options).to.be.an('object');
+    expect(number.options.type).to.exist;
+    expect(number.options.trim).to.be.true;
+    expect(number.options.uppercase).to.be.true;
+    expect(number.options.index).to.be.true;
+    // expect(number.options.unique).to.be.true;
+    // expect(number.options.required).to.be.true;
+    expect(number.options.searchable).to.be.true;
+    expect(number.options.taggable).to.be.true;
+    expect(number.options.fake).to.exist;
+  });
 });

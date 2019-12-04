@@ -6,6 +6,7 @@ import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
 
 // constants
+// TODO COUNTRY_CODE
 const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
 const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
 const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
@@ -107,6 +108,48 @@ const EventSchema = createSchema(
       },
       // aggregatable: true,
       default: undefined,
+    },
+
+    /**
+     * @name number
+     * @description Human readable, unique identifier of an event.
+     *
+     * It consist of two letters to identify the event(or disaster) type
+     * (e.g. EQ - earthquake); the year of the event; a six-digit, sequential
+     * event number; and the three-letter ISO code for country of occurrence
+     * e.g EQ-2001-000033-TZA.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} uppercase - force value to uppercase
+     * @property {boolean} index - ensure database index
+     * @property {boolean} unique - ensure unique database index
+     * @property {boolean} required - mark required
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * EQ-2018-000033-TZA
+     */
+    number: {
+      // TODO: use mongoose-sequenceable
+      type: String,
+      trim: true,
+      uppercase: true,
+      index: true,
+      // unique: true,
+      // required: true,
+      searchable: true,
+      taggable: true,
+      fake: {
+        generator: 'random',
+        type: 'uuid',
+      },
     },
   },
   SCHEMA_OPTIONS,
