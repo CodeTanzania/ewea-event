@@ -54,6 +54,7 @@ const EventSchema = createSchema(
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
+     * @author lally elias <lallyelias87@gmail.com>
      * @since 0.1.0
      * @version 0.1.0
      * @instance
@@ -88,6 +89,7 @@ const EventSchema = createSchema(
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
+     * @author lally elias <lallyelias87@gmail.com>
      * @since 0.1.0
      * @version 0.1.0
      * @instance
@@ -130,6 +132,7 @@ const EventSchema = createSchema(
      * @property {boolean} taggable - allow field use for tagging
      * @property {object} fake - fake data generator options
      *
+     * @author lally elias <lallyelias87@gmail.com>
      * @since 0.1.0
      * @version 0.1.0
      * @instance
@@ -149,6 +152,36 @@ const EventSchema = createSchema(
       fake: {
         generator: 'random',
         type: 'uuid',
+      },
+    },
+
+    /**
+     * @name description
+     * @description A brief summary about an event i.e additional details
+     * that clarify more about an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Roads, farms and crops were damaged.
+     */
+    description: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
       },
     },
   },

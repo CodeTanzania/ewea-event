@@ -60,4 +60,18 @@ describe('Event Schema', () => {
     expect(number.options.taggable).to.be.true;
     expect(number.options.fake).to.exist;
   });
+
+  it('should have description field', () => {
+    const description = Event.path('description');
+
+    expect(description).to.exist;
+    expect(description).to.be.instanceof(SchemaTypes.String);
+    expect(description.options).to.exist;
+    expect(description.options).to.be.an('object');
+    expect(description.options.type).to.exist;
+    expect(description.options.trim).to.be.true;
+    expect(description.options.index).to.be.true;
+    expect(description.options.searchable).to.be.true;
+    expect(description.options.fake).to.exist;
+  });
 });
