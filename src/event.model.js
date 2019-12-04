@@ -1,6 +1,12 @@
-import { get } from 'lodash';
+import { get, pick } from 'lodash';
+import { idOf } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
-import { createSchema, model, ObjectId } from '@lykmapipo/mongoose-common';
+import {
+  copyInstance,
+  createSchema,
+  model,
+  ObjectId,
+} from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
@@ -17,6 +23,15 @@ const OPTION_AUTOPOPULATE_GROUP = {
     'strings.color': 1,
     'strings.code': 1,
   },
+  maxDepth: POPULATION_MAX_DEPTH,
+};
+const OPTION_SELECT = {
+  group: 1,
+  type: 1,
+  number: 1,
+};
+const OPTION_AUTOPOPULATE = {
+  select: OPTION_SELECT,
   maxDepth: POPULATION_MAX_DEPTH,
 };
 
@@ -239,6 +254,87 @@ const EventSchema = createSchema(
   actions,
   exportable
 );
+
+/*
+ *------------------------------------------------------------------------------
+ *  Hooks
+ *------------------------------------------------------------------------------
+ */
+
+/**
+ * @name validate
+ * @function validate
+ * @description event schema pre validation hook
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid instance or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @private
+ */
+EventSchema.pre('validate', function onPreValidate(done) {
+  return this.preValidate(done);
+});
+
+/*
+ *------------------------------------------------------------------------------
+ *  Instance
+ *------------------------------------------------------------------------------
+ */
+
+/**
+ * @name preValidate
+ * @function preValidate
+ * @description event schema pre validation hook logic
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid instance or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ */
+EventSchema.methods.preValidate = function preValidate(done) {
+  // ensure started(or reported) date
+  this.startedAt = this.startedAt || new Date();
+
+  return done(null, this);
+};
+
+/*
+ *------------------------------------------------------------------------------
+ * Statics
+ *------------------------------------------------------------------------------
+ */
+
+/* static constants */
+EventSchema.statics.MODEL_NAME = MODEL_NAME;
+EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME;
+EventSchema.statics.OPTION_SELECT = OPTION_SELECT;
+EventSchema.statics.OPTION_AUTOPOPULATE = OPTION_AUTOPOPULATE;
+
+/**
+ * @name prepareSeedCriteria
+ * @function prepareSeedCriteria
+ * @description define seed data criteria
+ * @param {object} seed event to be seeded
+ * @returns {object} packed criteria for seeding
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.2.0
+ * @version 0.1.0
+ * @static
+ */
+EventSchema.statics.prepareSeedCriteria = seed => {
+  const copyOfSeed = copyInstance(seed);
+
+  const criteria = idOf(copyOfSeed)
+    ? pick(copyOfSeed, '_id')
+    : pick(copyOfSeed, 'group', 'type', 'number');
+
+  return criteria;
+};
 
 /* export event model */
 export default model(MODEL_NAME, EventSchema);
