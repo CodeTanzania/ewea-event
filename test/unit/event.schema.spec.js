@@ -86,4 +86,16 @@ describe('Event Schema', () => {
     expect(startedAt.options.index).to.be.true;
     expect(startedAt.options.fake).to.exist;
   });
+
+  it('should have endedAt field', () => {
+    const endedAt = Event.path('endedAt');
+
+    expect(endedAt).to.exist;
+    expect(endedAt).to.be.instanceof(SchemaTypes.Date);
+    expect(endedAt.options).to.exist;
+    expect(endedAt.options).to.be.an('object');
+    expect(endedAt.options.type).to.exist;
+    expect(endedAt.options.index).to.be.true;
+    expect(endedAt.options.fake).to.exist;
+  });
 });

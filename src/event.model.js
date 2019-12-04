@@ -209,6 +209,31 @@ const EventSchema = createSchema(
         type: 'past',
       },
     },
+
+    /**
+     * @name endedAt
+     * @description Date when an event was declared no longer a threat.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} index - ensure database index
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * 2018-10-19T07:53:32.831Z
+     */
+    endedAt: {
+      type: Date,
+      index: true,
+      fake: {
+        generator: 'date',
+        type: 'recent',
+      },
+    },
   },
   SCHEMA_OPTIONS,
   actions,
