@@ -301,6 +301,7 @@ const EventSchema = createSchema(
      * @type {object}
      * @property {object} type - schema(data) type
      * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
      * @property {boolean} searchable - allow for searching
      * @property {boolean} taggable - allow field use for tagging
@@ -317,6 +318,7 @@ const EventSchema = createSchema(
     causes: {
       type: String,
       trim: true,
+      // required: true,
       index: true,
       searchable: true,
       taggable: true,
@@ -335,6 +337,7 @@ const EventSchema = createSchema(
      * @type {object}
      * @property {object} type - schema(data) type
      * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
      * @property {boolean} searchable - allow for searching
      * @property {boolean} exportable - allow field use for exporting
@@ -350,12 +353,48 @@ const EventSchema = createSchema(
     description: {
       type: String,
       trim: true,
+      // required: true,
       index: true,
       searchable: true,
       exportable: true,
       fake: {
         generator: 'lorem',
         type: 'sentence',
+      },
+    },
+
+    /**
+     * @name places
+     * @description Human readable text describing the affected area(s)
+     * of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Ilala, Temeke, Dar es Salaam
+     */
+    places: {
+      type: String,
+      trim: true,
+      // required: true,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      fake: {
+        generator: 'address',
+        type: 'county',
       },
     },
 

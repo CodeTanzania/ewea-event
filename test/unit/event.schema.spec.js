@@ -147,6 +147,21 @@ describe('Event Schema', () => {
     expect(description.options.fake).to.exist;
   });
 
+  it('should have places field', () => {
+    const places = Event.path('places');
+
+    expect(places).to.exist;
+    expect(places).to.be.instanceof(SchemaTypes.String);
+    expect(places.options).to.exist;
+    expect(places.options).to.be.an('object');
+    expect(places.options.type).to.exist;
+    expect(places.options.trim).to.be.true;
+    expect(places.options.index).to.be.true;
+    expect(places.options.searchable).to.be.true;
+    expect(places.options.exportable).to.be.true;
+    expect(places.options.fake).to.exist;
+  });
+
   it('should have instructions field', () => {
     const instructions = Event.path('instructions');
 
