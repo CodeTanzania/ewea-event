@@ -3,18 +3,22 @@ import { getString, apiVersion as apiVersion$1 } from '@lykmapipo/env';
 import { model, createSchema, ObjectId, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
-import { get, pick } from 'lodash';
+import { get, join, map, pick } from 'lodash';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
+import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
 // constants
-// TODO COUNTRY_CODE
+const COUNTRY_CODE = getString('COUNTRY_CODE', 'TZ');
+const STAGE_ALERT = 'Alert';
+const STAGE_EVENT = 'Event';
+const STAGES = [STAGE_ALERT, STAGE_EVENT];
 const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
 const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
 const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
 const POPULATION_MAX_DEPTH = 1;
-const OPTION_AUTOPOPULATE_GROUP = {
+const OPTION_AUTOPOPULATE_PREDEFINE = {
   select: {
     'strings.name': 1,
     'strings.color': 1,
@@ -60,9 +64,13 @@ const EventSchema = createSchema(
      *
      * @type {object}
      * @property {object} type - schema(data) type
-     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
@@ -76,10 +84,10 @@ const EventSchema = createSchema(
     group: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
-      index: true,
       // required: true,
+      index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_GROUP,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -95,9 +103,13 @@ const EventSchema = createSchema(
      *
      * @type {object}
      * @property {object} type - schema(data) type
-     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
@@ -111,10 +123,10 @@ const EventSchema = createSchema(
     type: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
-      index: true,
       // required: true,
+      index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_GROUP,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -125,23 +137,19 @@ const EventSchema = createSchema(
     },
 
     /**
-     * @name number
-     * @description Human readable, unique identifier of an event.
-     *
-     * It consist of two letters to identify the event(or disaster) type
-     * (e.g. EQ - earthquake); the year of the event; a six-digit, sequential
-     * event number; and the three-letter ISO code for country of occurrence
-     * e.g EQ-2001-000033-TZA.
+     * @name certainty
+     * @description Human translatable readable certainty of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
-     * @property {boolean} trim - force trimming
-     * @property {boolean} uppercase - force value to uppercase
-     * @property {boolean} index - ensure database index
-     * @property {boolean} unique - ensure unique database index
      * @property {boolean} required - mark required
-     * @property {boolean} searchable - allow searching
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
      * @author lally elias <lallyelias87@gmail.com>
@@ -149,22 +157,233 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * EQ-2018-000033-TZA
+     * Possible
+     */
+    certainty: {
+      type: ObjectId,
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v => get(v, 'strings.name.en'),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name severity
+     * @description Human translatable readable severity of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Extreme
+     */
+    severity: {
+      type: ObjectId,
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v => get(v, 'strings.name.en'),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name stage
+     * @description Human readable evolving step of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {string[]} enum - collection of allowed values
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Alert
+     */
+    stage: {
+      type: String,
+      trim: true,
+      enum: STAGES,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      default: STAGE_ALERT,
+      fake: true,
+    },
+
+    /**
+     * @name number
+     * @description Human readable, unique identifier of an event.
+     *
+     * It consist of two letters to identify the event(or disaster) type
+     * (e.g. FL - flood); the year of the event; a six-digit, sequential
+     * event number; and the three-letter ISO code for country of occurrence
+     * e.g FL-2001-000033-TZA.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} uppercase - force value to uppercase
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} unique - ensure unique database index
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * FL-2018-000033-TZA
      */
     number: {
       // TODO: use mongoose-sequenceable
       type: String,
       trim: true,
       uppercase: true,
+      required: true,
       index: true,
       // unique: true,
-      // required: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      sequenceable: {
+        prefix: function prefix() {
+          return get(this, 'type.string.name.en', '');
+        },
+        suffix: COUNTRY_CODE,
+        length: 6,
+        pad: '0',
+      },
+      fake: {
+        generator: 'random',
+        type: 'uuid',
+      },
+    },
+
+    /**
+     * @name address
+     * @description A human readable description of location where an
+     * event happened.
+     *
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Tandale
+     */
+    address: {
+      type: String,
+      trim: true,
+      index: true,
       searchable: true,
       taggable: true,
       exportable: true,
       fake: {
-        generator: 'random',
-        type: 'uuid',
+        generator: 'address',
+        type: 'county',
+      },
+    },
+
+    /**
+     * @name location
+     * @description A geo-point specifying longitude and latitude pair
+     * of the address of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} index - ensure database index
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Heavy rainfall
+     */
+    location: Point,
+
+    /**
+     * @name causes
+     * @description A brief human readable summary about cause(s) of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Heavy rainfall
+     */
+    causes: {
+      type: String,
+      trim: true,
+      // required: true,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
       },
     },
 
@@ -176,8 +395,10 @@ const EventSchema = createSchema(
      * @type {object}
      * @property {object} type - schema(data) type
      * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
      * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
      * @property {object} fake - fake data generator options
      *
      * @author lally elias <lallyelias87@gmail.com>
@@ -185,9 +406,213 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Roads, farms and crops were damaged.
+     * Overflowing water from the dam.
      */
     description: {
+      type: String,
+      trim: true,
+      // required: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name places
+     * @description Human readable text describing the affected area(s)
+     * of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Ilala, Temeke, Dar es Salaam
+     */
+    places: {
+      type: String,
+      trim: true,
+      // required: true,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      fake: {
+        generator: 'address',
+        type: 'county',
+      },
+    },
+
+    /**
+     * @name areas
+     * @description Affected administrative area(s) of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Extreme
+     */
+    areas: {
+      type: [ObjectId],
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v =>
+          join(
+            map(v, area => get(area, 'strings.name.en')),
+            ', '
+          ),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name instructions
+     * @description A brief human readable, caution(s) to be taken by
+     * responders on an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Continue monitor the situation
+     */
+    instructions: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name interventions
+     * @description A brief human readable effect(s) an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Affected victims were evacuated and relocated
+     */
+    interventions: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name impacts
+     * @description A brief human readable effect(s) an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * 55 people affected, 72 houses destroyed and 9 schools damaged
+     */
+    impacts: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name remarks
+     * @description A brief human readable comments and recommendations
+     * about an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Requested relief items should be provided to the victims immediately
+     */
+    remarks: {
       type: String,
       trim: true,
       index: true,
@@ -315,6 +740,10 @@ EventSchema.statics.MODEL_NAME = MODEL_NAME;
 EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME;
 EventSchema.statics.OPTION_SELECT = OPTION_SELECT;
 EventSchema.statics.OPTION_AUTOPOPULATE = OPTION_AUTOPOPULATE;
+
+EventSchema.statics.STAGE_ALERT = STAGE_ALERT;
+EventSchema.statics.STAGE_EVENT = STAGE_EVENT;
+EventSchema.statics.STAGES = STAGES;
 
 /**
  * @name prepareSeedCriteria
