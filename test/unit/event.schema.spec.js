@@ -61,6 +61,20 @@ describe('Event Schema', () => {
     expect(number.options.fake).to.exist;
   });
 
+  it('should have cause field', () => {
+    const cause = Event.path('cause');
+
+    expect(cause).to.exist;
+    expect(cause).to.be.instanceof(SchemaTypes.String);
+    expect(cause.options).to.exist;
+    expect(cause.options).to.be.an('object');
+    expect(cause.options.type).to.exist;
+    expect(cause.options.trim).to.be.true;
+    expect(cause.options.index).to.be.true;
+    expect(cause.options.searchable).to.be.true;
+    expect(cause.options.fake).to.exist;
+  });
+
   it('should have description field', () => {
     const description = Event.path('description');
 

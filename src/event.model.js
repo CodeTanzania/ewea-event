@@ -63,9 +63,13 @@ const EventSchema = createSchema(
      *
      * @type {object}
      * @property {object} type - schema(data) type
-     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
@@ -79,8 +83,8 @@ const EventSchema = createSchema(
     group: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
-      index: true,
       // required: true,
+      index: true,
       exists: true,
       autopopulate: OPTION_AUTOPOPULATE_GROUP,
       taggable: true,
@@ -98,9 +102,13 @@ const EventSchema = createSchema(
      *
      * @type {object}
      * @property {object} type - schema(data) type
-     * @property {boolean} trim - force trimming
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
      * @property {boolean} default - default value set when none provided
      * @property {object} fake - fake data generator options
      *
@@ -114,8 +122,8 @@ const EventSchema = createSchema(
     type: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
-      index: true,
       // required: true,
+      index: true,
       exists: true,
       autopopulate: OPTION_AUTOPOPULATE_GROUP,
       taggable: true,
@@ -132,19 +140,20 @@ const EventSchema = createSchema(
      * @description Human readable, unique identifier of an event.
      *
      * It consist of two letters to identify the event(or disaster) type
-     * (e.g. EQ - earthquake); the year of the event; a six-digit, sequential
+     * (e.g. FL - flood); the year of the event; a six-digit, sequential
      * event number; and the three-letter ISO code for country of occurrence
-     * e.g EQ-2001-000033-TZA.
+     * e.g FL-2001-000033-TZA.
      *
      * @type {object}
      * @property {object} type - schema(data) type
      * @property {boolean} trim - force trimming
      * @property {boolean} uppercase - force value to uppercase
+     * @property {boolean} required - mark required
      * @property {boolean} index - ensure database index
      * @property {boolean} unique - ensure unique database index
-     * @property {boolean} required - mark required
      * @property {boolean} searchable - allow searching
      * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
      * @property {object} fake - fake data generator options
      *
      * @author lally elias <lallyelias87@gmail.com>
@@ -152,22 +161,55 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * EQ-2018-000033-TZA
+     * FL-2018-000033-TZA
      */
     number: {
       // TODO: use mongoose-sequenceable
       type: String,
       trim: true,
       uppercase: true,
+      // required: true,
       index: true,
       // unique: true,
-      // required: true,
       searchable: true,
       taggable: true,
       exportable: true,
       fake: {
         generator: 'random',
         type: 'uuid',
+      },
+    },
+
+    /**
+     * @name cause
+     * @description Human readable, brief summary about cause(s) of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Heavy rainfall
+     */
+    cause: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
       },
     },
 
@@ -181,6 +223,7 @@ const EventSchema = createSchema(
      * @property {boolean} trim - force trimming
      * @property {boolean} index - ensure database index
      * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
      * @property {object} fake - fake data generator options
      *
      * @author lally elias <lallyelias87@gmail.com>
@@ -188,7 +231,7 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Roads, farms and crops were damaged.
+     * Overflowing water from the dam.
      */
     description: {
       type: String,
