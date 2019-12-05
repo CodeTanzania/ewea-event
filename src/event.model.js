@@ -261,6 +261,8 @@ const EventSchema = createSchema(
      * @since 0.1.0
      * @version 0.1.0
      * @instance
+     * @example
+     * Continue monitor the situation
      */
     instruction: {
       type: String,
