@@ -9,6 +9,7 @@ import {
 } from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
+import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
 // constants
@@ -293,6 +294,58 @@ const EventSchema = createSchema(
         type: 'uuid',
       },
     },
+
+    /**
+     * @name address
+     * @description A human readable description of location where an
+     * event happened.
+     *
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Tandale
+     */
+    address: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      fake: {
+        generator: 'address',
+        type: 'county',
+      },
+    },
+
+    /**
+     * @name location
+     * @description A geo-point specifying longitude and latitude pair
+     * of the address of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} index - ensure database index
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Heavy rainfall
+     */
+    location: Point,
 
     /**
      * @name causes

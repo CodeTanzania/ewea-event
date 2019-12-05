@@ -117,6 +117,30 @@ describe('Event Schema', () => {
     expect(number.options.fake).to.exist;
   });
 
+  it('should have address field', () => {
+    const address = Event.path('address');
+
+    expect(address).to.exist;
+    expect(address).to.be.instanceof(SchemaTypes.String);
+    expect(address.options).to.exist;
+    expect(address.options).to.be.an('object');
+    expect(address.options.type).to.exist;
+    expect(address.options.trim).to.be.true;
+    expect(address.options.index).to.be.true;
+    expect(address.options.searchable).to.be.true;
+    expect(address.options.exportable).to.be.true;
+    expect(address.options.fake).to.exist;
+  });
+
+  it('should have location field', () => {
+    const location = Event.path('location');
+
+    expect(location).to.exist;
+    expect(location).to.be.an.instanceof(SchemaTypes.Embedded);
+    expect(location.options.index).to.exist.and.be.equal('2dsphere');
+    expect(location.options.fake).to.exist.and.be.an('object');
+  });
+
   it('should have causes field', () => {
     const causes = Event.path('causes');
 
