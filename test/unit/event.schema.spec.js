@@ -62,6 +62,43 @@ describe('Event Schema', () => {
     expect(certainty.options.default).to.be.undefined;
   });
 
+  it('should have severity field', () => {
+    const severity = Event.path('severity');
+
+    expect(severity).to.exist;
+    expect(severity).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(severity.options).to.exist;
+    expect(severity.options).to.be.an('object');
+    expect(severity.options.type).to.exist;
+    expect(severity.options.ref).to.exist;
+    expect(severity.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(severity.options.required).to.be.true;
+    expect(severity.options.exists).to.be.true;
+    expect(severity.options.autopopulate).to.exist;
+    expect(severity.options.taggable).to.exist;
+    expect(severity.options.exportable).to.exist;
+    // expect(severity.options.aggregatable).to.exist;
+    expect(severity.options.default).to.be.undefined;
+  });
+
+  it('should have stage field', () => {
+    const stage = Event.path('stage');
+
+    expect(stage).to.exist;
+    expect(stage).to.be.instanceof(SchemaTypes.String);
+    expect(stage.options).to.exist;
+    expect(stage.options).to.be.an('object');
+    expect(stage.options.type).to.exist;
+    expect(stage.options.trim).to.be.true;
+    expect(stage.options.enum).to.be.eql(Event.STAGES);
+    expect(stage.options.index).to.be.true;
+    expect(stage.options.searchable).to.be.true;
+    expect(stage.options.taggable).to.be.true;
+    expect(stage.options.exportable).to.be.true;
+    expect(stage.options.default).to.be.equal(Event.STAGE_ALERT);
+    expect(stage.options.fake).to.exist;
+  });
+
   it('should have number field', () => {
     const number = Event.path('number');
 

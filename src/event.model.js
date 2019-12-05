@@ -13,6 +13,9 @@ import { Predefine } from '@lykmapipo/predefine';
 
 // constants
 // TODO COUNTRY_CODE
+const STAGE_ALERT = 'Alert';
+const STAGE_EVENT = 'Event';
+const STAGES = [STAGE_ALERT, STAGE_EVENT];
 const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
 const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
 const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
@@ -156,7 +159,7 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Flood
+     * Possible
      */
     certainty: {
       type: ObjectId,
@@ -172,6 +175,78 @@ const EventSchema = createSchema(
       },
       // aggregatable: true,
       default: undefined,
+    },
+
+    /**
+     * @name severity
+     * @description Human translatable readable severity of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Extreme
+     */
+    severity: {
+      type: ObjectId,
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v => get(v, 'strings.name.en'),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name stage
+     * @description Human readable evolving step of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {string[]} enum - collection of allowed values
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Alert
+     */
+    stage: {
+      type: String,
+      trim: true,
+      enum: STAGES,
+      index: true,
+      searchable: true,
+      taggable: true,
+      exportable: true,
+      default: STAGE_ALERT,
+      fake: true,
     },
 
     /**
@@ -431,6 +506,10 @@ EventSchema.statics.MODEL_NAME = MODEL_NAME;
 EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME;
 EventSchema.statics.OPTION_SELECT = OPTION_SELECT;
 EventSchema.statics.OPTION_AUTOPOPULATE = OPTION_AUTOPOPULATE;
+
+EventSchema.statics.STAGE_ALERT = STAGE_ALERT;
+EventSchema.statics.STAGE_EVENT = STAGE_EVENT;
+EventSchema.statics.STAGES = STAGES;
 
 /**
  * @name prepareSeedCriteria

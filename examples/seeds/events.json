@@ -1,6 +1,7 @@
 [
   {
     "_id": "5d535a0a62b47901d3294ff8",
+    "stage": "Event",
     "number": "FL-2018-000033-TZA",
     "cause": "Heavy rainfall",
     "description": "Overflowing water from the dam",
