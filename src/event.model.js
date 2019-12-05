@@ -17,7 +17,7 @@ const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
 const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
 const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
 const POPULATION_MAX_DEPTH = 1;
-const OPTION_AUTOPOPULATE_GROUP = {
+const OPTION_AUTOPOPULATE_PREDEFINE = {
   select: {
     'strings.name': 1,
     'strings.color': 1,
@@ -86,7 +86,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_GROUP,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -125,7 +125,46 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_GROUP,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v => get(v, 'strings.name.en'),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
+    },
+
+    /**
+     * @name certainty
+     * @description Human translatable readable certainty of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Flood
+     */
+    certainty: {
+      type: ObjectId,
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),

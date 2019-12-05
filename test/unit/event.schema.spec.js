@@ -43,6 +43,25 @@ describe('Event Schema', () => {
     expect(type.options.default).to.be.undefined;
   });
 
+  it('should have certainty field', () => {
+    const certainty = Event.path('certainty');
+
+    expect(certainty).to.exist;
+    expect(certainty).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(certainty.options).to.exist;
+    expect(certainty.options).to.be.an('object');
+    expect(certainty.options.type).to.exist;
+    expect(certainty.options.ref).to.exist;
+    expect(certainty.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(certainty.options.required).to.be.true;
+    expect(certainty.options.exists).to.be.true;
+    expect(certainty.options.autopopulate).to.exist;
+    expect(certainty.options.taggable).to.exist;
+    expect(certainty.options.exportable).to.exist;
+    // expect(certainty.options.aggregatable).to.exist;
+    expect(certainty.options.default).to.be.undefined;
+  });
+
   it('should have number field', () => {
     const number = Event.path('number');
 
