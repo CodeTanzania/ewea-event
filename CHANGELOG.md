@@ -1,3 +1,23 @@
+#### 0.2.0 (2019-12-05)
+
+##### Chores
+
+* **seed:**  add event instruction ([8eb7c7a1](https://github.com/codetanzania/ewea-event/commit/8eb7c7a167b42371bfe948faf07c96b1fdc8c7ce))
+
+##### New Features
+
+* **model:**
+  *  add sequenceable options to event ([9a1fee60](https://github.com/codetanzania/ewea-event/commit/9a1fee607977bb8978f46cdddf354d309c6fc950))
+  *  add address & location event fields ([4f8a38e4](https://github.com/codetanzania/ewea-event/commit/4f8a38e4bbd81b6e30fc21e8219286dd4df75638))
+  *  add administrative areas event field ([85eecc52](https://github.com/codetanzania/ewea-event/commit/85eecc527dd09659d7e12f019cd5a35b7c85ca44))
+  *  add places event field ([9d82b840](https://github.com/codetanzania/ewea-event/commit/9d82b840ddceee29ced8157b952470a0dda08b27))
+  *  add interventions event field ([a80fe5ab](https://github.com/codetanzania/ewea-event/commit/a80fe5abd675d0a792b367adb2d3d47ff03103a6))
+  *  add remarks field ([d940e3f7](https://github.com/codetanzania/ewea-event/commit/d940e3f7889a6d4fa849ea8cd26af989e485ef69))
+  *  add event stage field ([a4998804](https://github.com/codetanzania/ewea-event/commit/a4998804a7d3c3d66fba0bf0fb4c827c5eeaf0b4))
+  *  add event certainty field ([2e48d36b](https://github.com/codetanzania/ewea-event/commit/2e48d36b3b6ccc6e31d2941cac8f24601179003c))
+  *  add instruction field ([eef08ec4](https://github.com/codetanzania/ewea-event/commit/eef08ec465fe33bc37dbd18d719bf2193c607690))
+  *  add event cause ([0001a0df](https://github.com/codetanzania/ewea-event/commit/0001a0dfc8ab45b7005f9dad20e08f6bcbe7aa0c))
+
 #### 0.1.0 (2019-12-04)
 
 ##### Chores
