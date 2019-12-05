@@ -7,13 +7,14 @@ import {
   model,
   ObjectId,
 } from '@lykmapipo/mongoose-common';
+// import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
 // constants
-// TODO COUNTRY_CODE
+const COUNTRY_CODE = getString('COUNTRY_CODE', 'TZ');
 const STAGE_ALERT = 'Alert';
 const STAGE_EVENT = 'Event';
 const STAGES = [STAGE_ALERT, STAGE_EVENT];
@@ -283,12 +284,20 @@ const EventSchema = createSchema(
       type: String,
       trim: true,
       uppercase: true,
-      // required: true,
+      required: true,
       index: true,
       // unique: true,
       searchable: true,
       taggable: true,
       exportable: true,
+      sequenceable: {
+        prefix: function prefix() {
+          return get(this, 'type.string.name.en', '');
+        },
+        suffix: COUNTRY_CODE,
+        length: 6,
+        pad: '0',
+      },
       fake: {
         generator: 'random',
         type: 'uuid',
