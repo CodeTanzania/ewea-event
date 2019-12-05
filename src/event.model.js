@@ -246,6 +246,35 @@ const EventSchema = createSchema(
     },
 
     /**
+     * @name instruction
+     * @description Human readable, recommended action to be taken by
+     * responders on an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     */
+    instruction: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'paragraph',
+      },
+    },
+
+    /**
      * @name startedAt
      * @description Date when an event was effective occured(or reported).
      *

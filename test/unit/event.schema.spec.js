@@ -72,6 +72,7 @@ describe('Event Schema', () => {
     expect(cause.options.trim).to.be.true;
     expect(cause.options.index).to.be.true;
     expect(cause.options.searchable).to.be.true;
+    expect(cause.options.exportable).to.be.true;
     expect(cause.options.fake).to.exist;
   });
 
@@ -86,7 +87,23 @@ describe('Event Schema', () => {
     expect(description.options.trim).to.be.true;
     expect(description.options.index).to.be.true;
     expect(description.options.searchable).to.be.true;
+    expect(description.options.exportable).to.be.true;
     expect(description.options.fake).to.exist;
+  });
+
+  it('should have instruction field', () => {
+    const instruction = Event.path('instruction');
+
+    expect(instruction).to.exist;
+    expect(instruction).to.be.instanceof(SchemaTypes.String);
+    expect(instruction.options).to.exist;
+    expect(instruction.options).to.be.an('object');
+    expect(instruction.options.type).to.exist;
+    expect(instruction.options.trim).to.be.true;
+    expect(instruction.options.index).to.be.true;
+    expect(instruction.options.searchable).to.be.true;
+    expect(instruction.options.exportable).to.be.true;
+    expect(instruction.options.fake).to.exist;
   });
 
   it('should have startedAt field', () => {
