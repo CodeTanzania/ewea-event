@@ -295,8 +295,8 @@ const EventSchema = createSchema(
     },
 
     /**
-     * @name cause
-     * @description Human readable, brief summary about cause(s) of an event.
+     * @name causes
+     * @description A brief human readable summary about cause(s) of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -314,7 +314,7 @@ const EventSchema = createSchema(
      * @example
      * Heavy rainfall
      */
-    cause: {
+    causes: {
       type: String,
       trim: true,
       index: true,
@@ -360,8 +360,8 @@ const EventSchema = createSchema(
     },
 
     /**
-     * @name instruction
-     * @description Human readable, recommended action to be taken by
+     * @name instructions
+     * @description A brief human readable, caution(s) to be taken by
      * responders on an event.
      *
      * @type {object}
@@ -378,7 +378,69 @@ const EventSchema = createSchema(
      * @example
      * Continue monitor the situation
      */
-    instruction: {
+    instructions: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name interventions
+     * @description A brief human readable effect(s) an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Affected victims were evacuated and relocated
+     */
+    interventions: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name impacts
+     * @description A brief human readable effect(s) an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * 55 people affected, 72 houses destroyed and 9 schools damaged
+     */
+    impacts: {
       type: String,
       trim: true,
       index: true,

@@ -117,19 +117,19 @@ describe('Event Schema', () => {
     expect(number.options.fake).to.exist;
   });
 
-  it('should have cause field', () => {
-    const cause = Event.path('cause');
+  it('should have causes field', () => {
+    const causes = Event.path('causes');
 
-    expect(cause).to.exist;
-    expect(cause).to.be.instanceof(SchemaTypes.String);
-    expect(cause.options).to.exist;
-    expect(cause.options).to.be.an('object');
-    expect(cause.options.type).to.exist;
-    expect(cause.options.trim).to.be.true;
-    expect(cause.options.index).to.be.true;
-    expect(cause.options.searchable).to.be.true;
-    expect(cause.options.exportable).to.be.true;
-    expect(cause.options.fake).to.exist;
+    expect(causes).to.exist;
+    expect(causes).to.be.instanceof(SchemaTypes.String);
+    expect(causes.options).to.exist;
+    expect(causes.options).to.be.an('object');
+    expect(causes.options.type).to.exist;
+    expect(causes.options.trim).to.be.true;
+    expect(causes.options.index).to.be.true;
+    expect(causes.options.searchable).to.be.true;
+    expect(causes.options.exportable).to.be.true;
+    expect(causes.options.fake).to.exist;
   });
 
   it('should have description field', () => {
@@ -147,19 +147,49 @@ describe('Event Schema', () => {
     expect(description.options.fake).to.exist;
   });
 
-  it('should have instruction field', () => {
-    const instruction = Event.path('instruction');
+  it('should have instructions field', () => {
+    const instructions = Event.path('instructions');
 
-    expect(instruction).to.exist;
-    expect(instruction).to.be.instanceof(SchemaTypes.String);
-    expect(instruction.options).to.exist;
-    expect(instruction.options).to.be.an('object');
-    expect(instruction.options.type).to.exist;
-    expect(instruction.options.trim).to.be.true;
-    expect(instruction.options.index).to.be.true;
-    expect(instruction.options.searchable).to.be.true;
-    expect(instruction.options.exportable).to.be.true;
-    expect(instruction.options.fake).to.exist;
+    expect(instructions).to.exist;
+    expect(instructions).to.be.instanceof(SchemaTypes.String);
+    expect(instructions.options).to.exist;
+    expect(instructions.options).to.be.an('object');
+    expect(instructions.options.type).to.exist;
+    expect(instructions.options.trim).to.be.true;
+    expect(instructions.options.index).to.be.true;
+    expect(instructions.options.searchable).to.be.true;
+    expect(instructions.options.exportable).to.be.true;
+    expect(instructions.options.fake).to.exist;
+  });
+
+  it('should have interventions field', () => {
+    const interventions = Event.path('interventions');
+
+    expect(interventions).to.exist;
+    expect(interventions).to.be.instanceof(SchemaTypes.String);
+    expect(interventions.options).to.exist;
+    expect(interventions.options).to.be.an('object');
+    expect(interventions.options.type).to.exist;
+    expect(interventions.options.trim).to.be.true;
+    expect(interventions.options.index).to.be.true;
+    expect(interventions.options.searchable).to.be.true;
+    expect(interventions.options.exportable).to.be.true;
+    expect(interventions.options.fake).to.exist;
+  });
+
+  it('should have impacts field', () => {
+    const impacts = Event.path('impacts');
+
+    expect(impacts).to.exist;
+    expect(impacts).to.be.instanceof(SchemaTypes.String);
+    expect(impacts.options).to.exist;
+    expect(impacts.options).to.be.an('object');
+    expect(impacts.options.type).to.exist;
+    expect(impacts.options.trim).to.be.true;
+    expect(impacts.options.index).to.be.true;
+    expect(impacts.options.searchable).to.be.true;
+    expect(impacts.options.exportable).to.be.true;
+    expect(impacts.options.fake).to.exist;
   });
 
   it('should have remarks field', () => {
