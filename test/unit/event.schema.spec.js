@@ -162,6 +162,25 @@ describe('Event Schema', () => {
     expect(places.options.fake).to.exist;
   });
 
+  it('should have areas field', () => {
+    const areas = Event.path('areas');
+
+    expect(areas).to.exist;
+    expect(areas).to.be.instanceof(SchemaTypes.Array);
+    expect(areas.options).to.exist;
+    expect(areas.options).to.be.an('object');
+    expect(areas.options.type).to.exist;
+    expect(areas.options.ref).to.exist;
+    expect(areas.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(areas.options.required).to.be.true;
+    expect(areas.options.exists).to.be.true;
+    expect(areas.options.autopopulate).to.exist;
+    expect(areas.options.taggable).to.exist;
+    expect(areas.options.exportable).to.exist;
+    // expect(areas.options.aggregatable).to.exist;
+    expect(areas.options.default).to.be.undefined;
+  });
+
   it('should have instructions field', () => {
     const instructions = Event.path('instructions');
 

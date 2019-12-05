@@ -1,4 +1,4 @@
-import { get, pick } from 'lodash';
+import { get, map, join, pick } from 'lodash';
 import { idOf } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
 import {
@@ -396,6 +396,49 @@ const EventSchema = createSchema(
         generator: 'address',
         type: 'county',
       },
+    },
+
+    /**
+     * @name areas
+     * @description Affected administrative area(s) of an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} required - mark required
+     * @property {boolean} index - ensure database index
+     * @property {boolean} exists - ensure ref exists before save
+     * @property {object} autopopulate - auto populate(eager loading) options
+     * @property {boolean} taggable - allow field use for tagging
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {boolean} aggregatable - allow field use for aggregation
+     * @property {boolean} default - default value set when none provided
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Extreme
+     */
+    areas: {
+      type: [ObjectId],
+      ref: Predefine.MODEL_NAME,
+      // required: true,
+      index: true,
+      exists: true,
+      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      taggable: true,
+      exportable: {
+        format: v =>
+          join(
+            map(v, area => get(area, 'strings.name.en')),
+            ', '
+          ),
+        default: 'NA',
+      },
+      // aggregatable: true,
+      default: undefined,
     },
 
     /**
