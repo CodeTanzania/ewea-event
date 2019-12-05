@@ -386,7 +386,39 @@ const EventSchema = createSchema(
       exportable: true,
       fake: {
         generator: 'lorem',
-        type: 'paragraph',
+        type: 'sentence',
+      },
+    },
+
+    /**
+     * @name remarks
+     * @description A brief human readable comments and recommendations
+     * about an event.
+     *
+     * @type {object}
+     * @property {object} type - schema(data) type
+     * @property {boolean} trim - force trimming
+     * @property {boolean} index - ensure database index
+     * @property {boolean} searchable - allow for searching
+     * @property {boolean} exportable - allow field use for exporting
+     * @property {object} fake - fake data generator options
+     *
+     * @author lally elias <lallyelias87@gmail.com>
+     * @since 0.1.0
+     * @version 0.1.0
+     * @instance
+     * @example
+     * Requested relief items should be provided to the victims immediately
+     */
+    remarks: {
+      type: String,
+      trim: true,
+      index: true,
+      searchable: true,
+      exportable: true,
+      fake: {
+        generator: 'lorem',
+        type: 'sentence',
       },
     },
 

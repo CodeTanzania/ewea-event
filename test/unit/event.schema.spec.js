@@ -162,6 +162,21 @@ describe('Event Schema', () => {
     expect(instruction.options.fake).to.exist;
   });
 
+  it('should have remarks field', () => {
+    const remarks = Event.path('remarks');
+
+    expect(remarks).to.exist;
+    expect(remarks).to.be.instanceof(SchemaTypes.String);
+    expect(remarks.options).to.exist;
+    expect(remarks.options).to.be.an('object');
+    expect(remarks.options.type).to.exist;
+    expect(remarks.options.trim).to.be.true;
+    expect(remarks.options.index).to.be.true;
+    expect(remarks.options.searchable).to.be.true;
+    expect(remarks.options.exportable).to.be.true;
+    expect(remarks.options.fake).to.exist;
+  });
+
   it('should have startedAt field', () => {
     const startedAt = Event.path('startedAt');
 
