@@ -22,7 +22,18 @@ describe('Event Instance', () => {
   });
 });
 
-describe.skip('Event Validations');
+describe.skip('Event Validations', () => {
+  it('should generate number', done => {
+    const event = Event.fakeExcept('number');
+    // expect(event.number).to.not.exist;
+    event.validate(error => {
+      expect(error).to.not.exist;
+      expect(event.number).to.exist;
+      expect(event.number).to.contain('TZ');
+      done(error, event);
+    });
+  });
+});
 
 describe('Event Statics', () => {
   it('should expose model name', () => {
