@@ -64,7 +64,7 @@ const EventSchema = createSchema(
   {
     /**
      * @name group
-     * @description Human readable group of an event.
+     * @description Event group underwhich an event belongs to.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -103,7 +103,7 @@ const EventSchema = createSchema(
 
     /**
      * @name type
-     * @description Human readable type of an event.
+     * @description Event type underwhich an event belongs to.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -142,7 +142,7 @@ const EventSchema = createSchema(
 
     /**
      * @name certainty
-     * @description Human translatable readable certainty of an event.
+     * @description Currently assigned certainty of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -181,7 +181,7 @@ const EventSchema = createSchema(
 
     /**
      * @name severity
-     * @description Human translatable readable severity of an event.
+     * @description Currently assigned severity of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
