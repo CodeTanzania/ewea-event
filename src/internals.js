@@ -45,6 +45,7 @@ export const CHANGELOG_USE_NEED = 'need';
 export const CHANGELOG_USE_EFFECT = 'effect';
 export const CHANGELOG_USE_ASSESSMENT = 'assessment';
 export const CHANGELOG_USE_ACTION = 'action';
+export const CHANGELOG_USE_EXPOSURE = 'exposure';
 export const CHANGELOG_USES = [
   CHANGELOG_USE_CHANGE,
   CHANGELOG_USE_NOTIFICATION,
@@ -52,6 +53,7 @@ export const CHANGELOG_USES = [
   CHANGELOG_USE_EFFECT,
   CHANGELOG_USE_ASSESSMENT,
   CHANGELOG_USE_ACTION,
+  CHANGELOG_USE_EXPOSURE,
 ];
 
 // relation options
