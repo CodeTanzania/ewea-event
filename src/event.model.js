@@ -83,7 +83,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Meteorological
+     * {
+     *   _id: '5dde6ca23631a92c2d616253',
+     *   strings: { name: { en: 'Meteorological' }, code: 'MAT' },
+     * }
      */
     group: {
       type: ObjectId,
@@ -122,7 +125,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Flood
+     * {
+     *   _id: '5dde6ca33631a92c2d616298',
+     *   strings: { name: { en: 'Flood' }, code: 'FL' },
+     * }
      */
     type: {
       type: ObjectId,
@@ -161,7 +167,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Possible
+     * {
+     *   _id: '5dde6ca33631a92c2d616284',
+     *   strings: { name: { en: 'Possible' } },
+     * }
      */
     certainty: {
       type: ObjectId,
@@ -200,7 +209,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Extreme
+     * {
+     *   _id: '5dde6ca23631a92c2d616250',
+     *   strings: { name: { en: 'Extreme' } },
+     * }
      */
     severity: {
       type: ObjectId,
@@ -351,7 +363,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Heavy rainfall
+     * {
+     *   type: 'Point',
+     *   coordinates: [39.2155451, -6.7269984],
+     * }
      */
     location: Point,
 
@@ -480,7 +495,18 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Extreme
+     * [
+     * {
+     *   _id: '5de2f17cec283f52aa3cacf7',
+     *   strings: { name: { en: 'Ilala' } },
+     *   geos: { geometry: { ... } },
+     * },
+     * {
+     *   _id: '5de2f2ec7d0c71547d456b10',
+     *   strings: { name: { en: 'Temeke' } },
+     *   geos: { geometry: { ... } },
+     * },
+     * ]
      */
     areas: {
       type: [ObjectId],
