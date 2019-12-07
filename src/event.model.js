@@ -1,5 +1,6 @@
-import { get, map, join, pick } from 'lodash';
-import { idOf } from '@lykmapipo/common';
+import { get, pick } from 'lodash';
+import { join, idOf } from '@lykmapipo/common';
+
 import {
   copyInstance,
   createSchema,
@@ -504,11 +505,7 @@ const EventSchema = createSchema(
       autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
-        format: v =>
-          join(
-            map(v, area => get(area, 'strings.name.en')),
-            ', '
-          ),
+        format: v => join(v, ', ', 'strings.name.en'),
         default: 'NA',
       },
       aggregatable: { unwind: true },

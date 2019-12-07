@@ -1,4 +1,5 @@
-import { get, join, map } from 'lodash';
+import { get } from 'lodash';
+import { join } from '@lykmapipo/common';
 import { ObjectId } from '@lykmapipo/mongoose-common';
 import { Predefine } from '@lykmapipo/predefine';
 import { Party } from '@codetanzania/emis-stakeholder';
@@ -142,11 +143,7 @@ export const groups = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v =>
-      join(
-        map(v, role => get(role, 'strings.name.en')),
-        ', '
-      ),
+    format: v => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -192,11 +189,7 @@ export const roles = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v =>
-      join(
-        map(v, role => get(role, 'strings.name.en')),
-        ', '
-      ),
+    format: v => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -245,11 +238,7 @@ export const agencies = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v =>
-      join(
-        map(v, party => get(party, 'name')),
-        ', '
-      ),
+    format: v => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -297,11 +286,7 @@ export const focals = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v =>
-      join(
-        map(v, party => get(party, 'name')),
-        ', '
-      ),
+    format: v => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },

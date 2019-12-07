@@ -1,4 +1,4 @@
-import { get, join, map } from 'lodash';
+import { join } from '@lykmapipo/common';
 import { ObjectId } from '@lykmapipo/mongoose-common';
 import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
@@ -48,11 +48,7 @@ export const areas = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v =>
-      join(
-        map(v, area => get(area, 'strings.name.en')),
-        ', '
-      ),
+    format: v => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
