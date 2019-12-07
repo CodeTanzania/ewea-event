@@ -86,7 +86,7 @@ const EventSchema = createSchema(
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -128,7 +128,7 @@ const EventSchema = createSchema(
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -170,7 +170,7 @@ const EventSchema = createSchema(
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -212,7 +212,7 @@ const EventSchema = createSchema(
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -510,7 +510,7 @@ const EventSchema = createSchema(
           ),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
