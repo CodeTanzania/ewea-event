@@ -13,6 +13,7 @@ const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
 
 /**
  * @module ChangeLog
+ * @namespace ChangeLog
  * @name ChangeLog
  * @description A record(log) of a changes on an event.
  *

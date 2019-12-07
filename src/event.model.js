@@ -27,6 +27,7 @@ import {
 
 /**
  * @module Event
+ * @namespace Event
  * @name Event
  * @description A representation of an entity which define and track an
  * instance(or occurrence) of an emergency(or disaster) event.
