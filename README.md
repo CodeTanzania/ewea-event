@@ -14,10 +14,11 @@ A representation of an entity which define and track an instance(or occurrence) 
 
 ## Requirements
 
-- [NodeJS v12+](https://nodejs.org)
-- [Npm v6+](https://www.npmjs.com/)
+- [NodeJS v13+](https://nodejs.org)
+- [Npm v6.12+](https://www.npmjs.com/)
 - [MongoDB v4+](https://www.mongodb.com/)
-- [Mongoose v5.6+](https://github.com/Automattic/mongoose)
+- [Redis v5+](https://redis.io/)
+- [Mongoose v5.7+](https://github.com/Automattic/mongoose)
 
 ## Installation
 
