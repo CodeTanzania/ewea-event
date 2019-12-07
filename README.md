@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/codetanzania/ewea-event.svg?branch=develop)](https://travis-ci.org/codetanzania/ewea-event)
 [![Dependencies Status](https://david-dm.org/codetanzania/ewea-event.svg)](https://david-dm.org/codetanzania/ewea-event)
-[![Coverage Status](https://coveralls.io/repos/github/codetanzania/ewea-event/badge.svg?branch=develop)](https://coveralls.io/github/codetanzania/ewea-event?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/CodeTanzania/ewea-event/badge.svg?branch=develop)](https://coveralls.io/github/CodeTanzania/ewea-event?branch=develop)
 [![GitHub License](https://img.shields.io/github/license/codetanzania/ewea-event)](https://github.com/codetanzania/ewea-event/blob/develop/LICENSE)
 
 [![Commitizen Friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
