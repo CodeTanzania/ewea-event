@@ -16,7 +16,7 @@ import {
   CHANGELOG_USES,
 } from './internals';
 
-import { initiator, verifier } from './schema/parties.schema';
+import { initiator, verifier, agencies, focals } from './schema/parties.schema';
 import { group, type, fanction, action } from './schema/base.schema';
 import { event, use, comment } from './schema/changelog.base.schema';
 import { image, audio, video, document } from './schema/files.schema';
@@ -27,6 +27,7 @@ const SCHEMA = mergeObjects(
   { group, type },
   { event },
   { function: fanction, action },
+  { agencies, focals },
   { comment },
   { image, audio, video, document }
 );

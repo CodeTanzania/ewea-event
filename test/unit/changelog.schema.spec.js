@@ -163,6 +163,44 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have agencies field', () => {
+    const agencies = ChangeLog.path('agencies');
+
+    expect(agencies).to.exist;
+    expect(agencies).to.be.instanceof(SchemaTypes.Array);
+    expect(agencies.options).to.exist;
+    expect(agencies.options).to.be.an('object');
+    expect(agencies.options.type).to.exist;
+    expect(agencies.options.ref).to.exist;
+    expect(agencies.options.ref).to.be.equal(Party.MODEL_NAME);
+    // expect(agencies.options.required).to.be.true;
+    expect(agencies.options.exists).to.be.true;
+    expect(agencies.options.autopopulate).to.exist;
+    expect(agencies.options.taggable).to.exist;
+    expect(agencies.options.exportable).to.exist;
+    // expect(agencies.options.aggregatable).to.exist;
+    expect(agencies.options.default).to.be.undefined;
+  });
+
+  it('should have focals field', () => {
+    const focals = ChangeLog.path('focals');
+
+    expect(focals).to.exist;
+    expect(focals).to.be.instanceof(SchemaTypes.Array);
+    expect(focals.options).to.exist;
+    expect(focals.options).to.be.an('object');
+    expect(focals.options.type).to.exist;
+    expect(focals.options.ref).to.exist;
+    expect(focals.options.ref).to.be.equal(Party.MODEL_NAME);
+    // expect(focals.options.required).to.be.true;
+    expect(focals.options.exists).to.be.true;
+    expect(focals.options.autopopulate).to.exist;
+    expect(focals.options.taggable).to.exist;
+    expect(focals.options.exportable).to.exist;
+    // expect(focals.options.aggregatable).to.exist;
+    expect(focals.options.default).to.be.undefined;
+  });
+
   it('should have image file field', () => {
     const image = ChangeLog.path('image');
 
