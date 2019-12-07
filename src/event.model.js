@@ -1,6 +1,5 @@
 import { get, map, join, pick } from 'lodash';
 import { idOf } from '@lykmapipo/common';
-import { getString } from '@lykmapipo/env';
 import {
   copyInstance,
   createSchema,
@@ -13,32 +12,18 @@ import exportable from '@lykmapipo/mongoose-exportable';
 import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
-// constants
-const COUNTRY_CODE = getString('COUNTRY_CODE', 'TZ');
-const STAGE_ALERT = 'Alert';
-const STAGE_EVENT = 'Event';
-const STAGES = [STAGE_ALERT, STAGE_EVENT];
-const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
-const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
-const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
-const POPULATION_MAX_DEPTH = 1;
-const OPTION_AUTOPOPULATE_PREDEFINE = {
-  select: {
-    'strings.name': 1,
-    'strings.color': 1,
-    'strings.code': 1,
-  },
-  maxDepth: POPULATION_MAX_DEPTH,
-};
-const OPTION_SELECT = {
-  group: 1,
-  type: 1,
-  number: 1,
-};
-const OPTION_AUTOPOPULATE = {
-  select: OPTION_SELECT,
-  maxDepth: POPULATION_MAX_DEPTH,
-};
+import {
+  COUNTRY_CODE,
+  EVENT_MODEL_NAME,
+  EVENT_COLLECTION_NAME,
+  EVENT_SCHEMA_OPTIONS,
+  EVENT_STAGE_ALERT,
+  EVENT_STAGE_EVENT,
+  EVENT_STAGES,
+  EVENT_OPTION_SELECT,
+  EVENT_OPTION_AUTOPOPULATE,
+  PREDEFINE_OPTION_AUTOPOPULATE,
+} from './internals';
 
 /**
  * @module Event
@@ -94,7 +79,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -136,7 +121,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -178,7 +163,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -220,7 +205,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
@@ -254,12 +239,12 @@ const EventSchema = createSchema(
     stage: {
       type: String,
       trim: true,
-      enum: STAGES,
+      enum: EVENT_STAGES,
       index: true,
       searchable: true,
       taggable: true,
       exportable: true,
-      default: STAGE_ALERT,
+      default: EVENT_STAGE_ALERT,
       fake: true,
     },
 
@@ -514,7 +499,7 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v =>
@@ -707,7 +692,7 @@ const EventSchema = createSchema(
       },
     },
   },
-  SCHEMA_OPTIONS,
+  EVENT_SCHEMA_OPTIONS,
   actions,
   exportable
 );
@@ -766,14 +751,14 @@ EventSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-EventSchema.statics.MODEL_NAME = MODEL_NAME;
-EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME;
-EventSchema.statics.OPTION_SELECT = OPTION_SELECT;
-EventSchema.statics.OPTION_AUTOPOPULATE = OPTION_AUTOPOPULATE;
+EventSchema.statics.MODEL_NAME = EVENT_MODEL_NAME;
+EventSchema.statics.COLLECTION_NAME = EVENT_COLLECTION_NAME;
+EventSchema.statics.OPTION_SELECT = EVENT_OPTION_SELECT;
+EventSchema.statics.OPTION_AUTOPOPULATE = EVENT_OPTION_AUTOPOPULATE;
 
-EventSchema.statics.STAGE_ALERT = STAGE_ALERT;
-EventSchema.statics.STAGE_EVENT = STAGE_EVENT;
-EventSchema.statics.STAGES = STAGES;
+EventSchema.statics.STAGE_ALERT = EVENT_STAGE_ALERT;
+EventSchema.statics.STAGE_EVENT = EVENT_STAGE_EVENT;
+EventSchema.statics.STAGES = EVENT_STAGES;
 
 /**
  * @name prepareSeedCriteria
@@ -798,4 +783,4 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export event model */
-export default model(MODEL_NAME, EventSchema);
+export default model(EVENT_MODEL_NAME, EventSchema);
