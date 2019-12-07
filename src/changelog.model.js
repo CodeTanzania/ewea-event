@@ -1,15 +1,15 @@
-import { getString } from '@lykmapipo/env';
+import { mergeObjects } from '@lykmapipo/common';
 import { createSchema, model } from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 
-// constants
-const MODEL_NAME = getString('CHANGELOG_MODEL_NAME', 'EventChangeLog');
-const COLLECTION_NAME = getString(
-  'CHANGELOG_COLLECTION_NAME',
-  'eventchangelogs'
-);
-const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
+import { CHANGELOG_MODEL_NAME, CHANGELOG_SCHEMA_OPTIONS } from './internals';
+
+// schemas
+import { event, comment } from './schema/changelog.base.schema';
+import { group, type } from './schema/base.schema';
+
+const SCHEMA = mergeObjects({ group, type }, { event }, { comment });
 
 /**
  * @module ChangeLog
@@ -32,7 +32,12 @@ const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
  * ChangeLog.create(event, (error, created) => { ... });
  *
  */
-const ChangeLogSchema = createSchema({}, SCHEMA_OPTIONS, actions, exportable);
+const ChangeLogSchema = createSchema(
+  SCHEMA,
+  CHANGELOG_SCHEMA_OPTIONS,
+  actions,
+  exportable
+);
 
 /* export event model */
-export default model(MODEL_NAME, ChangeLogSchema);
+export default model(CHANGELOG_MODEL_NAME, ChangeLogSchema);

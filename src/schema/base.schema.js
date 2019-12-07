@@ -8,6 +8,9 @@ import { PREDEFINE_OPTION_AUTOPOPULATE } from '../internals';
  * @name group
  * @description Event group underwhich an event belongs to.
  *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
  * @type {object}
  * @property {object} type - schema(data) type
  * @property {boolean} required - mark required
@@ -49,6 +52,9 @@ export const group = {
 /**
  * @name type
  * @description Event type underwhich an event belongs to.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
  *
  * @type {object}
  * @property {object} type - schema(data) type

@@ -25,6 +25,19 @@ export const EVENT_STAGE_ALERT = 'Alert';
 export const EVENT_STAGE_EVENT = 'Event';
 export const EVENT_STAGES = [EVENT_STAGE_ALERT, EVENT_STAGE_EVENT];
 
+// changelog schema
+export const CHANGELOG_MODEL_NAME = getString(
+  'CHANGELOG_MODEL_NAME',
+  'EventChangeLog'
+);
+export const CHANGELOG_COLLECTION_NAME = getString(
+  'CHANGELOG_COLLECTION_NAME',
+  'eventchangelogs'
+);
+export const CHANGELOG_SCHEMA_OPTIONS = {
+  collection: CHANGELOG_COLLECTION_NAME,
+};
+
 // relation options
 export const PREDEFINE_OPTION_SELECT = {
   'strings.name': 1,
