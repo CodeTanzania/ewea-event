@@ -29,6 +29,8 @@ const SCHEMA = mergeObjects(
   { image, audio, video, document }
 );
 
+// TODO: all criteria use $in operator
+
 /**
  * @module ChangeLog
  * @namespace ChangeLog
