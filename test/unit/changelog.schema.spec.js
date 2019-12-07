@@ -82,6 +82,46 @@ describe('ChangeLog Schema', () => {
     expect(event.options.default).to.be.undefined;
   });
 
+  it('should have function field', () => {
+    const fanction = ChangeLog.path('function');
+
+    expect(fanction).to.exist;
+    expect(fanction).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(fanction.options).to.exist;
+    expect(fanction.options).to.be.an('object');
+    expect(fanction.options.type).to.exist;
+    expect(fanction.options.ref).to.exist;
+    expect(fanction.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(fanction.options.index).to.be.true;
+    // expect(fanction.options.required).to.be.true;
+    expect(fanction.options.exists).to.be.true;
+    expect(fanction.options.autopopulate).to.exist;
+    expect(fanction.options.taggable).to.exist;
+    expect(fanction.options.exportable).to.exist;
+    // expect(fanction.options.aggregatable).to.exist;
+    expect(fanction.options.default).to.be.undefined;
+  });
+
+  it('should have action field', () => {
+    const action = ChangeLog.path('action');
+
+    expect(action).to.exist;
+    expect(action).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(action.options).to.exist;
+    expect(action.options).to.be.an('object');
+    expect(action.options.type).to.exist;
+    expect(action.options.ref).to.exist;
+    expect(action.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(action.options.index).to.be.true;
+    // expect(action.options.required).to.be.true;
+    expect(action.options.exists).to.be.true;
+    expect(action.options.autopopulate).to.exist;
+    expect(action.options.taggable).to.exist;
+    expect(action.options.exportable).to.exist;
+    // expect(action.options.aggregatable).to.exist;
+    expect(action.options.default).to.be.undefined;
+  });
+
   it('should have image file field', () => {
     const image = ChangeLog.path('image');
 
