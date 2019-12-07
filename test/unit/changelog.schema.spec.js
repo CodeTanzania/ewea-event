@@ -163,6 +163,44 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have groups field', () => {
+    const groups = ChangeLog.path('groups');
+
+    expect(groups).to.exist;
+    expect(groups).to.be.instanceof(SchemaTypes.Array);
+    expect(groups.options).to.exist;
+    expect(groups.options).to.be.an('object');
+    expect(groups.options.type).to.exist;
+    expect(groups.options.ref).to.exist;
+    expect(groups.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(groups.options.required).to.be.true;
+    expect(groups.options.exists).to.be.true;
+    expect(groups.options.autopopulate).to.exist;
+    expect(groups.options.taggable).to.exist;
+    expect(groups.options.exportable).to.exist;
+    // expect(groups.options.aggregatable).to.exist;
+    expect(groups.options.default).to.be.undefined;
+  });
+
+  it('should have roles field', () => {
+    const roles = ChangeLog.path('roles');
+
+    expect(roles).to.exist;
+    expect(roles).to.be.instanceof(SchemaTypes.Array);
+    expect(roles.options).to.exist;
+    expect(roles.options).to.be.an('object');
+    expect(roles.options.type).to.exist;
+    expect(roles.options.ref).to.exist;
+    expect(roles.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(roles.options.required).to.be.true;
+    expect(roles.options.exists).to.be.true;
+    expect(roles.options.autopopulate).to.exist;
+    expect(roles.options.taggable).to.exist;
+    expect(roles.options.exportable).to.exist;
+    // expect(roles.options.aggregatable).to.exist;
+    expect(roles.options.default).to.be.undefined;
+  });
+
   it('should have agencies field', () => {
     const agencies = ChangeLog.path('agencies');
 
