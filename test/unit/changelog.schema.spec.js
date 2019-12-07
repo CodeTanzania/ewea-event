@@ -1,6 +1,7 @@
 import { SchemaTypes } from '@lykmapipo/mongoose-common';
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@lykmapipo/predefine';
+import { Party } from '@codetanzania/emis-stakeholder';
 import Event from '../../src/event.model';
 import ChangeLog from '../../src/changelog.model';
 
@@ -21,6 +22,46 @@ describe('ChangeLog Schema', () => {
     expect(use.options.exportable).to.be.true;
     expect(use.options.default).to.be.equal(ChangeLog.USE_CHANGE);
     expect(use.options.fake).to.exist;
+  });
+
+  it('should have initiator field', () => {
+    const initiator = ChangeLog.path('initiator');
+
+    expect(initiator).to.exist;
+    expect(initiator).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(initiator.options).to.exist;
+    expect(initiator.options).to.be.an('object');
+    expect(initiator.options.type).to.exist;
+    expect(initiator.options.ref).to.exist;
+    expect(initiator.options.ref).to.be.equal(Party.MODEL_NAME);
+    expect(initiator.options.index).to.be.true;
+    // expect(initiator.options.required).to.be.true;
+    expect(initiator.options.exists).to.be.true;
+    expect(initiator.options.autopopulate).to.exist;
+    expect(initiator.options.taggable).to.exist;
+    expect(initiator.options.exportable).to.exist;
+    // expect(initiator.options.aggregatable).to.exist;
+    expect(initiator.options.default).to.be.undefined;
+  });
+
+  it('should have verifier field', () => {
+    const verifier = ChangeLog.path('verifier');
+
+    expect(verifier).to.exist;
+    expect(verifier).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(verifier.options).to.exist;
+    expect(verifier.options).to.be.an('object');
+    expect(verifier.options.type).to.exist;
+    expect(verifier.options.ref).to.exist;
+    expect(verifier.options.ref).to.be.equal(Party.MODEL_NAME);
+    expect(verifier.options.index).to.be.true;
+    // expect(verifier.options.required).to.be.true;
+    expect(verifier.options.exists).to.be.true;
+    expect(verifier.options.autopopulate).to.exist;
+    expect(verifier.options.taggable).to.exist;
+    expect(verifier.options.exportable).to.exist;
+    // expect(verifier.options.aggregatable).to.exist;
+    expect(verifier.options.default).to.be.undefined;
   });
 
   it('should have group field', () => {
