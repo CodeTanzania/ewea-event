@@ -5,6 +5,24 @@ import Event from '../../src/event.model';
 import ChangeLog from '../../src/changelog.model';
 
 describe('ChangeLog Schema', () => {
+  it('should have use field', () => {
+    const use = ChangeLog.path('use');
+
+    expect(use).to.exist;
+    expect(use).to.be.instanceof(SchemaTypes.String);
+    expect(use.options).to.exist;
+    expect(use.options).to.be.an('object');
+    expect(use.options.type).to.exist;
+    expect(use.options.trim).to.be.true;
+    expect(use.options.enum).to.be.eql(ChangeLog.USES);
+    expect(use.options.index).to.be.true;
+    expect(use.options.searchable).to.be.true;
+    expect(use.options.taggable).to.be.true;
+    expect(use.options.exportable).to.be.true;
+    expect(use.options.default).to.be.equal(ChangeLog.USE_CHANGE);
+    expect(use.options.fake).to.exist;
+  });
+
   it('should have group field', () => {
     const group = ChangeLog.path('group');
 

@@ -38,6 +38,22 @@ export const CHANGELOG_SCHEMA_OPTIONS = {
   collection: CHANGELOG_COLLECTION_NAME,
 };
 
+// changelog use
+export const CHANGELOG_USE_CHANGE = 'change';
+export const CHANGELOG_USE_NOTIFICATION = 'notification';
+export const CHANGELOG_USE_NEED = 'need';
+export const CHANGELOG_USE_EFFECT = 'effect';
+export const CHANGELOG_USE_ASSESSMENT = 'assessment';
+export const CHANGELOG_USE_ACTION = 'action';
+export const CHANGELOG_USES = [
+  CHANGELOG_USE_CHANGE,
+  CHANGELOG_USE_NOTIFICATION,
+  CHANGELOG_USE_NEED,
+  CHANGELOG_USE_EFFECT,
+  CHANGELOG_USE_ASSESSMENT,
+  CHANGELOG_USE_ACTION,
+];
+
 // relation options
 export const PREDEFINE_OPTION_SELECT = {
   'strings.name': 1,

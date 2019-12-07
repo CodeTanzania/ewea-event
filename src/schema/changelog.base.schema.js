@@ -1,7 +1,12 @@
 import { get } from 'lodash';
 import { ObjectId } from '@lykmapipo/mongoose-common';
 
-import { EVENT_MODEL_NAME, EVENT_OPTION_AUTOPOPULATE } from '../internals';
+import {
+  EVENT_MODEL_NAME,
+  EVENT_OPTION_AUTOPOPULATE,
+  CHANGELOG_USE_CHANGE,
+  CHANGELOG_USES,
+} from '../internals';
 
 /**
  * @name event
@@ -45,6 +50,39 @@ export const event = {
   },
   aggregatable: { unwind: true },
   default: undefined,
+};
+
+/**
+ * @name stage
+ * @description System readable use of changelog.
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {string[]} enum - collection of allowed values
+ * @property {boolean} index - ensure database index
+ * @property {boolean} searchable - allow for searching
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * change
+ */
+export const use = {
+  type: String,
+  trim: true,
+  enum: CHANGELOG_USES,
+  index: true,
+  searchable: true,
+  taggable: true,
+  exportable: true,
+  default: CHANGELOG_USE_CHANGE,
+  fake: true,
 };
 
 /**

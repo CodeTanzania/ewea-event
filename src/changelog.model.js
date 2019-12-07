@@ -3,14 +3,26 @@ import { createSchema, model } from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 
-import { CHANGELOG_MODEL_NAME, CHANGELOG_SCHEMA_OPTIONS } from './internals';
+import {
+  CHANGELOG_MODEL_NAME,
+  CHANGELOG_COLLECTION_NAME,
+  CHANGELOG_SCHEMA_OPTIONS,
+  CHANGELOG_USE_CHANGE,
+  CHANGELOG_USE_NOTIFICATION,
+  CHANGELOG_USE_NEED,
+  CHANGELOG_USE_EFFECT,
+  CHANGELOG_USE_ASSESSMENT,
+  CHANGELOG_USE_ACTION,
+  CHANGELOG_USES,
+} from './internals';
 
 // schemas
 import { group, type } from './schema/base.schema';
-import { event, comment } from './schema/changelog.base.schema';
+import { event, use, comment } from './schema/changelog.base.schema';
 import { image, audio, video, document } from './schema/files.schema';
 
 const SCHEMA = mergeObjects(
+  { use },
   { group, type },
   { event },
   { comment },
@@ -44,6 +56,24 @@ const ChangeLogSchema = createSchema(
   actions,
   exportable
 );
+
+/*
+ *------------------------------------------------------------------------------
+ * Statics
+ *------------------------------------------------------------------------------
+ */
+
+/* static constants */
+ChangeLogSchema.statics.MODEL_NAME = CHANGELOG_MODEL_NAME;
+ChangeLogSchema.statics.COLLECTION_NAME = CHANGELOG_COLLECTION_NAME;
+
+ChangeLogSchema.statics.USE_CHANGE = CHANGELOG_USE_CHANGE;
+ChangeLogSchema.statics.USE_NOTIFICATION = CHANGELOG_USE_NOTIFICATION;
+ChangeLogSchema.statics.USE_NEED = CHANGELOG_USE_NEED;
+ChangeLogSchema.statics.USE_EFFECT = CHANGELOG_USE_EFFECT;
+ChangeLogSchema.statics.USE_ASSESSMENT = CHANGELOG_USE_ASSESSMENT;
+ChangeLogSchema.statics.USE_ACTION = CHANGELOG_USE_ACTION;
+ChangeLogSchema.statics.USES = CHANGELOG_USES;
 
 /* export changelog model */
 export default model(CHANGELOG_MODEL_NAME, ChangeLogSchema);
