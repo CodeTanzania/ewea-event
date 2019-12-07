@@ -44,11 +44,8 @@ import {
  * @version 0.1.0
  * @public
  * @example
- *
  * const { Event } = require('@codetanzania/ewea-event');
- *
  * Event.create(event, (error, created) => { ... });
- *
  */
 const EventSchema = createSchema(
   {
