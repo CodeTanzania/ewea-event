@@ -280,7 +280,6 @@ const EventSchema = createSchema(
      * FL-2018-000033-TZA
      */
     number: {
-      // TODO: use mongoose-sequenceable
       type: String,
       trim: true,
       uppercase: true,
@@ -648,6 +647,7 @@ const EventSchema = createSchema(
       type: Date,
       index: true,
       exportable: true,
+      // before: 'endedAt',
       fake: {
         generator: 'date',
         type: 'past',
@@ -671,10 +671,10 @@ const EventSchema = createSchema(
      * 2018-10-19T07:53:32.831Z
      */
     endedAt: {
-      // TODO: ensure after startedAt
       type: Date,
       index: true,
       exportable: true,
+      // after: 'reportedAt',
       fake: {
         generator: 'date',
         type: 'recent',
