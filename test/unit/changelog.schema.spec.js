@@ -321,4 +321,19 @@ describe('ChangeLog Schema', () => {
     expect(address.options.exportable).to.be.true;
     expect(address.options.fake).to.exist;
   });
+
+  it('should have comment field', () => {
+    const comment = ChangeLog.path('comment');
+
+    expect(comment).to.exist;
+    expect(comment).to.be.instanceof(SchemaTypes.String);
+    expect(comment.options).to.exist;
+    expect(comment.options).to.be.an('object');
+    expect(comment.options.type).to.exist;
+    expect(comment.options.trim).to.be.true;
+    expect(comment.options.index).to.be.true;
+    expect(comment.options.searchable).to.be.true;
+    expect(comment.options.exportable).to.be.true;
+    expect(comment.options.fake).to.exist;
+  });
 });

@@ -56,6 +56,8 @@ export const event = {
  * @name stage
  * @description System readable use of changelog.
  *
+ * @memberof ChangeLog
+ *
  * @type {object}
  * @property {object} type - schema(data) type
  * @property {boolean} trim - force trimming
@@ -87,19 +89,37 @@ export const use = {
 
 /**
  * @name comment
- * @description Additional note for the changes.
+ * @description A brief human readable additional note for the
+ * event changelog(or changes).
  *
  * It may be an internal note telling how far the event has been responded on
  * or a feedback.
  *
+ * @memberof ChangeLog
+ *
  * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {boolean} index - ensure database index
+ * @property {boolean} searchable - allow for searching
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
  * @since 0.1.0
  * @version 0.1.0
  * @instance
+ * @example
+ * Requested relief items should be provided to the victims immediately
  */
 export const comment = {
   type: String,
-  index: true,
   trim: true,
+  index: true,
   searchable: true,
+  exportable: true,
+  fake: {
+    generator: 'lorem',
+    type: 'sentence',
+  },
 };

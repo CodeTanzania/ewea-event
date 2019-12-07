@@ -38,9 +38,9 @@ const SCHEMA = mergeObjects(
   { function: fanction, action },
   { areas },
   { groups, roles, agencies, focals },
-  { comment },
   { image, audio, video, document },
-  { location, address }
+  { location, address },
+  { comment }
 );
 
 // TODO: all criteria use $in operator
