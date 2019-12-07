@@ -24,7 +24,7 @@ const SCHEMA = mergeObjects(
  * @description A record(log) of a changes on an event.
  *
  * It may be need assessment, loss assessment, general notification,
- * action taken, private comment(internal note) or public comment etc.
+ * action taken, general comments etc.
  *
  * @author lally elias <lallyelias87@gmail.com>
  * @license MIT
@@ -35,7 +35,7 @@ const SCHEMA = mergeObjects(
  *
  * const { ChangeLog } = require('@codetanzania/ewea-event');
  *
- * ChangeLog.create(event, (error, created) => { ... });
+ * ChangeLog.create(changelog, (error, created) => { ... });
  *
  */
 const ChangeLogSchema = createSchema(
@@ -45,5 +45,5 @@ const ChangeLogSchema = createSchema(
   exportable
 );
 
-/* export event model */
+/* export changelog model */
 export default model(CHANGELOG_MODEL_NAME, ChangeLogSchema);
