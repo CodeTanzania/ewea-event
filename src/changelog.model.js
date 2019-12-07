@@ -25,6 +25,7 @@ import {
   focals,
 } from './schema/parties.schema';
 
+import { areas, location, address } from './schema/geos.schema';
 import { group, type, fanction, action } from './schema/base.schema';
 import { event, use, comment } from './schema/changelog.base.schema';
 import { image, audio, video, document } from './schema/files.schema';
@@ -35,9 +36,11 @@ const SCHEMA = mergeObjects(
   { group, type },
   { event },
   { function: fanction, action },
+  { areas },
   { groups, roles, agencies, focals },
   { comment },
-  { image, audio, video, document }
+  { image, audio, video, document },
+  { location, address }
 );
 
 // TODO: all criteria use $in operator

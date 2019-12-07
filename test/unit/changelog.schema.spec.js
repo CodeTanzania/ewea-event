@@ -163,6 +163,25 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have areas field', () => {
+    const areas = ChangeLog.path('areas');
+
+    expect(areas).to.exist;
+    expect(areas).to.be.instanceof(SchemaTypes.Array);
+    expect(areas.options).to.exist;
+    expect(areas.options).to.be.an('object');
+    expect(areas.options.type).to.exist;
+    expect(areas.options.ref).to.exist;
+    expect(areas.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(areas.options.required).to.be.true;
+    expect(areas.options.exists).to.be.true;
+    expect(areas.options.autopopulate).to.exist;
+    expect(areas.options.taggable).to.exist;
+    expect(areas.options.exportable).to.exist;
+    // expect(areas.options.aggregatable).to.exist;
+    expect(areas.options.default).to.be.undefined;
+  });
+
   it('should have groups field', () => {
     const groups = ChangeLog.path('groups');
 
@@ -277,5 +296,29 @@ describe('ChangeLog Schema', () => {
     expect(document.options).to.exist;
     expect(document.options.ref).to.be.equal('Document');
     expect(document.options.autopopulate).to.be.exist;
+  });
+
+  it('should have location field', () => {
+    const location = ChangeLog.path('location');
+
+    expect(location).to.exist;
+    expect(location).to.be.an.instanceof(SchemaTypes.Embedded);
+    expect(location.options.index).to.exist.and.be.equal('2dsphere');
+    expect(location.options.fake).to.exist.and.be.an('object');
+  });
+
+  it('should have address field', () => {
+    const address = ChangeLog.path('address');
+
+    expect(address).to.exist;
+    expect(address).to.be.instanceof(SchemaTypes.String);
+    expect(address.options).to.exist;
+    expect(address.options).to.be.an('object');
+    expect(address.options.type).to.exist;
+    expect(address.options.trim).to.be.true;
+    expect(address.options.index).to.be.true;
+    expect(address.options.searchable).to.be.true;
+    expect(address.options.exportable).to.be.true;
+    expect(address.options.fake).to.exist;
   });
 });
