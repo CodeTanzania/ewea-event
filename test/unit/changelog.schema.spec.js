@@ -63,4 +63,44 @@ describe('ChangeLog Schema', () => {
     // expect(event.options.aggregatable).to.exist;
     expect(event.options.default).to.be.undefined;
   });
+
+  it('should have image file field', () => {
+    const image = ChangeLog.path('image');
+
+    expect(image).to.exist;
+    expect(image).to.be.an.instanceof(SchemaTypes.ObjectId);
+    expect(image.options).to.exist;
+    expect(image.options.ref).to.be.equal('Image');
+    expect(image.options.autopopulate).to.be.exist;
+  });
+
+  it('should have audio file field', () => {
+    const audio = ChangeLog.path('audio');
+
+    expect(audio).to.exist;
+    expect(audio).to.be.an.instanceof(SchemaTypes.ObjectId);
+    expect(audio.options).to.exist;
+    expect(audio.options.ref).to.be.equal('Audio');
+    expect(audio.options.autopopulate).to.be.exist;
+  });
+
+  it('should have video file field', () => {
+    const video = ChangeLog.path('video');
+
+    expect(video).to.exist;
+    expect(video).to.be.an.instanceof(SchemaTypes.ObjectId);
+    expect(video.options).to.exist;
+    expect(video.options.ref).to.be.equal('Video');
+    expect(video.options.autopopulate).to.be.exist;
+  });
+
+  it('should have document file field', () => {
+    const document = ChangeLog.path('document');
+
+    expect(document).to.exist;
+    expect(document).to.be.an.instanceof(SchemaTypes.ObjectId);
+    expect(document.options).to.exist;
+    expect(document.options.ref).to.be.equal('Document');
+    expect(document.options.autopopulate).to.be.exist;
+  });
 });

@@ -6,10 +6,16 @@ import exportable from '@lykmapipo/mongoose-exportable';
 import { CHANGELOG_MODEL_NAME, CHANGELOG_SCHEMA_OPTIONS } from './internals';
 
 // schemas
-import { event, comment } from './schema/changelog.base.schema';
 import { group, type } from './schema/base.schema';
+import { event, comment } from './schema/changelog.base.schema';
+import { image, audio, video, document } from './schema/files.schema';
 
-const SCHEMA = mergeObjects({ group, type }, { event }, { comment });
+const SCHEMA = mergeObjects(
+  { group, type },
+  { event },
+  { comment },
+  { image, audio, video, document }
+);
 
 /**
  * @module ChangeLog
