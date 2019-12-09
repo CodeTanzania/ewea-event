@@ -24,6 +24,7 @@ import { apiVersion as httpApiVersion } from '@lykmapipo/env';
 import { connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { start as startHttp } from '@lykmapipo/express-rest-actions';
+import { createModels } from '@lykmapipo/file';
 import Event from './event.model';
 import eventRouter from './event.http.router';
 import EventChangeLog from './changelog.model';
@@ -118,6 +119,9 @@ export const start = done => {
     if (error) {
       return done(error);
     }
+
+    // ensure file models
+    createModels();
 
     // mount event router
     mount(eventRouter);
