@@ -48,7 +48,9 @@ export const event = {
     format: v => get(v, 'type.strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
+  aggregatable: {
+    unwind: true,
+  },
   default: undefined,
 };
 
@@ -121,5 +123,39 @@ export const comment = {
   fake: {
     generator: 'lorem',
     type: 'sentence',
+  },
+};
+
+/**
+ * @name value
+ * @description Amount of need, effects, situation
+ * or characteristics of an event.
+ *
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} min - set minimum value allowed
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * 99
+ */
+export const value = {
+  type: Number,
+  min: 0,
+  // required: true,
+  index: true,
+  exportable: true,
+  fake: {
+    generator: 'random',
+    type: 'number',
   },
 };
