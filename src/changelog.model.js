@@ -1,5 +1,6 @@
-import { mergeObjects } from '@lykmapipo/common';
-import { createSchema, model } from '@lykmapipo/mongoose-common';
+import { pick } from 'lodash';
+import { mergeObjects, idOf } from '@lykmapipo/common';
+import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 
@@ -83,6 +84,50 @@ const ChangeLogSchema = createSchema(
 
 /*
  *------------------------------------------------------------------------------
+ *  Hooks
+ *------------------------------------------------------------------------------
+ */
+
+/**
+ * @name validate
+ * @function validate
+ * @description event changelog schema pre validation hook
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid instance or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @private
+ */
+ChangeLogSchema.pre('validate', function onPreValidate(done) {
+  return this.preValidate(done);
+});
+
+/*
+ *------------------------------------------------------------------------------
+ *  Instance
+ *------------------------------------------------------------------------------
+ */
+
+/**
+ * @name preValidate
+ * @function preValidate
+ * @description event changelog schema pre validation hook logic
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid instance or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ */
+ChangeLogSchema.methods.preValidate = function preValidate(done) {
+  return done(null, this);
+};
+
+/*
+ *------------------------------------------------------------------------------
  * Statics
  *------------------------------------------------------------------------------
  */
@@ -98,6 +143,41 @@ ChangeLogSchema.statics.USE_EFFECT = CHANGELOG_USE_EFFECT;
 ChangeLogSchema.statics.USE_ASSESSMENT = CHANGELOG_USE_ASSESSMENT;
 ChangeLogSchema.statics.USE_ACTION = CHANGELOG_USE_ACTION;
 ChangeLogSchema.statics.USES = CHANGELOG_USES;
+
+/**
+ * @name prepareSeedCriteria
+ * @function prepareSeedCriteria
+ * @description define seed data criteria
+ * @param {object} seed event changelog to be seeded
+ * @returns {object} packed criteria for seeding
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.2.0
+ * @version 0.1.0
+ * @static
+ */
+ChangeLogSchema.statics.prepareSeedCriteria = seed => {
+  const copyOfSeed = copyInstance(seed);
+  const fields = [
+    'use',
+    'initiator',
+    'verifier',
+    'group',
+    'type',
+    'event',
+    'function',
+    'action',
+    'need',
+    'effect',
+    'unit',
+  ];
+
+  const criteria = idOf(copyOfSeed)
+    ? pick(copyOfSeed, '_id')
+    : pick(copyOfSeed, ...fields);
+
+  return criteria;
+};
 
 /* export changelog model */
 export default model(CHANGELOG_MODEL_NAME, ChangeLogSchema);
