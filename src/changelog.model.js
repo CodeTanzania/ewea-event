@@ -25,9 +25,19 @@ import {
   focals,
 } from './schema/parties.schema';
 
+import {
+  group,
+  type,
+  fanction,
+  action,
+  indicator,
+  need,
+  effect,
+  unit,
+} from './schema/base.schema';
+
 import { areas, location, address } from './schema/geos.schema';
-import { group, type, fanction, action } from './schema/base.schema';
-import { event, use, comment } from './schema/changelog.base.schema';
+import { event, use, comment, value } from './schema/changelog.base.schema';
 import { image, audio, video, document } from './schema/files.schema';
 
 const SCHEMA = mergeObjects(
@@ -36,6 +46,7 @@ const SCHEMA = mergeObjects(
   { group, type },
   { event },
   { function: fanction, action },
+  { indicator, need, effect, value, unit },
   { areas },
   { groups, roles, agencies, focals },
   { image, audio, video, document },

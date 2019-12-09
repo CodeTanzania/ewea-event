@@ -163,6 +163,101 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have indicator field', () => {
+    const indicator = ChangeLog.path('indicator');
+
+    expect(indicator).to.exist;
+    expect(indicator).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(indicator.options).to.exist;
+    expect(indicator.options).to.be.an('object');
+    expect(indicator.options.type).to.exist;
+    expect(indicator.options.ref).to.exist;
+    expect(indicator.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(indicator.options.index).to.be.true;
+    // expect(indicator.options.required).to.be.true;
+    expect(indicator.options.exists).to.be.true;
+    expect(indicator.options.autopopulate).to.exist;
+    expect(indicator.options.taggable).to.exist;
+    expect(indicator.options.exportable).to.exist;
+    // expect(indicator.options.aggregatable).to.exist;
+    expect(indicator.options.default).to.be.undefined;
+  });
+
+  it('should have need field', () => {
+    const need = ChangeLog.path('need');
+
+    expect(need).to.exist;
+    expect(need).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(need.options).to.exist;
+    expect(need.options).to.be.an('object');
+    expect(need.options.type).to.exist;
+    expect(need.options.ref).to.exist;
+    expect(need.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(need.options.index).to.be.true;
+    // expect(need.options.required).to.be.true;
+    expect(need.options.exists).to.be.true;
+    expect(need.options.autopopulate).to.exist;
+    expect(need.options.taggable).to.exist;
+    expect(need.options.exportable).to.exist;
+    // expect(need.options.aggregatable).to.exist;
+    expect(need.options.default).to.be.undefined;
+  });
+
+  it('should have effect field', () => {
+    const effect = ChangeLog.path('effect');
+
+    expect(effect).to.exist;
+    expect(effect).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(effect.options).to.exist;
+    expect(effect.options).to.be.an('object');
+    expect(effect.options.type).to.exist;
+    expect(effect.options.ref).to.exist;
+    expect(effect.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(effect.options.index).to.be.true;
+    // expect(effect.options.required).to.be.true;
+    expect(effect.options.exists).to.be.true;
+    expect(effect.options.autopopulate).to.exist;
+    expect(effect.options.taggable).to.exist;
+    expect(effect.options.exportable).to.exist;
+    // expect(effect.options.aggregatable).to.exist;
+    expect(effect.options.default).to.be.undefined;
+  });
+
+  it('should have value field', () => {
+    const value = ChangeLog.path('value');
+
+    expect(value).to.exist;
+    expect(value).to.be.instanceof(SchemaTypes.Number);
+    expect(value.options).to.exist;
+    expect(value.options).to.be.an('object');
+    expect(value.options.type).to.exist;
+    expect(value.options.min).to.be.equal(0);
+    // expect(value.options.required).to.be.true;
+    expect(value.options.index).to.be.true;
+    expect(value.options.exportable).to.be.true;
+    expect(value.options.fake).to.exist;
+  });
+
+  it('should have unit field', () => {
+    const unit = ChangeLog.path('unit');
+
+    expect(unit).to.exist;
+    expect(unit).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(unit.options).to.exist;
+    expect(unit.options).to.be.an('object');
+    expect(unit.options.type).to.exist;
+    expect(unit.options.ref).to.exist;
+    expect(unit.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(unit.options.index).to.be.true;
+    // expect(unit.options.required).to.be.true;
+    expect(unit.options.exists).to.be.true;
+    expect(unit.options.autopopulate).to.exist;
+    expect(unit.options.taggable).to.exist;
+    expect(unit.options.exportable).to.exist;
+    // expect(unit.options.aggregatable).to.exist;
+    expect(unit.options.default).to.be.undefined;
+  });
+
   it('should have areas field', () => {
     const areas = ChangeLog.path('areas');
 
