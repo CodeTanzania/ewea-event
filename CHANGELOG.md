@@ -1,3 +1,9 @@
+#### 0.4.0 (2020-01-14)
+
+##### Documentation Changes
+
+*  remove from wip ([82051c77](https://github.com/codetanzania/ewea-event/commit/82051c77f7ee1227e27d38b927d08c16f0ffc687))
+
 #### 0.3.0 (2020-01-14)
 
 ##### Chores
