@@ -1,3 +1,7 @@
+import {
+  MODEL_NAME_EVENTCHANGELOG,
+  COLLECTION_NAME_EVENTCHANGELOG,
+} from '@codetanzania/ewea-internals';
 import { pick } from 'lodash';
 import { mergeObjects, idOf } from '@lykmapipo/common';
 import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
@@ -5,8 +9,6 @@ import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 
 import {
-  CHANGELOG_MODEL_NAME,
-  CHANGELOG_COLLECTION_NAME,
   CHANGELOG_SCHEMA_OPTIONS,
   CHANGELOG_USE_CHANGE,
   CHANGELOG_USE_NOTIFICATION,
@@ -133,8 +135,8 @@ ChangeLogSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-ChangeLogSchema.statics.MODEL_NAME = CHANGELOG_MODEL_NAME;
-ChangeLogSchema.statics.COLLECTION_NAME = CHANGELOG_COLLECTION_NAME;
+ChangeLogSchema.statics.MODEL_NAME = MODEL_NAME_EVENTCHANGELOG;
+ChangeLogSchema.statics.COLLECTION_NAME = COLLECTION_NAME_EVENTCHANGELOG;
 
 ChangeLogSchema.statics.USE_CHANGE = CHANGELOG_USE_CHANGE;
 ChangeLogSchema.statics.USE_NOTIFICATION = CHANGELOG_USE_NOTIFICATION;
@@ -180,4 +182,4 @@ ChangeLogSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export changelog model */
-export default model(CHANGELOG_MODEL_NAME, ChangeLogSchema);
+export default model(MODEL_NAME_EVENTCHANGELOG, ChangeLogSchema);

@@ -1,8 +1,8 @@
+import { MODEL_NAME_EVENT } from '@codetanzania/ewea-internals';
 import { get } from 'lodash';
 import { ObjectId } from '@lykmapipo/mongoose-common';
 
 import {
-  EVENT_MODEL_NAME,
   EVENT_OPTION_AUTOPOPULATE,
   CHANGELOG_USE_CHANGE,
   CHANGELOG_USES,
@@ -38,7 +38,7 @@ import {
  */
 export const event = {
   type: ObjectId,
-  ref: EVENT_MODEL_NAME,
+  ref: MODEL_NAME_EVENT,
   // required: true,
   index: true,
   exists: true,

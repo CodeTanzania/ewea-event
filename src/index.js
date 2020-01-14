@@ -19,6 +19,7 @@
  * start(error => { ... });
  *
  */
+import '@codetanzania/ewea-internals';
 import { pkg } from '@lykmapipo/common';
 import { apiVersion as httpApiVersion } from '@lykmapipo/env';
 import { connect } from '@lykmapipo/mongoose-common';

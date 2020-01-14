@@ -1,17 +1,16 @@
+import {
+  POPULATION_MAX_DEPTH,
+  COLLECTION_NAME_EVENT,
+  COLLECTION_NAME_EVENTCHANGELOG,
+} from '@codetanzania/ewea-internals';
 import { getString } from '@lykmapipo/env';
 
 // common constants
-export const POPULATION_MAX_DEPTH = 1;
 export const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
 export const COUNTRY_CODE = getString('COUNTRY_CODE', DEFAULT_COUNTRY_CODE);
 
 // event schema
-export const EVENT_MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
-export const EVENT_COLLECTION_NAME = getString(
-  'EVENT_COLLECTION_NAME',
-  'events'
-);
-export const EVENT_SCHEMA_OPTIONS = { collection: EVENT_COLLECTION_NAME };
+export const EVENT_SCHEMA_OPTIONS = { collection: COLLECTION_NAME_EVENT };
 
 // event options
 export const EVENT_OPTION_SELECT = { group: 1, type: 1, number: 1 };
@@ -26,16 +25,8 @@ export const EVENT_STAGE_EVENT = 'Event';
 export const EVENT_STAGES = [EVENT_STAGE_ALERT, EVENT_STAGE_EVENT];
 
 // changelog schema
-export const CHANGELOG_MODEL_NAME = getString(
-  'CHANGELOG_MODEL_NAME',
-  'EventChangeLog'
-);
-export const CHANGELOG_COLLECTION_NAME = getString(
-  'CHANGELOG_COLLECTION_NAME',
-  'eventchangelogs'
-);
 export const CHANGELOG_SCHEMA_OPTIONS = {
-  collection: CHANGELOG_COLLECTION_NAME,
+  collection: COLLECTION_NAME_EVENTCHANGELOG,
 };
 
 // changelog use

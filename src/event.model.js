@@ -1,7 +1,10 @@
+import {
+  MODEL_NAME_EVENT,
+  COLLECTION_NAME_EVENT,
+} from '@codetanzania/ewea-internals';
 import { get, pick } from 'lodash';
 import moment from 'moment';
 import { compact, join, idOf } from '@lykmapipo/common';
-
 import {
   copyInstance,
   createSchema,
@@ -16,8 +19,6 @@ import { Predefine } from '@lykmapipo/predefine';
 
 import {
   COUNTRY_CODE,
-  EVENT_MODEL_NAME,
-  EVENT_COLLECTION_NAME,
   EVENT_SCHEMA_OPTIONS,
   EVENT_STAGE_ALERT,
   EVENT_STAGE_EVENT,
@@ -754,8 +755,8 @@ EventSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-EventSchema.statics.MODEL_NAME = EVENT_MODEL_NAME;
-EventSchema.statics.COLLECTION_NAME = EVENT_COLLECTION_NAME;
+EventSchema.statics.MODEL_NAME = MODEL_NAME_EVENT;
+EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME_EVENT;
 EventSchema.statics.OPTION_SELECT = EVENT_OPTION_SELECT;
 EventSchema.statics.OPTION_AUTOPOPULATE = EVENT_OPTION_AUTOPOPULATE;
 
@@ -786,4 +787,4 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export event model */
-export default model(EVENT_MODEL_NAME, EventSchema);
+export default model(MODEL_NAME_EVENT, EventSchema);
