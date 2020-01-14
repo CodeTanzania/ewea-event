@@ -1,10 +1,13 @@
-import { join, idOf, mergeObjects, pkg } from '@lykmapipo/common';
+import { COLLECTION_NAME_EVENT, POPULATION_MAX_DEPTH, COLLECTION_NAME_EVENTCHANGELOG, MODEL_NAME_EVENT, MODEL_NAME_EVENTCHANGELOG } from '@codetanzania/ewea-internals';
+import { compact, join, idOf, mergeObjects, pkg } from '@lykmapipo/common';
 import { getString, apiVersion as apiVersion$1 } from '@lykmapipo/env';
 import { model, createSchema, ObjectId, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
 import { FileTypes, createModels } from '@lykmapipo/file';
 import { get, pick } from 'lodash';
+import moment from 'moment';
+import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Point } from 'mongoose-geojson-schemas';
@@ -12,17 +15,11 @@ import { Predefine } from '@lykmapipo/predefine';
 import { Party } from '@codetanzania/emis-stakeholder';
 
 // common constants
-const POPULATION_MAX_DEPTH = 1;
 const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
 const COUNTRY_CODE = getString('COUNTRY_CODE', DEFAULT_COUNTRY_CODE);
 
 // event schema
-const EVENT_MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
-const EVENT_COLLECTION_NAME = getString(
-  'EVENT_COLLECTION_NAME',
-  'events'
-);
-const EVENT_SCHEMA_OPTIONS = { collection: EVENT_COLLECTION_NAME };
+const EVENT_SCHEMA_OPTIONS = { collection: COLLECTION_NAME_EVENT };
 
 // event options
 const EVENT_OPTION_SELECT = { group: 1, type: 1, number: 1 };
@@ -37,16 +34,8 @@ const EVENT_STAGE_EVENT = 'Event';
 const EVENT_STAGES = [EVENT_STAGE_ALERT, EVENT_STAGE_EVENT];
 
 // changelog schema
-const CHANGELOG_MODEL_NAME = getString(
-  'CHANGELOG_MODEL_NAME',
-  'EventChangeLog'
-);
-const CHANGELOG_COLLECTION_NAME = getString(
-  'CHANGELOG_COLLECTION_NAME',
-  'eventchangelogs'
-);
 const CHANGELOG_SCHEMA_OPTIONS = {
-  collection: CHANGELOG_COLLECTION_NAME,
+  collection: COLLECTION_NAME_EVENTCHANGELOG,
 };
 
 // changelog use
@@ -343,11 +332,14 @@ const EventSchema = createSchema(
       exportable: true,
       sequenceable: {
         prefix: function prefix() {
-          return get(this, 'type.string.name.en', '');
+          const type = get(this, 'type.string.code', '');
+          const year = moment(new Date()).format('YYYY');
+          return compact([type, year]).join('-');
         },
         suffix: COUNTRY_CODE,
         length: 6,
         pad: '0',
+        separator: '-',
       },
       fake: {
         generator: 'random',
@@ -802,8 +794,8 @@ EventSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-EventSchema.statics.MODEL_NAME = EVENT_MODEL_NAME;
-EventSchema.statics.COLLECTION_NAME = EVENT_COLLECTION_NAME;
+EventSchema.statics.MODEL_NAME = MODEL_NAME_EVENT;
+EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME_EVENT;
 EventSchema.statics.OPTION_SELECT = EVENT_OPTION_SELECT;
 EventSchema.statics.OPTION_AUTOPOPULATE = EVENT_OPTION_AUTOPOPULATE;
 
@@ -834,7 +826,7 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export event model */
-var Event = model(EVENT_MODEL_NAME, EventSchema);
+var Event = model(MODEL_NAME_EVENT, EventSchema);
 
 /* constants */
 const API_VERSION = getString('API_VERSION', '1.0.0');
@@ -1756,7 +1748,7 @@ const address = {
  */
 const event = {
   type: ObjectId,
-  ref: EVENT_MODEL_NAME,
+  ref: MODEL_NAME_EVENT,
   // required: true,
   index: true,
   exists: true,
@@ -2034,8 +2026,8 @@ ChangeLogSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-ChangeLogSchema.statics.MODEL_NAME = CHANGELOG_MODEL_NAME;
-ChangeLogSchema.statics.COLLECTION_NAME = CHANGELOG_COLLECTION_NAME;
+ChangeLogSchema.statics.MODEL_NAME = MODEL_NAME_EVENTCHANGELOG;
+ChangeLogSchema.statics.COLLECTION_NAME = COLLECTION_NAME_EVENTCHANGELOG;
 
 ChangeLogSchema.statics.USE_CHANGE = CHANGELOG_USE_CHANGE;
 ChangeLogSchema.statics.USE_NOTIFICATION = CHANGELOG_USE_NOTIFICATION;
@@ -2081,7 +2073,7 @@ ChangeLogSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export changelog model */
-var EventChangeLog = model(CHANGELOG_MODEL_NAME, ChangeLogSchema);
+var EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG, ChangeLogSchema);
 
 /* constants */
 const API_VERSION$1 = getString('API_VERSION', '1.0.0');
