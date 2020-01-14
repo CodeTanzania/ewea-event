@@ -1,3 +1,115 @@
+#### 0.3.0 (2020-01-14)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([73cf3db4](https://github.com/codetanzania/ewea-event/commit/73cf3db4b5f4ad8f74258e24788dcae41a3cb8c1))
+  *  force latest version & audit fix ([b86477ee](https://github.com/codetanzania/ewea-event/commit/b86477ee58bea4b26a83ba51400158bdc9c96e28))
+* **release:**  compile latest source & release notes ([16d1896d](https://github.com/codetanzania/ewea-event/commit/16d1896d210d88a43295f62a1a1ae65e9fcc499c))
+* **examples:**  add changelog ([7ea6cce0](https://github.com/codetanzania/ewea-event/commit/7ea6cce06c4b0fe391546ea717be52b14b141cec))
+
+##### Documentation Changes
+
+*  update requirements version ([573203e3](https://github.com/codetanzania/ewea-event/commit/573203e3dbafb18c1fba92003d123551e7894247))
+*  update test coverage badge ([8d6ee388](https://github.com/codetanzania/ewea-event/commit/8d6ee388659bd50e239fdfaaa5f5a07b709ef65f))
+
+##### New Features
+
+* **changelog:**
+  *  implement http router ([26735b12](https://github.com/codetanzania/ewea-event/commit/26735b12edc1f40e5cac476386c5dd135812d8e7))
+  *  add indicator, need, effect, value & unit fields ([3ad8a0ce](https://github.com/codetanzania/ewea-event/commit/3ad8a0ce830359808f985c438c8a6bbbf2e27fef))
+  *  add comment schema field ([b41cbab1](https://github.com/codetanzania/ewea-event/commit/b41cbab15b9b01232c13abc57e6127da778f9679))
+  *  add administrative areas, location and address fields ([22dc9408](https://github.com/codetanzania/ewea-event/commit/22dc9408a3ecd5a08437bd8f33aa5a2554150e5e))
+  *  add party groups and roles schema fields ([3b55b8c9](https://github.com/codetanzania/ewea-event/commit/3b55b8c962203900a1777c9f99a3755d53e6409c))
+  *  add agencies and focals schema fields ([e495e182](https://github.com/codetanzania/ewea-event/commit/e495e1820a641530f2b36a9aa0d0cd9606b0f4e6))
+  *  add initiator and verifier schema fields ([8cab72fd](https://github.com/codetanzania/ewea-event/commit/8cab72fd62a6d71f892fd9a40f98696c3865c9a5))
+  *  add function and action schema fields ([63de15d3](https://github.com/codetanzania/ewea-event/commit/63de15d32338046d4da946970c47ea732946b21f))
+  *  add use field ([5bef60d9](https://github.com/codetanzania/ewea-event/commit/5bef60d99ec9eeb58996d28abb158f3333c58558))
+  *  add image, audio, video, document file fields ([134669cf](https://github.com/codetanzania/ewea-event/commit/134669cf25c17931f53521c9511b342144aee4b6))
+  *  add group, type & event schema fields ([aa66172c](https://github.com/codetanzania/ewea-event/commit/aa66172c14d6a5c57536fd40bce14a4a693a4d9c))
+  *  initialize model ([cb621716](https://github.com/codetanzania/ewea-event/commit/cb621716d41a411855223d73622f8a4686ebe53b))
+* **schema:**
+  *  add value, effect and need fields ([31bcca0e](https://github.com/codetanzania/ewea-event/commit/31bcca0e1490f99bbe6947977351231f41b70028))
+  *  add questio to base ([22eded90](https://github.com/codetanzania/ewea-event/commit/22eded902d7c632834bafbdd612dbd635937edf3))
+  *  add indicator and unit to base schema ([89b64b6b](https://github.com/codetanzania/ewea-event/commit/89b64b6b9f505dd7e1a5708a3cfab445b1195b01))
+  *  add geos fields ([8fa7a66f](https://github.com/codetanzania/ewea-event/commit/8fa7a66f362955fe9cfb9f611d746c837b849a87))
+  *  add groups and roles to parties schema ([3976bf50](https://github.com/codetanzania/ewea-event/commit/3976bf503a3a4da815cb6bdf83d436da23c25ffc))
+  *  add agencies and focal to parties schema ([a3c06552](https://github.com/codetanzania/ewea-event/commit/a3c06552e6b0c4ee90846c4a2352c80550939a1d))
+  *  add initiator & verifier on parties schema ([73c08ced](https://github.com/codetanzania/ewea-event/commit/73c08ced58310127599875d32b285c8b647116e2))
+  *  add function and action on base schema ([25af8c08](https://github.com/codetanzania/ewea-event/commit/25af8c08c23a35df6355b44cb7f0c4b32c8101ec))
+  *  add common file schema definition ([c7837943](https://github.com/codetanzania/ewea-event/commit/c7837943f8ca9e87aef43da030041b537528082c))
+* **event:**  update aggegatable field options ([2dab98fc](https://github.com/codetanzania/ewea-event/commit/2dab98fca9ace2f842fd399fbd01951995738380))
+
+##### Refactors
+
+* **deps:**  use ewea internals & commons ([bb9d3d2c](https://github.com/codetanzania/ewea-event/commit/bb9d3d2c607b5cb9fe615aab31f2197dfc0c6f1e))
+* **model:**  use join helper on exportables ([3551e5ad](https://github.com/codetanzania/ewea-event/commit/3551e5ad41acb69e4cca585e6c31b3657644be79))
+* **schema:**  extract base schema ([5dda6f30](https://github.com/codetanzania/ewea-event/commit/5dda6f3045dacb6401aca8eefd7c5e3e6184bc64))
+* **event:**  extract constants to internals ([05da9759](https://github.com/codetanzania/ewea-event/commit/05da9759aa02ed24bf6e99775699ccff6546e690))
+
+##### Code Style Changes
+
+* **jsdocs:**  improve examples ([b73dfc27](https://github.com/codetanzania/ewea-event/commit/b73dfc2733dba8d4900e2927837737c0136c9f3b))
+* **changelog:**  improve docs ([6ac77a1a](https://github.com/codetanzania/ewea-event/commit/6ac77a1ad2a535817541d0836e3975265e62c92d))
+* **event:**
+  *  improve field examples ([f5d4a8d6](https://github.com/codetanzania/ewea-event/commit/f5d4a8d6ccdfbc474377443c9991a61ad11cf24f))
+  *  clear inline todos ([40e5b89c](https://github.com/codetanzania/ewea-event/commit/40e5b89ca275cda5e7df4ffe94d9a6366b82bc00))
+* **model:**  update fields documentation ([e7370c0c](https://github.com/codetanzania/ewea-event/commit/e7370c0ca6bf327e600444f65e2dc42250523d3b))
+
+#### 0.3.0 (2019-12-09)
+
+##### Chores
+
+* **examples:**  add changelog ([7ea6cce0](https://github.com/codetanzania/ewea-event/commit/7ea6cce06c4b0fe391546ea717be52b14b141cec))
+* **deps:**  force latest version & audit fix ([b86477ee](https://github.com/codetanzania/ewea-event/commit/b86477ee58bea4b26a83ba51400158bdc9c96e28))
+
+##### Documentation Changes
+
+*  update requirements version ([573203e3](https://github.com/codetanzania/ewea-event/commit/573203e3dbafb18c1fba92003d123551e7894247))
+*  update test coverage badge ([8d6ee388](https://github.com/codetanzania/ewea-event/commit/8d6ee388659bd50e239fdfaaa5f5a07b709ef65f))
+
+##### New Features
+
+* **changelog:**
+  *  implement http router ([26735b12](https://github.com/codetanzania/ewea-event/commit/26735b12edc1f40e5cac476386c5dd135812d8e7))
+  *  add indicator, need, effect, value & unit fields ([3ad8a0ce](https://github.com/codetanzania/ewea-event/commit/3ad8a0ce830359808f985c438c8a6bbbf2e27fef))
+  *  add comment schema field ([b41cbab1](https://github.com/codetanzania/ewea-event/commit/b41cbab15b9b01232c13abc57e6127da778f9679))
+  *  add administrative areas, location and address fields ([22dc9408](https://github.com/codetanzania/ewea-event/commit/22dc9408a3ecd5a08437bd8f33aa5a2554150e5e))
+  *  add party groups and roles schema fields ([3b55b8c9](https://github.com/codetanzania/ewea-event/commit/3b55b8c962203900a1777c9f99a3755d53e6409c))
+  *  add agencies and focals schema fields ([e495e182](https://github.com/codetanzania/ewea-event/commit/e495e1820a641530f2b36a9aa0d0cd9606b0f4e6))
+  *  add initiator and verifier schema fields ([8cab72fd](https://github.com/codetanzania/ewea-event/commit/8cab72fd62a6d71f892fd9a40f98696c3865c9a5))
+  *  add function and action schema fields ([63de15d3](https://github.com/codetanzania/ewea-event/commit/63de15d32338046d4da946970c47ea732946b21f))
+  *  add use field ([5bef60d9](https://github.com/codetanzania/ewea-event/commit/5bef60d99ec9eeb58996d28abb158f3333c58558))
+  *  add image, audio, video, document file fields ([134669cf](https://github.com/codetanzania/ewea-event/commit/134669cf25c17931f53521c9511b342144aee4b6))
+  *  add group, type & event schema fields ([aa66172c](https://github.com/codetanzania/ewea-event/commit/aa66172c14d6a5c57536fd40bce14a4a693a4d9c))
+  *  initialize model ([cb621716](https://github.com/codetanzania/ewea-event/commit/cb621716d41a411855223d73622f8a4686ebe53b))
+* **schema:**
+  *  add value, effect and need fields ([31bcca0e](https://github.com/codetanzania/ewea-event/commit/31bcca0e1490f99bbe6947977351231f41b70028))
+  *  add questio to base ([22eded90](https://github.com/codetanzania/ewea-event/commit/22eded902d7c632834bafbdd612dbd635937edf3))
+  *  add indicator and unit to base schema ([89b64b6b](https://github.com/codetanzania/ewea-event/commit/89b64b6b9f505dd7e1a5708a3cfab445b1195b01))
+  *  add geos fields ([8fa7a66f](https://github.com/codetanzania/ewea-event/commit/8fa7a66f362955fe9cfb9f611d746c837b849a87))
+  *  add groups and roles to parties schema ([3976bf50](https://github.com/codetanzania/ewea-event/commit/3976bf503a3a4da815cb6bdf83d436da23c25ffc))
+  *  add agencies and focal to parties schema ([a3c06552](https://github.com/codetanzania/ewea-event/commit/a3c06552e6b0c4ee90846c4a2352c80550939a1d))
+  *  add initiator & verifier on parties schema ([73c08ced](https://github.com/codetanzania/ewea-event/commit/73c08ced58310127599875d32b285c8b647116e2))
+  *  add function and action on base schema ([25af8c08](https://github.com/codetanzania/ewea-event/commit/25af8c08c23a35df6355b44cb7f0c4b32c8101ec))
+  *  add common file schema definition ([c7837943](https://github.com/codetanzania/ewea-event/commit/c7837943f8ca9e87aef43da030041b537528082c))
+* **event:**  update aggegatable field options ([2dab98fc](https://github.com/codetanzania/ewea-event/commit/2dab98fca9ace2f842fd399fbd01951995738380))
+
+##### Refactors
+
+* **model:**  use join helper on exportables ([3551e5ad](https://github.com/codetanzania/ewea-event/commit/3551e5ad41acb69e4cca585e6c31b3657644be79))
+* **schema:**  extract base schema ([5dda6f30](https://github.com/codetanzania/ewea-event/commit/5dda6f3045dacb6401aca8eefd7c5e3e6184bc64))
+* **event:**  extract constants to internals ([05da9759](https://github.com/codetanzania/ewea-event/commit/05da9759aa02ed24bf6e99775699ccff6546e690))
+
+##### Code Style Changes
+
+* **jsdocs:**  improve examples ([b73dfc27](https://github.com/codetanzania/ewea-event/commit/b73dfc2733dba8d4900e2927837737c0136c9f3b))
+* **changelog:**  improve docs ([6ac77a1a](https://github.com/codetanzania/ewea-event/commit/6ac77a1ad2a535817541d0836e3975265e62c92d))
+* **event:**
+  *  improve field examples ([f5d4a8d6](https://github.com/codetanzania/ewea-event/commit/f5d4a8d6ccdfbc474377443c9991a61ad11cf24f))
+  *  clear inline todos ([40e5b89c](https://github.com/codetanzania/ewea-event/commit/40e5b89ca275cda5e7df4ffe94d9a6366b82bc00))
+* **model:**  update fields documentation ([e7370c0c](https://github.com/codetanzania/ewea-event/commit/e7370c0ca6bf327e600444f65e2dc42250523d3b))
+
 #### 0.2.0 (2019-12-05)
 
 ##### Chores

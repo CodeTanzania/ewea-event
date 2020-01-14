@@ -1,47 +1,40 @@
-import { get, map, join, pick } from 'lodash';
-import { idOf } from '@lykmapipo/common';
-import { getString } from '@lykmapipo/env';
+import {
+  MODEL_NAME_EVENT,
+  COLLECTION_NAME_EVENT,
+} from '@codetanzania/ewea-internals';
+import { get, pick } from 'lodash';
+import moment from 'moment';
+import { compact, join, idOf } from '@lykmapipo/common';
 import {
   copyInstance,
   createSchema,
   model,
   ObjectId,
 } from '@lykmapipo/mongoose-common';
-// import '@lykmapipo/mongoose-sequenceable';
+import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
-// constants
-const COUNTRY_CODE = getString('COUNTRY_CODE', 'TZ');
-const STAGE_ALERT = 'Alert';
-const STAGE_EVENT = 'Event';
-const STAGES = [STAGE_ALERT, STAGE_EVENT];
-const MODEL_NAME = getString('EVENT_MODEL_NAME', 'Event');
-const COLLECTION_NAME = getString('EVENT_COLLECTION_NAME', 'events');
-const SCHEMA_OPTIONS = { collection: COLLECTION_NAME };
-const POPULATION_MAX_DEPTH = 1;
-const OPTION_AUTOPOPULATE_PREDEFINE = {
-  select: {
-    'strings.name': 1,
-    'strings.color': 1,
-    'strings.code': 1,
-  },
-  maxDepth: POPULATION_MAX_DEPTH,
-};
-const OPTION_SELECT = {
-  group: 1,
-  type: 1,
-  number: 1,
-};
-const OPTION_AUTOPOPULATE = {
-  select: OPTION_SELECT,
-  maxDepth: POPULATION_MAX_DEPTH,
-};
+import {
+  COUNTRY_CODE,
+  EVENT_SCHEMA_OPTIONS,
+  EVENT_STAGE_ALERT,
+  EVENT_STAGE_EVENT,
+  EVENT_STAGES,
+  EVENT_OPTION_SELECT,
+  EVENT_OPTION_AUTOPOPULATE,
+  PREDEFINE_OPTION_AUTOPOPULATE,
+} from './internals';
+
+// TODO: send notification after create
+// TODO: calculate expose(risk) after create
+// TODO: send actions after create
 
 /**
  * @module Event
+ * @namespace Event
  * @name Event
  * @description A representation of an entity which define and track an
  * instance(or occurrence) of an emergency(or disaster) event.
@@ -54,17 +47,14 @@ const OPTION_AUTOPOPULATE = {
  * @version 0.1.0
  * @public
  * @example
- *
  * const { Event } = require('@codetanzania/ewea-event');
- *
  * Event.create(event, (error, created) => { ... });
- *
  */
 const EventSchema = createSchema(
   {
     /**
      * @name group
-     * @description Human readable group of an event.
+     * @description Event group underwhich an event belongs to.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -83,7 +73,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Meteorological
+     * {
+     *   _id: '5dde6ca23631a92c2d616253',
+     *   strings: { name: { en: 'Meteorological' }, code: 'MAT' },
+     * }
      */
     group: {
       type: ObjectId,
@@ -91,19 +84,19 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
     /**
      * @name type
-     * @description Human readable type of an event.
+     * @description Event type underwhich an event belongs to.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -122,7 +115,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Flood
+     * {
+     *   _id: '5dde6ca33631a92c2d616298',
+     *   strings: { name: { en: 'Flood' }, code: 'FL' },
+     * }
      */
     type: {
       type: ObjectId,
@@ -130,19 +126,19 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
     /**
      * @name certainty
-     * @description Human translatable readable certainty of an event.
+     * @description Currently assigned certainty of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -161,7 +157,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Possible
+     * {
+     *   _id: '5dde6ca33631a92c2d616284',
+     *   strings: { name: { en: 'Possible' } },
+     * }
      */
     certainty: {
       type: ObjectId,
@@ -169,19 +168,19 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
     /**
      * @name severity
-     * @description Human translatable readable severity of an event.
+     * @description Currently assigned severity of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -200,7 +199,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Extreme
+     * {
+     *   _id: '5dde6ca23631a92c2d616250',
+     *   strings: { name: { en: 'Extreme' } },
+     * }
      */
     severity: {
       type: ObjectId,
@@ -208,13 +210,13 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
         format: v => get(v, 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -242,12 +244,12 @@ const EventSchema = createSchema(
     stage: {
       type: String,
       trim: true,
-      enum: STAGES,
+      enum: EVENT_STAGES,
       index: true,
       searchable: true,
       taggable: true,
       exportable: true,
-      default: STAGE_ALERT,
+      default: EVENT_STAGE_ALERT,
       fake: true,
     },
 
@@ -280,7 +282,6 @@ const EventSchema = createSchema(
      * FL-2018-000033-TZA
      */
     number: {
-      // TODO: use mongoose-sequenceable
       type: String,
       trim: true,
       uppercase: true,
@@ -292,11 +293,14 @@ const EventSchema = createSchema(
       exportable: true,
       sequenceable: {
         prefix: function prefix() {
-          return get(this, 'type.string.name.en', '');
+          const type = get(this, 'type.string.code', '');
+          const year = moment(new Date()).format('YYYY');
+          return compact([type, year]).join('-');
         },
         suffix: COUNTRY_CODE,
         length: 6,
         pad: '0',
+        separator: '-',
       },
       fake: {
         generator: 'random',
@@ -352,7 +356,10 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Heavy rainfall
+     * {
+     *   type: 'Point',
+     *   coordinates: [39.2155451, -6.7269984],
+     * }
      */
     location: Point,
 
@@ -481,7 +488,18 @@ const EventSchema = createSchema(
      * @version 0.1.0
      * @instance
      * @example
-     * Extreme
+     * [
+     * {
+     *   _id: '5de2f17cec283f52aa3cacf7',
+     *   strings: { name: { en: 'Ilala' } },
+     *   geos: { geometry: { ... } },
+     * },
+     * {
+     *   _id: '5de2f2ec7d0c71547d456b10',
+     *   strings: { name: { en: 'Temeke' } },
+     *   geos: { geometry: { ... } },
+     * },
+     * ]
      */
     areas: {
       type: [ObjectId],
@@ -489,17 +507,13 @@ const EventSchema = createSchema(
       // required: true,
       index: true,
       exists: true,
-      autopopulate: OPTION_AUTOPOPULATE_PREDEFINE,
+      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
       taggable: true,
       exportable: {
-        format: v =>
-          join(
-            map(v, area => get(area, 'strings.name.en')),
-            ', '
-          ),
+        format: v => join(v, ', ', 'strings.name.en'),
         default: 'NA',
       },
-      // aggregatable: true,
+      aggregatable: { unwind: true },
       default: undefined,
     },
 
@@ -648,6 +662,7 @@ const EventSchema = createSchema(
       type: Date,
       index: true,
       exportable: true,
+      // before: 'endedAt',
       fake: {
         generator: 'date',
         type: 'past',
@@ -671,17 +686,17 @@ const EventSchema = createSchema(
      * 2018-10-19T07:53:32.831Z
      */
     endedAt: {
-      // TODO: ensure after startedAt
       type: Date,
       index: true,
       exportable: true,
+      // after: 'reportedAt',
       fake: {
         generator: 'date',
         type: 'recent',
       },
     },
   },
-  SCHEMA_OPTIONS,
+  EVENT_SCHEMA_OPTIONS,
   actions,
   exportable
 );
@@ -740,14 +755,14 @@ EventSchema.methods.preValidate = function preValidate(done) {
  */
 
 /* static constants */
-EventSchema.statics.MODEL_NAME = MODEL_NAME;
-EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME;
-EventSchema.statics.OPTION_SELECT = OPTION_SELECT;
-EventSchema.statics.OPTION_AUTOPOPULATE = OPTION_AUTOPOPULATE;
+EventSchema.statics.MODEL_NAME = MODEL_NAME_EVENT;
+EventSchema.statics.COLLECTION_NAME = COLLECTION_NAME_EVENT;
+EventSchema.statics.OPTION_SELECT = EVENT_OPTION_SELECT;
+EventSchema.statics.OPTION_AUTOPOPULATE = EVENT_OPTION_AUTOPOPULATE;
 
-EventSchema.statics.STAGE_ALERT = STAGE_ALERT;
-EventSchema.statics.STAGE_EVENT = STAGE_EVENT;
-EventSchema.statics.STAGES = STAGES;
+EventSchema.statics.STAGE_ALERT = EVENT_STAGE_ALERT;
+EventSchema.statics.STAGE_EVENT = EVENT_STAGE_EVENT;
+EventSchema.statics.STAGES = EVENT_STAGES;
 
 /**
  * @name prepareSeedCriteria
@@ -772,4 +787,4 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /* export event model */
-export default model(MODEL_NAME, EventSchema);
+export default model(MODEL_NAME_EVENT, EventSchema);

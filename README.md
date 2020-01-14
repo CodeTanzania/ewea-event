@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/codetanzania/ewea-event.svg?branch=develop)](https://travis-ci.org/codetanzania/ewea-event)
 [![Dependencies Status](https://david-dm.org/codetanzania/ewea-event.svg)](https://david-dm.org/codetanzania/ewea-event)
-[![Coverage Status](https://coveralls.io/repos/github/codetanzania/ewea-event/badge.svg?branch=develop)](https://coveralls.io/github/codetanzania/ewea-event?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/CodeTanzania/ewea-event/badge.svg?branch=develop)](https://coveralls.io/github/CodeTanzania/ewea-event?branch=develop)
 [![GitHub License](https://img.shields.io/github/license/codetanzania/ewea-event)](https://github.com/codetanzania/ewea-event/blob/develop/LICENSE)
 
 [![Commitizen Friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
@@ -14,10 +14,11 @@ A representation of an entity which define and track an instance(or occurrence) 
 
 ## Requirements
 
-- [NodeJS v12+](https://nodejs.org)
-- [Npm v6+](https://www.npmjs.com/)
+- [NodeJS v13+](https://nodejs.org)
+- [Npm v6.12+](https://www.npmjs.com/)
 - [MongoDB v4+](https://www.mongodb.com/)
-- [Mongoose v5.6+](https://github.com/Automattic/mongoose)
+- [Redis v5+](https://redis.io/)
+- [Mongoose v5.7+](https://github.com/Automattic/mongoose)
 
 ## Installation
 

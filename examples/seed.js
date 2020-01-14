@@ -1,7 +1,8 @@
 import { isArray } from 'lodash';
 import { waterfall } from 'async';
 import { connect, syncIndexes } from '@lykmapipo/mongoose-common';
-import { Event } from '../src';
+import { createModels } from '@lykmapipo/file';
+import { Event, EventChangeLog } from '../src';
 
 // naive logger
 const log = (stage, error, result) => {
@@ -26,16 +27,38 @@ const seedEvent = done => {
   });
 };
 
+// seed changelogs
+const seedEventChangeLog = done => {
+  EventChangeLog.seed((error, seeded) => {
+    log('changelogs', error, seeded);
+    done(error);
+  });
+};
+
 // ensure indexes
 const ensureIndexes = done => syncIndexes(error => done(error));
 
 // ensure connections
 const ensureConnection = done => connect(error => done(error));
 
+const ensureFileModels = done => {
+  createModels();
+  return done();
+};
+
 // do seed
 const seed = done => {
   seedStart = Date.now();
-  return waterfall([ensureConnection, ensureIndexes, seedEvent], done);
+  return waterfall(
+    [
+      ensureConnection,
+      ensureFileModels,
+      ensureIndexes,
+      seedEvent,
+      seedEventChangeLog,
+    ],
+    done
+  );
 };
 
 // do seeding

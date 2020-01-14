@@ -12,17 +12,24 @@
  * @license MIT
  * @example
  *
- * const { Event, start } = require('@codetanzania/ewea-event');
+ * const {
+ *   Event, EventChangeLog, start
+ * } = require('@codetanzania/ewea-event');
+ *
  * start(error => { ... });
  *
  */
+import '@codetanzania/ewea-internals';
 import { pkg } from '@lykmapipo/common';
 import { apiVersion as httpApiVersion } from '@lykmapipo/env';
 import { connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { start as startHttp } from '@lykmapipo/express-rest-actions';
+import { createModels } from '@lykmapipo/file';
 import Event from './event.model';
 import eventRouter from './event.http.router';
+import EventChangeLog from './changelog.model';
+import eventChangeLogRouter from './changelog.http.router';
 
 /**
  * @name info
@@ -57,6 +64,16 @@ export const info = pkg(
 export { Event };
 
 /**
+ * @name EventChangeLog
+ * @description EventChangeLog model
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.3.0
+ * @version 0.1.0
+ */
+export { EventChangeLog };
+
+/**
  * @name eventRouter
  * @description event http router
  *
@@ -65,6 +82,16 @@ export { Event };
  * @version 0.1.0
  */
 export { eventRouter };
+
+/**
+ * @name eventChangeLogRouter
+ * @description event changeLog http router
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ */
+export { eventChangeLogRouter };
 
 /**
  * @name apiVersion
@@ -94,8 +121,14 @@ export const start = done => {
       return done(error);
     }
 
+    // ensure file models
+    createModels();
+
     // mount event router
     mount(eventRouter);
+
+    // mount event changelog router
+    mount(eventChangeLogRouter);
 
     // start http server
     return startHttp(done);
