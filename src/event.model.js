@@ -1,5 +1,6 @@
 import { get, pick } from 'lodash';
-import { join, idOf } from '@lykmapipo/common';
+import moment from 'moment';
+import { compact, join, idOf } from '@lykmapipo/common';
 
 import {
   copyInstance,
@@ -7,7 +8,7 @@ import {
   model,
   ObjectId,
 } from '@lykmapipo/mongoose-common';
-// import '@lykmapipo/mongoose-sequenceable';
+import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Point } from 'mongoose-geojson-schemas';
@@ -291,11 +292,14 @@ const EventSchema = createSchema(
       exportable: true,
       sequenceable: {
         prefix: function prefix() {
-          return get(this, 'type.string.name.en', '');
+          const type = get(this, 'type.string.code', '');
+          const year = moment(new Date()).format('YYYY');
+          return compact([type, year]).join('-');
         },
         suffix: COUNTRY_CODE,
         length: 6,
         pad: '0',
+        separator: '-',
       },
       fake: {
         generator: 'random',

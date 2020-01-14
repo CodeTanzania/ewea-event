@@ -22,7 +22,7 @@ describe('Event Instance', () => {
   });
 });
 
-describe.skip('Event Validations', () => {
+describe('Event Validations', () => {
   it('should generate number', done => {
     const event = Event.fakeExcept('number');
     // expect(event.number).to.not.exist;

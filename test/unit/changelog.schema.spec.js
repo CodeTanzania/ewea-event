@@ -399,7 +399,7 @@ describe('ChangeLog Schema', () => {
     expect(location).to.exist;
     expect(location).to.be.an.instanceof(SchemaTypes.Embedded);
     expect(location.options.index).to.exist.and.be.equal('2dsphere');
-    expect(location.options.fake).to.exist.and.be.an('object');
+    expect(location.options.fake).to.exist.and.be.a('function');
   });
 
   it('should have address field', () => {

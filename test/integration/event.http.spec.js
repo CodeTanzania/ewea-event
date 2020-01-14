@@ -6,7 +6,7 @@ import { clear as clearDb, expect } from '@lykmapipo/mongoose-test-helpers';
 import { Event, eventRouter } from '../../src';
 
 describe('Event Rest API', () => {
-  const event = Event.fake();
+  const event = Event.fakeExcept('number');
 
   const options = {
     pathSingle: '/events/:id',
@@ -29,7 +29,7 @@ describe('Event Rest API', () => {
         expect(body).to.exist;
         const created = new Event(body);
         expect(created._id).to.exist.and.be.eql(event._id);
-        expect(created.number).to.exist.and.be.eql(event.number);
+        expect(created.number).to.exist;
         done(error, body);
       });
   });
@@ -79,7 +79,7 @@ describe('Event Rest API', () => {
         expect(body).to.exist;
         const found = new Event(body);
         expect(found._id).to.exist.and.be.eql(event._id);
-        expect(found.number).to.exist.and.be.eql(event.number);
+        expect(found.number).to.exist;
         done(error, body);
       });
   });
@@ -96,7 +96,7 @@ describe('Event Rest API', () => {
         expect(body).to.exist;
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
-        expect(patched.number).to.exist.and.be.eql(event.number);
+        expect(patched.number).to.exist;
         done(error, body);
       });
   });
@@ -113,7 +113,7 @@ describe('Event Rest API', () => {
         expect(body).to.exist;
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
-        expect(patched.number).to.exist.and.be.eql(event.number);
+        expect(patched.number).to.exist;
         done(error, body);
       });
   });
@@ -129,7 +129,7 @@ describe('Event Rest API', () => {
         expect(body).to.exist;
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
-        expect(patched.number).to.exist.and.be.eql(event.number);
+        expect(patched.number).to.exist;
         done(error, body);
       });
   });
