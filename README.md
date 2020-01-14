@@ -1,4 +1,4 @@
-# ewea-event(WIP)
+# ewea-event
 
 [![Build Status](https://travis-ci.org/codetanzania/ewea-event.svg?branch=develop)](https://travis-ci.org/codetanzania/ewea-event)
 [![Dependencies Status](https://david-dm.org/codetanzania/ewea-event.svg)](https://david-dm.org/codetanzania/ewea-event)
