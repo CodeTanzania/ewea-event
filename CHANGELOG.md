@@ -1,3 +1,13 @@
+#### 0.4.1 (2020-01-24)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([c4adff2b](https://github.com/codetanzania/ewea-event/commit/c4adff2b54a8c360773f09dce6504f148b250749))
+
+##### Bug Fixes
+
+* **changelog:**  bind upload middleware ([80a69fb5](https://github.com/codetanzania/ewea-event/commit/80a69fb5800804c948fb7faf3ff2b2f446bf4ef3))
+
 #### 0.4.0 (2020-01-14)
 
 ##### Documentation Changes

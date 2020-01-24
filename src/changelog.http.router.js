@@ -1,4 +1,5 @@
 import { getString } from '@lykmapipo/env';
+import { uploaderFor } from '@lykmapipo/file';
 import {
   getFor,
   schemaFor,
@@ -88,6 +89,7 @@ router.get(
  */
 router.post(
   PATH_LIST,
+  uploaderFor(),
   postFor({
     post: (body, done) => EventChangeLog.post(body, done),
   })
@@ -112,6 +114,7 @@ router.get(
  */
 router.patch(
   PATH_SINGLE,
+  uploaderFor(),
   patchFor({
     patch: (options, done) => EventChangeLog.patch(options, done),
   })
@@ -124,6 +127,7 @@ router.patch(
  */
 router.put(
   PATH_SINGLE,
+  uploaderFor(),
   putFor({
     put: (options, done) => EventChangeLog.put(options, done),
   })
