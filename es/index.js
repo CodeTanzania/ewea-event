@@ -4,7 +4,7 @@ import { getString, apiVersion as apiVersion$1 } from '@lykmapipo/env';
 import { model, createSchema, ObjectId, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
-import { FileTypes, createModels } from '@lykmapipo/file';
+import { FileTypes, uploaderFor, createModels } from '@lykmapipo/file';
 import { get, pick } from 'lodash';
 import moment from 'moment';
 import '@lykmapipo/mongoose-sequenceable';
@@ -2151,6 +2151,7 @@ router$1.get(
  */
 router$1.post(
   PATH_LIST$1,
+  uploaderFor(),
   postFor({
     post: (body, done) => EventChangeLog.post(body, done),
   })
@@ -2175,6 +2176,7 @@ router$1.get(
  */
 router$1.patch(
   PATH_SINGLE$1,
+  uploaderFor(),
   patchFor({
     patch: (options, done) => EventChangeLog.patch(options, done),
   })
@@ -2187,6 +2189,7 @@ router$1.patch(
  */
 router$1.put(
   PATH_SINGLE$1,
+  uploaderFor(),
   putFor({
     put: (options, done) => EventChangeLog.put(options, done),
   })
