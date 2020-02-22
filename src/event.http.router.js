@@ -16,10 +16,10 @@ import {
   exportEvents,
   getEvents,
   getEventById,
-  postEventWitchChanges,
-  putEventWitchChanges,
-  patchEventWitchChanges,
-  deleteEventWitchChanges,
+  postEventWithChanges,
+  putEventWithChanges,
+  patchEventWithChanges,
+  deleteEventWithChanges,
 } from './api';
 
 /* constants */
@@ -92,8 +92,7 @@ router.get(
 router.post(
   PATH_LIST,
   postFor({
-    // TODO: Event.postWithChanges
-    post: (body, done) => postEventWitchChanges(body, done),
+    post: (body, done) => postEventWithChanges(body, done),
   })
 );
 
@@ -117,7 +116,7 @@ router.get(
 router.patch(
   PATH_SINGLE,
   patchFor({
-    patch: (options, done) => patchEventWitchChanges(options, done),
+    patch: (options, done) => patchEventWithChanges(options, done),
   })
 );
 
@@ -129,7 +128,7 @@ router.patch(
 router.put(
   PATH_SINGLE,
   putFor({
-    put: (options, done) => putEventWitchChanges(options, done),
+    put: (options, done) => putEventWithChanges(options, done),
   })
 );
 
@@ -141,7 +140,7 @@ router.put(
 router.delete(
   PATH_SINGLE,
   deleteFor({
-    del: (options, done) => deleteEventWitchChanges(options, done),
+    del: (options, done) => deleteEventWithChanges(options, done),
     soft: true,
   })
 );

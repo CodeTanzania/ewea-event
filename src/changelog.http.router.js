@@ -11,7 +11,17 @@ import {
   deleteFor,
   Router,
 } from '@lykmapipo/express-rest-actions';
-import EventChangeLog from './changelog.model';
+
+import {
+  getChangeLogJsonSchema,
+  exportChangeLogs,
+  getChangeLogs,
+  getChangeLogById,
+  postChangeLogWithChanges,
+  putChangeLogWithChanges,
+  patchChangeLogWithChanges,
+  deleteChangeLogWithChanges,
+} from './api';
 
 /* constants */
 const API_VERSION = getString('API_VERSION', '1.0.0');
@@ -47,7 +57,7 @@ const router = new Router({
 router.get(
   PATH_LIST,
   getFor({
-    get: (options, done) => EventChangeLog.get(options, done),
+    get: (options, done) => getChangeLogs(options, done),
   })
 );
 
@@ -59,10 +69,7 @@ router.get(
 router.get(
   PATH_SCHEMA,
   schemaFor({
-    getSchema: (query, done) => {
-      const jsonSchema = EventChangeLog.jsonSchema();
-      return done(null, jsonSchema);
-    },
+    getSchema: (query, done) => getChangeLogJsonSchema(query, done),
   })
 );
 
@@ -74,11 +81,7 @@ router.get(
 router.get(
   PATH_EXPORT,
   downloadFor({
-    download: (options, done) => {
-      const fileName = `changelogs_exports_${Date.now()}.csv`;
-      const readStream = EventChangeLog.exportCsv(options);
-      return done(null, { fileName, readStream });
-    },
+    download: (options, done) => exportChangeLogs(options, done),
   })
 );
 
@@ -92,7 +95,7 @@ router.post(
   uploaderFor(),
   postFor({
     // TODO: Event.putWithChanges
-    post: (body, done) => EventChangeLog.post(body, done),
+    post: (body, done) => postChangeLogWithChanges(body, done),
   })
 );
 
@@ -104,7 +107,7 @@ router.post(
 router.get(
   PATH_SINGLE,
   getByIdFor({
-    getById: (options, done) => EventChangeLog.getById(options, done),
+    getById: (options, done) => getChangeLogById(options, done),
   })
 );
 
@@ -118,7 +121,7 @@ router.patch(
   uploaderFor(),
   patchFor({
     // TODO: Event.patchWithChanges
-    patch: (options, done) => EventChangeLog.patch(options, done),
+    patch: (options, done) => patchChangeLogWithChanges(options, done),
   })
 );
 
@@ -132,7 +135,7 @@ router.put(
   uploaderFor(),
   putFor({
     // TODO: Event.putWithChanges
-    put: (options, done) => EventChangeLog.put(options, done),
+    put: (options, done) => putChangeLogWithChanges(options, done),
   })
 );
 
@@ -145,7 +148,7 @@ router.delete(
   PATH_SINGLE,
   deleteFor({
     // TODO: methodNotAllowed
-    del: (options, done) => EventChangeLog.del(options, done),
+    del: (options, done) => deleteChangeLogWithChanges(options, done),
     soft: true,
   })
 );
