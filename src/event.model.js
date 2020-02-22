@@ -18,7 +18,15 @@ import {
   EVENT_OPTION_AUTOPOPULATE,
 } from './internals';
 
-import { group, type, level, severity, certainty } from './schema/base.schema';
+import {
+  group,
+  type,
+  level,
+  severity,
+  certainty,
+  status,
+  urgency,
+} from './schema/base.schema';
 import { location, address, areas } from './schema/geos.schema';
 import {
   stage,
@@ -35,7 +43,7 @@ import {
 } from './schema/event.base.schema';
 
 const SCHEMA = mergeObjects(
-  { group, type, level, severity, certainty },
+  { group, type, level, severity, certainty, status, urgency },
   { stage, number },
   { location, address },
   { causes, description, places },
