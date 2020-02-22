@@ -103,6 +103,101 @@ describe('ChangeLog Schema', () => {
     expect(type.options.default).to.be.undefined;
   });
 
+  it('should have level field', () => {
+    const level = ChangeLog.path('level');
+
+    expect(level).to.exist;
+    expect(level).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(level.options).to.exist;
+    expect(level.options).to.be.an('object');
+    expect(level.options.type).to.exist;
+    expect(level.options.ref).to.exist;
+    expect(level.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(level.options.required).to.be.true;
+    expect(level.options.exists).to.be.true;
+    expect(level.options.autopopulate).to.exist;
+    expect(level.options.taggable).to.exist;
+    expect(level.options.exportable).to.exist;
+    // expect(level.options.aggregatable).to.exist;
+    expect(level.options.default).to.be.undefined;
+  });
+
+  it('should have severity field', () => {
+    const severity = ChangeLog.path('severity');
+
+    expect(severity).to.exist;
+    expect(severity).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(severity.options).to.exist;
+    expect(severity.options).to.be.an('object');
+    expect(severity.options.type).to.exist;
+    expect(severity.options.ref).to.exist;
+    expect(severity.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(severity.options.required).to.be.true;
+    expect(severity.options.exists).to.be.true;
+    expect(severity.options.autopopulate).to.exist;
+    expect(severity.options.taggable).to.exist;
+    expect(severity.options.exportable).to.exist;
+    // expect(severity.options.aggregatable).to.exist;
+    expect(severity.options.default).to.be.undefined;
+  });
+
+  it('should have certainty field', () => {
+    const certainty = ChangeLog.path('certainty');
+
+    expect(certainty).to.exist;
+    expect(certainty).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(certainty.options).to.exist;
+    expect(certainty.options).to.be.an('object');
+    expect(certainty.options.type).to.exist;
+    expect(certainty.options.ref).to.exist;
+    expect(certainty.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(certainty.options.required).to.be.true;
+    expect(certainty.options.exists).to.be.true;
+    expect(certainty.options.autopopulate).to.exist;
+    expect(certainty.options.taggable).to.exist;
+    expect(certainty.options.exportable).to.exist;
+    // expect(certainty.options.aggregatable).to.exist;
+    expect(certainty.options.default).to.be.undefined;
+  });
+
+  it('should have status field', () => {
+    const status = ChangeLog.path('status');
+
+    expect(status).to.exist;
+    expect(status).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(status.options).to.exist;
+    expect(status.options).to.be.an('object');
+    expect(status.options.type).to.exist;
+    expect(status.options.ref).to.exist;
+    expect(status.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(status.options.required).to.be.true;
+    expect(status.options.exists).to.be.true;
+    expect(status.options.autopopulate).to.exist;
+    expect(status.options.taggable).to.exist;
+    expect(status.options.exportable).to.exist;
+    // expect(status.options.aggregatable).to.exist;
+    expect(status.options.default).to.be.undefined;
+  });
+
+  it('should have urgency field', () => {
+    const urgency = ChangeLog.path('urgency');
+
+    expect(urgency).to.exist;
+    expect(urgency).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(urgency.options).to.exist;
+    expect(urgency.options).to.be.an('object');
+    expect(urgency.options.type).to.exist;
+    expect(urgency.options.ref).to.exist;
+    expect(urgency.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(urgency.options.required).to.be.true;
+    expect(urgency.options.exists).to.be.true;
+    expect(urgency.options.autopopulate).to.exist;
+    expect(urgency.options.taggable).to.exist;
+    expect(urgency.options.exportable).to.exist;
+    // expect(urgency.options.aggregatable).to.exist;
+    expect(urgency.options.default).to.be.undefined;
+  });
+
   it('should have event field', () => {
     const event = ChangeLog.path('event');
 
