@@ -26,7 +26,7 @@ import {
   PREDEFINE_OPTION_AUTOPOPULATE,
 } from './internals';
 
-import { group, type, level } from './schema/base.schema';
+import { group, type, level, severity } from './schema/base.schema';
 import { stage, number } from './schema/event.base.schema';
 
 // TODO: send notification after create
@@ -56,48 +56,7 @@ const EventSchema = createSchema(
     group,
     type,
     level,
-
-    /**
-     * @name severity
-     * @description Currently assigned severity of an event.
-     *
-     * @type {object}
-     * @property {object} type - schema(data) type
-     * @property {boolean} required - mark required
-     * @property {boolean} index - ensure database index
-     * @property {boolean} exists - ensure ref exists before save
-     * @property {object} autopopulate - auto populate(eager loading) options
-     * @property {boolean} taggable - allow field use for tagging
-     * @property {boolean} exportable - allow field use for exporting
-     * @property {boolean} aggregatable - allow field use for aggregation
-     * @property {boolean} default - default value set when none provided
-     * @property {object} fake - fake data generator options
-     *
-     * @author lally elias <lallyelias87@gmail.com>
-     * @since 0.1.0
-     * @version 0.1.0
-     * @instance
-     * @example
-     * {
-     *   _id: '5dde6ca23631a92c2d616250',
-     *   strings: { name: { en: 'Extreme' } },
-     * }
-     */
-    severity: {
-      type: ObjectId,
-      ref: Predefine.MODEL_NAME,
-      // required: true,
-      index: true,
-      exists: true,
-      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
-      taggable: true,
-      exportable: {
-        format: v => get(v, 'strings.name.en'),
-        default: 'NA',
-      },
-      aggregatable: { unwind: true },
-      default: undefined,
-    },
+    severity,
 
     /**
      * @name certainty
