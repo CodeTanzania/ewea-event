@@ -1,3 +1,9 @@
+#### 0.5.1 (2020-02-22)
+
+##### New Features
+
+* **event:**  add set of responding agencies & focals ([fcf37549](https://github.com/codetanzania/ewea-event/commit/fcf37549086ca220f1768a16e829ba690e0af140))
+
 #### 0.5.0 (2020-02-22)
 
 ##### Chores
