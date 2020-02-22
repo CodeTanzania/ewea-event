@@ -54,6 +54,7 @@ const SCHEMA = mergeObjects(
 // TODO: send notification after create
 // TODO: calculate expose(risk) after create
 // TODO: send actions after create
+// TODO: responding agencies and focals
 
 /**
  * @module Event

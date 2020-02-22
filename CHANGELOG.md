@@ -1,3 +1,24 @@
+#### 0.5.0 (2020-02-22)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([03dbda38](https://github.com/codetanzania/ewea-event/commit/03dbda38716e4eb03d03554a886a1716b466c234))
+
+##### New Features
+
+* **changelog:**  add severity, certainty, status and urgency fields ([f6d2e3b6](https://github.com/codetanzania/ewea-event/commit/f6d2e3b61f7911aa1c830b65ae133c2939657da9))
+* **event:**  add status and urgency schema fields ([545b8e1e](https://github.com/codetanzania/ewea-event/commit/545b8e1eab607c3e8fcbc56355f3ac3373dd815f))
+*  add event awareness level field ([d280041c](https://github.com/codetanzania/ewea-event/commit/d280041c96af44910820e73c0bb62251aad6af83))
+
+##### Refactors
+
+* **event:**
+  *  extract field to schemas ([6066d34c](https://github.com/codetanzania/ewea-event/commit/6066d34c6d3f2f93e16899255b83d1a3c55e93cc))
+  *  extract location and address to use geos base schema ([20b52f33](https://github.com/codetanzania/ewea-event/commit/20b52f33497db17d1e1966389f65edf3540d74e0))
+  *  extract certainty to general base schema ([0b34bf7a](https://github.com/codetanzania/ewea-event/commit/0b34bf7ac221a4376291b18d8d8aff2473b2f0cf))
+  *  extract severity to general base schema ([82312fbe](https://github.com/codetanzania/ewea-event/commit/82312fbe4643752258cc99f97fbe442c4cf96d37))
+*  extract re-usable schema paths from event ([d531f876](https://github.com/codetanzania/ewea-event/commit/d531f8768d0e3ef64373234032bbe1b918e4d9af))
+
 #### 0.4.2 (2020-02-19)
 
 ##### Chores
