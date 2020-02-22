@@ -28,6 +28,8 @@ import {
   PREDEFINE_OPTION_AUTOPOPULATE,
 } from './internals';
 
+import { group, type, level } from './schema/base.schema';
+
 // TODO: send notification after create
 // TODO: calculate expose(risk) after create
 // TODO: send actions after create
@@ -52,51 +54,13 @@ import {
  */
 const EventSchema = createSchema(
   {
-    /**
-     * @name group
-     * @description Event group underwhich an event belongs to.
-     *
-     * @type {object}
-     * @property {object} type - schema(data) type
-     * @property {boolean} required - mark required
-     * @property {boolean} index - ensure database index
-     * @property {boolean} exists - ensure ref exists before save
-     * @property {object} autopopulate - auto populate(eager loading) options
-     * @property {boolean} taggable - allow field use for tagging
-     * @property {boolean} exportable - allow field use for exporting
-     * @property {boolean} aggregatable - allow field use for aggregation
-     * @property {boolean} default - default value set when none provided
-     * @property {object} fake - fake data generator options
-     *
-     * @author lally elias <lallyelias87@gmail.com>
-     * @since 0.1.0
-     * @version 0.1.0
-     * @instance
-     * @example
-     * {
-     *   _id: '5dde6ca23631a92c2d616253',
-     *   strings: { name: { en: 'Meteorological' }, code: 'MAT' },
-     * }
-     */
-    group: {
-      type: ObjectId,
-      ref: Predefine.MODEL_NAME,
-      // required: true,
-      index: true,
-      exists: true,
-      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
-      taggable: true,
-      exportable: {
-        format: v => get(v, 'strings.name.en'),
-        default: 'NA',
-      },
-      aggregatable: { unwind: true },
-      default: undefined,
-    },
+    group,
+    type,
+    level,
 
     /**
-     * @name type
-     * @description Event type underwhich an event belongs to.
+     * @name severity
+     * @description Currently assigned severity of an event.
      *
      * @type {object}
      * @property {object} type - schema(data) type
@@ -116,11 +80,11 @@ const EventSchema = createSchema(
      * @instance
      * @example
      * {
-     *   _id: '5dde6ca33631a92c2d616298',
-     *   strings: { name: { en: 'Flood' }, code: 'FL' },
+     *   _id: '5dde6ca23631a92c2d616250',
+     *   strings: { name: { en: 'Extreme' } },
      * }
      */
-    type: {
+    severity: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
       // required: true,
@@ -163,48 +127,6 @@ const EventSchema = createSchema(
      * }
      */
     certainty: {
-      type: ObjectId,
-      ref: Predefine.MODEL_NAME,
-      // required: true,
-      index: true,
-      exists: true,
-      autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
-      taggable: true,
-      exportable: {
-        format: v => get(v, 'strings.name.en'),
-        default: 'NA',
-      },
-      aggregatable: { unwind: true },
-      default: undefined,
-    },
-
-    /**
-     * @name severity
-     * @description Currently assigned severity of an event.
-     *
-     * @type {object}
-     * @property {object} type - schema(data) type
-     * @property {boolean} required - mark required
-     * @property {boolean} index - ensure database index
-     * @property {boolean} exists - ensure ref exists before save
-     * @property {object} autopopulate - auto populate(eager loading) options
-     * @property {boolean} taggable - allow field use for tagging
-     * @property {boolean} exportable - allow field use for exporting
-     * @property {boolean} aggregatable - allow field use for aggregation
-     * @property {boolean} default - default value set when none provided
-     * @property {object} fake - fake data generator options
-     *
-     * @author lally elias <lallyelias87@gmail.com>
-     * @since 0.1.0
-     * @version 0.1.0
-     * @instance
-     * @example
-     * {
-     *   _id: '5dde6ca23631a92c2d616250',
-     *   strings: { name: { en: 'Extreme' } },
-     * }
-     */
-    severity: {
       type: ObjectId,
       ref: Predefine.MODEL_NAME,
       // required: true,
@@ -293,9 +215,9 @@ const EventSchema = createSchema(
       exportable: true,
       sequenceable: {
         prefix: function prefix() {
-          const type = get(this, 'type.string.code', '');
+          const eventTypeCode = get(this, 'type.string.code', '');
           const year = moment(new Date()).format('YYYY');
-          return compact([type, year]).join('-');
+          return compact([eventTypeCode, year]).join('-');
         },
         suffix: COUNTRY_CODE,
         length: 6,

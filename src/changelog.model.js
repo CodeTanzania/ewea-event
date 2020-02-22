@@ -31,6 +31,7 @@ import {
 import {
   group,
   type,
+  level,
   fanction,
   action,
   indicator,
@@ -46,7 +47,7 @@ import { image, audio, video, document } from './schema/files.schema';
 const SCHEMA = mergeObjects(
   { use },
   { initiator, verifier },
-  { group, type },
+  { group, type, level },
   { event },
   { function: fanction, action },
   { indicator, need, effect, value, unit },
@@ -58,6 +59,9 @@ const SCHEMA = mergeObjects(
 );
 
 // TODO: all criteria use $in operator
+// TODO: update event after save
+// TODO: send notification after save
+// TODO: notify respective parties after save
 
 /**
  * @module ChangeLog
