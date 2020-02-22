@@ -89,6 +89,7 @@ router.get(
 router.post(
   PATH_LIST,
   postFor({
+    // TODO: Event.postWithChanges
     post: (body, done) => Event.post(body, done),
   })
 );
@@ -113,6 +114,7 @@ router.get(
 router.patch(
   PATH_SINGLE,
   patchFor({
+    // TODO: Event.patchWithChanges
     patch: (options, done) => Event.patch(options, done),
   })
 );
@@ -125,6 +127,7 @@ router.patch(
 router.put(
   PATH_SINGLE,
   putFor({
+    // TODO: Event.putWithChanges
     put: (options, done) => Event.put(options, done),
   })
 );
@@ -137,6 +140,7 @@ router.put(
 router.delete(
   PATH_SINGLE,
   deleteFor({
+    // TODO: Event.deleteWithChanges
     del: (options, done) => Event.del(options, done),
     soft: true,
   })

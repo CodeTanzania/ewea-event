@@ -278,6 +278,26 @@ describe('ChangeLog Schema', () => {
     expect(indicator.options.default).to.be.undefined;
   });
 
+  it('should have topic field', () => {
+    const topic = ChangeLog.path('topic');
+
+    expect(topic).to.exist;
+    expect(topic).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(topic.options).to.exist;
+    expect(topic.options).to.be.an('object');
+    expect(topic.options.type).to.exist;
+    expect(topic.options.ref).to.exist;
+    expect(topic.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(topic.options.index).to.be.true;
+    // expect(topic.options.required).to.be.true;
+    expect(topic.options.exists).to.be.true;
+    expect(topic.options.autopopulate).to.exist;
+    expect(topic.options.taggable).to.exist;
+    expect(topic.options.exportable).to.exist;
+    // expect(topic.options.aggregatable).to.exist;
+    expect(topic.options.default).to.be.undefined;
+  });
+
   it('should have need field', () => {
     const need = ChangeLog.path('need');
 

@@ -1,6 +1,7 @@
 import { SchemaTypes } from '@lykmapipo/mongoose-common';
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@lykmapipo/predefine';
+import { Party } from '@codetanzania/emis-stakeholder';
 import Event from '../../src/event.model';
 
 describe('Event Schema', () => {
@@ -260,6 +261,44 @@ describe('Event Schema', () => {
     expect(areas.options.exportable).to.exist;
     // expect(areas.options.aggregatable).to.exist;
     expect(areas.options.default).to.be.undefined;
+  });
+
+  it('should have agencies field', () => {
+    const agencies = Event.path('agencies');
+
+    expect(agencies).to.exist;
+    expect(agencies).to.be.instanceof(SchemaTypes.Array);
+    expect(agencies.options).to.exist;
+    expect(agencies.options).to.be.an('object');
+    expect(agencies.options.type).to.exist;
+    expect(agencies.options.ref).to.exist;
+    expect(agencies.options.ref).to.be.equal(Party.MODEL_NAME);
+    // expect(agencies.options.required).to.be.true;
+    expect(agencies.options.exists).to.be.true;
+    expect(agencies.options.autopopulate).to.exist;
+    expect(agencies.options.taggable).to.exist;
+    expect(agencies.options.exportable).to.exist;
+    // expect(agencies.options.aggregatable).to.exist;
+    expect(agencies.options.default).to.be.undefined;
+  });
+
+  it('should have focals field', () => {
+    const focals = Event.path('focals');
+
+    expect(focals).to.exist;
+    expect(focals).to.be.instanceof(SchemaTypes.Array);
+    expect(focals.options).to.exist;
+    expect(focals.options).to.be.an('object');
+    expect(focals.options.type).to.exist;
+    expect(focals.options.ref).to.exist;
+    expect(focals.options.ref).to.be.equal(Party.MODEL_NAME);
+    // expect(focals.options.required).to.be.true;
+    expect(focals.options.exists).to.be.true;
+    expect(focals.options.autopopulate).to.exist;
+    expect(focals.options.taggable).to.exist;
+    expect(focals.options.exportable).to.exist;
+    // expect(focals.options.aggregatable).to.exist;
+    expect(focals.options.default).to.be.undefined;
   });
 
   it('should have instructions field', () => {

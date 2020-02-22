@@ -91,6 +91,7 @@ router.post(
   PATH_LIST,
   uploaderFor(),
   postFor({
+    // TODO: Event.putWithChanges
     post: (body, done) => EventChangeLog.post(body, done),
   })
 );
@@ -116,6 +117,7 @@ router.patch(
   PATH_SINGLE,
   uploaderFor(),
   patchFor({
+    // TODO: Event.patchWithChanges
     patch: (options, done) => EventChangeLog.patch(options, done),
   })
 );
@@ -129,6 +131,7 @@ router.put(
   PATH_SINGLE,
   uploaderFor(),
   putFor({
+    // TODO: Event.putWithChanges
     put: (options, done) => EventChangeLog.put(options, done),
   })
 );
@@ -141,6 +144,7 @@ router.put(
 router.delete(
   PATH_SINGLE,
   deleteFor({
+    // TODO: methodNotAllowed
     del: (options, done) => EventChangeLog.del(options, done),
     soft: true,
   })

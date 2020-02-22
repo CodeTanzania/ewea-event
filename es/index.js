@@ -11,8 +11,8 @@ import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
 import { Point } from 'mongoose-geojson-schemas';
-import moment from 'moment';
 import { Party } from '@codetanzania/emis-stakeholder';
+import moment from 'moment';
 
 // common constants
 const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
@@ -477,7 +477,7 @@ const action = {
 /**
  * @name indicator
  * @alias indicator
- * @description Define measure used to assess need, effects, situation
+ * @description Define indicator used to assess need, effects, situation
  * and characteristics of an event.
  *
  * @memberof Event
@@ -506,6 +506,53 @@ const action = {
  * }
  */
 const indicator = {
+  type: ObjectId,
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name indicator
+ * @alias indicator
+ * @description Define topic used to assess need, effects, situation
+ * and characteristics of an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: '5dde6ca33631a92c2d616298',
+ *   strings: { name: { en: 'Water' } },
+ * }
+ */
+const topic = {
   type: ObjectId,
   ref: Predefine.MODEL_NAME,
   // required: true,
@@ -763,6 +810,293 @@ const address = {
     generator: 'address',
     type: 'county',
   },
+};
+
+/**
+ * @name initiator
+ * @alias changer
+ * @description A party(i.e company, organization, individual etc) who
+ * initiated(or record) an event changelog(or changes).
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: "5bcda2c073dd0700048fb846",
+ *   name: "Jane Doe",
+ *   mobile: "+255715463739",
+ *   email: "jane.doe@example.com",
+ * }
+ */
+const initiator = {
+  type: ObjectId,
+  ref: Party.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: Party.OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'name'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name verifier
+ * @alias approver
+ * @description A party(i.e company, organization, individual etc) who
+ * verify(or approve) an event changelog(or changes).
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: "5bcda2c073dd0700048fb846",
+ *   name: "Jane Doe",
+ *   mobile: "+255715463739",
+ *   email: "jane.doe@example.com",
+ * }
+ */
+const verifier = {
+  type: ObjectId,
+  ref: Party.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: Party.OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'name'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name groups
+ * @description Set of party groups(e.g Scouts, Religious Institutions etc)
+ * who are responding to an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * [{
+ *   _id: '5dde6ca23631a92c2d616253',
+ *   strings: { name: { en: 'Scouts' } },
+ * }]
+ */
+const groups = {
+  type: [ObjectId],
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => join(v, ', ', 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name roles
+ * @description Set of party roles(e.g Ward Executive Officer etc) who are
+ * responding to an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * [{
+ *   _id: '5dde6ca23631a92c2d616253',
+ *   strings: { name: { en: 'Ward Executive Officer' } },
+ * }]
+ */
+const roles = {
+  type: [ObjectId],
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => join(v, ', ', 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name agencies
+ * @alias organizations
+ * @description Set of agencies(or organizations) who are responding to
+ * an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * [{
+ *   _id: "5bcda2c073dd0700048fb846",
+ *   name: "Police Force",
+ *   mobile: "+255715463739",
+ *   email: "police.force@example.com",
+ * }]
+ */
+const agencies = {
+  type: [ObjectId],
+  ref: Party.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: Party.OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => join(v, ', ', 'name'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name focals
+ * @alias responder
+ * @description Set of people(or individuals) who are responding to an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * [{
+ *   _id: "5bcda2c073dd0700048fb846",
+ *   name: "Jane Doe",
+ *   mobile: "+255715463739",
+ *   email: "jane.doe@example.com",
+ * }]
+ */
+const focals = {
+  type: [ObjectId],
+  ref: Party.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: Party.OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => join(v, ', ', 'name'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
 };
 
 /**
@@ -1142,6 +1476,7 @@ const SCHEMA = mergeObjects(
   { location, address },
   { causes, description, places },
   { areas },
+  { agencies, focals },
   { instructions, interventions, impacts, remarks, startedAt, endedAt }
 );
 
@@ -1340,6 +1675,7 @@ router.get(
 router.post(
   PATH_LIST,
   postFor({
+    // TODO: Event.postWithChanges
     post: (body, done) => Event.post(body, done),
   })
 );
@@ -1364,6 +1700,7 @@ router.get(
 router.patch(
   PATH_SINGLE,
   patchFor({
+    // TODO: Event.patchWithChanges
     patch: (options, done) => Event.patch(options, done),
   })
 );
@@ -1376,6 +1713,7 @@ router.patch(
 router.put(
   PATH_SINGLE,
   putFor({
+    // TODO: Event.putWithChanges
     put: (options, done) => Event.put(options, done),
   })
 );
@@ -1388,297 +1726,11 @@ router.put(
 router.delete(
   PATH_SINGLE,
   deleteFor({
+    // TODO: Event.deleteWithChanges
     del: (options, done) => Event.del(options, done),
     soft: true,
   })
 );
-
-/**
- * @name initiator
- * @alias changer
- * @description A party(i.e company, organization, individual etc) who
- * initiated(or record) an event changelog(or changes).
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * {
- *   _id: "5bcda2c073dd0700048fb846",
- *   name: "Jane Doe",
- *   mobile: "+255715463739",
- *   email: "jane.doe@example.com",
- * }
- */
-const initiator = {
-  type: ObjectId,
-  ref: Party.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: Party.OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => get(v, 'name'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
-
-/**
- * @name verifier
- * @alias approver
- * @description A party(i.e company, organization, individual etc) who
- * verify(or approve) an event changelog(or changes).
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * {
- *   _id: "5bcda2c073dd0700048fb846",
- *   name: "Jane Doe",
- *   mobile: "+255715463739",
- *   email: "jane.doe@example.com",
- * }
- */
-const verifier = {
-  type: ObjectId,
-  ref: Party.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: Party.OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => get(v, 'name'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
-
-/**
- * @name groups
- * @description Set of party groups(e.g Scouts, Religious Institutions etc)
- * who are responding to an event.
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * [{
- *   _id: '5dde6ca23631a92c2d616253',
- *   strings: { name: { en: 'Scouts' } },
- * }]
- */
-const groups = {
-  type: [ObjectId],
-  ref: Predefine.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
-
-/**
- * @name roles
- * @description Set of party roles(e.g Ward Executive Officer etc) who are
- * responding to an event.
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * [{
- *   _id: '5dde6ca23631a92c2d616253',
- *   strings: { name: { en: 'Ward Executive Officer' } },
- * }]
- */
-const roles = {
-  type: [ObjectId],
-  ref: Predefine.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
-
-/**
- * @name agencies
- * @alias organizations
- * @description Set of agencies(or organizations) who are responding to
- * an event.
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * [{
- *   _id: "5bcda2c073dd0700048fb846",
- *   name: "Police Force",
- *   mobile: "+255715463739",
- *   email: "police.force@example.com",
- * }]
- */
-const agencies = {
-  type: [ObjectId],
-  ref: Party.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: Party.OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => join(v, ', ', 'name'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
-
-/**
- * @name focals
- * @alias responder
- * @description Set of people(or individuals) who are responding to an event.
- *
- * @memberof Event
- * @memberof ChangeLog
- *
- * @type {object}
- * @property {object} type - schema(data) type
- * @property {boolean} required - mark required
- * @property {boolean} index - ensure database index
- * @property {boolean} exists - ensure ref exists before save
- * @property {object} autopopulate - auto populate(eager loading) options
- * @property {boolean} taggable - allow field use for tagging
- * @property {boolean} exportable - allow field use for exporting
- * @property {boolean} aggregatable - allow field use for aggregation
- * @property {boolean} default - default value set when none provided
- * @property {object} fake - fake data generator options
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @since 0.1.0
- * @version 0.1.0
- * @instance
- * @example
- * [{
- *   _id: "5bcda2c073dd0700048fb846",
- *   name: "Jane Doe",
- *   mobile: "+255715463739",
- *   email: "jane.doe@example.com",
- * }]
- */
-const focals = {
-  type: [ObjectId],
-  ref: Party.MODEL_NAME,
-  // required: true,
-  index: true,
-  exists: true,
-  autopopulate: Party.OPTION_AUTOPOPULATE,
-  taggable: true,
-  exportable: {
-    format: v => join(v, ', ', 'name'),
-    default: 'NA',
-  },
-  aggregatable: { unwind: true },
-  default: undefined,
-};
 
 /**
  * @name event
@@ -1902,7 +1954,7 @@ const SCHEMA$1 = mergeObjects(
   { group, type, level, severity, certainty, status, urgency },
   { event },
   { function: fanction, action },
-  { indicator, need, effect, value, unit },
+  { indicator, topic, need, effect, value, unit },
   { areas },
   { groups, roles, agencies, focals },
   { image, audio, video, document },
@@ -2118,6 +2170,7 @@ router$1.post(
   PATH_LIST$1,
   uploaderFor(),
   postFor({
+    // TODO: Event.putWithChanges
     post: (body, done) => EventChangeLog.post(body, done),
   })
 );
@@ -2143,6 +2196,7 @@ router$1.patch(
   PATH_SINGLE$1,
   uploaderFor(),
   patchFor({
+    // TODO: Event.patchWithChanges
     patch: (options, done) => EventChangeLog.patch(options, done),
   })
 );
@@ -2156,6 +2210,7 @@ router$1.put(
   PATH_SINGLE$1,
   uploaderFor(),
   putFor({
+    // TODO: Event.putWithChanges
     put: (options, done) => EventChangeLog.put(options, done),
   })
 );
@@ -2168,6 +2223,7 @@ router$1.put(
 router$1.delete(
   PATH_SINGLE$1,
   deleteFor({
+    // TODO: methodNotAllowed
     del: (options, done) => EventChangeLog.del(options, done),
     soft: true,
   })
