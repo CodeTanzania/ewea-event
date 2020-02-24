@@ -20,7 +20,7 @@ import {
   putEventWithChanges,
   patchEventWithChanges,
   deleteEventWithChanges,
-} from './api';
+} from './api/index';
 
 /* constants */
 const API_VERSION = getString('API_VERSION', '1.0.0');
