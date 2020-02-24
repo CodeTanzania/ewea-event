@@ -10,7 +10,17 @@ import {
   deleteFor,
   Router,
 } from '@lykmapipo/express-rest-actions';
-import Event from './event.model';
+
+import {
+  getEventJsonSchema,
+  exportEvents,
+  getEvents,
+  getEventById,
+  postEventWithChanges,
+  putEventWithChanges,
+  patchEventWithChanges,
+  deleteEventWithChanges,
+} from './api/index';
 
 /* constants */
 const API_VERSION = getString('API_VERSION', '1.0.0');
@@ -46,7 +56,7 @@ const router = new Router({
 router.get(
   PATH_LIST,
   getFor({
-    get: (options, done) => Event.get(options, done),
+    get: (options, done) => getEvents(options, done),
   })
 );
 
@@ -58,10 +68,7 @@ router.get(
 router.get(
   PATH_SCHEMA,
   schemaFor({
-    getSchema: (query, done) => {
-      const jsonSchema = Event.jsonSchema();
-      return done(null, jsonSchema);
-    },
+    getSchema: (query, done) => getEventJsonSchema(query, done),
   })
 );
 
@@ -73,11 +80,7 @@ router.get(
 router.get(
   PATH_EXPORT,
   downloadFor({
-    download: (options, done) => {
-      const fileName = `events_exports_${Date.now()}.csv`;
-      const readStream = Event.exportCsv(options);
-      return done(null, { fileName, readStream });
-    },
+    download: (options, done) => exportEvents(options, done),
   })
 );
 
@@ -89,8 +92,7 @@ router.get(
 router.post(
   PATH_LIST,
   postFor({
-    // TODO: Event.postWithChanges
-    post: (body, done) => Event.post(body, done),
+    post: (body, done) => postEventWithChanges(body, done),
   })
 );
 
@@ -102,7 +104,7 @@ router.post(
 router.get(
   PATH_SINGLE,
   getByIdFor({
-    getById: (options, done) => Event.getById(options, done),
+    getById: (options, done) => getEventById(options, done),
   })
 );
 
@@ -114,8 +116,7 @@ router.get(
 router.patch(
   PATH_SINGLE,
   patchFor({
-    // TODO: Event.patchWithChanges
-    patch: (options, done) => Event.patch(options, done),
+    patch: (options, done) => patchEventWithChanges(options, done),
   })
 );
 
@@ -127,8 +128,7 @@ router.patch(
 router.put(
   PATH_SINGLE,
   putFor({
-    // TODO: Event.putWithChanges
-    put: (options, done) => Event.put(options, done),
+    put: (options, done) => putEventWithChanges(options, done),
   })
 );
 
@@ -140,8 +140,7 @@ router.put(
 router.delete(
   PATH_SINGLE,
   deleteFor({
-    // TODO: Event.deleteWithChanges
-    del: (options, done) => Event.del(options, done),
+    del: (options, done) => deleteEventWithChanges(options, done),
     soft: true,
   })
 );

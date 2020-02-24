@@ -1598,139 +1598,40 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 /* export event model */
 var Event = model(MODEL_NAME_EVENT, EventSchema);
 
-/* constants */
-const API_VERSION = getString('API_VERSION', '1.0.0');
-const PATH_SINGLE = '/events/:id';
-const PATH_LIST = '/events';
-const PATH_EXPORT = '/events/export';
-const PATH_SCHEMA = '/events/schema/';
+const getEventJsonSchema = (optns, done) => {
+  const jsonSchema = Event.jsonSchema();
+  return done(null, jsonSchema);
+};
 
-/**
- * @name EventHttpRouter
- * @namespace EventHttpRouter
- *
- * @description A representation of an entity which define and track an
- * instance(or occurrence) of an emergency(or disaster) event.
- *
- * @see {@link https://en.wikipedia.org/wiki/Disaster}
- *
- * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.1.0
- * @version 1.0.0
- * @public
- */
-const router = new Router({
-  version: API_VERSION,
-});
+const exportEvents = (optns, done) => {
+  const fileName = `events_exports_${Date.now()}.csv`;
+  const readStream = Event.exportCsv(optns);
+  return done(null, { fileName, readStream });
+};
 
-/**
- * @name GetEvents
- * @memberof EventHttpRouter
- * @description Returns a list of events
- */
-router.get(
-  PATH_LIST,
-  getFor({
-    get: (options, done) => Event.get(options, done),
-  })
-);
+const getEvents = (optns, done) => {
+  return Event.get(optns, done);
+};
 
-/**
- * @name GetEventSchema
- * @memberof EventHttpRouter
- * @description Returns event json schema definition
- */
-router.get(
-  PATH_SCHEMA,
-  schemaFor({
-    getSchema: (query, done) => {
-      const jsonSchema = Event.jsonSchema();
-      return done(null, jsonSchema);
-    },
-  })
-);
+const getEventById = (optns, done) => {
+  return Event.getById(optns, done);
+};
 
-/**
- * @name ExportEvents
- * @memberof EventHttpRouter
- * @description Export events as csv
- */
-router.get(
-  PATH_EXPORT,
-  downloadFor({
-    download: (options, done) => {
-      const fileName = `events_exports_${Date.now()}.csv`;
-      const readStream = Event.exportCsv(options);
-      return done(null, { fileName, readStream });
-    },
-  })
-);
+const postEventWithChanges = (optns, done) => {
+  return Event.post(optns, done);
+};
 
-/**
- * @name PostEvent
- * @memberof EventHttpRouter
- * @description Create new event
- */
-router.post(
-  PATH_LIST,
-  postFor({
-    // TODO: Event.postWithChanges
-    post: (body, done) => Event.post(body, done),
-  })
-);
+const putEventWithChanges = (optns, done) => {
+  return Event.put(optns, done);
+};
 
-/**
- * @name GetEvent
- * @memberof EventHttpRouter
- * @description Get existing event
- */
-router.get(
-  PATH_SINGLE,
-  getByIdFor({
-    getById: (options, done) => Event.getById(options, done),
-  })
-);
+const patchEventWithChanges = (optns, done) => {
+  return Event.patch(optns, done);
+};
 
-/**
- * @name PatchEvent
- * @memberof EventHttpRouter
- * @description Patch existing event
- */
-router.patch(
-  PATH_SINGLE,
-  patchFor({
-    // TODO: Event.patchWithChanges
-    patch: (options, done) => Event.patch(options, done),
-  })
-);
-
-/**
- * @name PutEvent
- * @memberof EventHttpRouter
- * @description Put existing event
- */
-router.put(
-  PATH_SINGLE,
-  putFor({
-    // TODO: Event.putWithChanges
-    put: (options, done) => Event.put(options, done),
-  })
-);
-
-/**
- * @name DeleteEvent
- * @memberof EventHttpRouter
- * @description Delete existing event
- */
-router.delete(
-  PATH_SINGLE,
-  deleteFor({
-    // TODO: Event.deleteWithChanges
-    del: (options, done) => Event.del(options, done),
-    soft: true,
-  })
-);
+const deleteEventWithChanges = (optns, done) => {
+  return Event.del(optns, done);
+};
 
 /**
  * @name event
@@ -2092,6 +1993,164 @@ ChangeLogSchema.statics.prepareSeedCriteria = seed => {
 /* export changelog model */
 var EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG, ChangeLogSchema);
 
+const getChangeLogJsonSchema = (optns, done) => {
+  const jsonSchema = EventChangeLog.jsonSchema();
+  return done(null, jsonSchema);
+};
+
+const exportChangeLogs = (optns, done) => {
+  const fileName = `changelogs_exports_${Date.now()}.csv`;
+  const readStream = EventChangeLog.exportCsv(optns);
+  return done(null, { fileName, readStream });
+};
+
+const getChangeLogs = (optns, done) => {
+  return EventChangeLog.get(optns, done);
+};
+
+const getChangeLogById = (optns, done) => {
+  return EventChangeLog.getById(optns, done);
+};
+
+const postChangeLogWithChanges = (optns, done) => {
+  return EventChangeLog.post(optns, done);
+};
+
+const putChangeLogWithChanges = (optns, done) => {
+  return EventChangeLog.put(optns, done);
+};
+
+const patchChangeLogWithChanges = (optns, done) => {
+  return EventChangeLog.patch(optns, done);
+};
+
+const deleteChangeLogWithChanges = (optns, done) => {
+  return EventChangeLog.del(optns, done);
+};
+
+/* constants */
+const API_VERSION = getString('API_VERSION', '1.0.0');
+const PATH_SINGLE = '/events/:id';
+const PATH_LIST = '/events';
+const PATH_EXPORT = '/events/export';
+const PATH_SCHEMA = '/events/schema/';
+
+/**
+ * @name EventHttpRouter
+ * @namespace EventHttpRouter
+ *
+ * @description A representation of an entity which define and track an
+ * instance(or occurrence) of an emergency(or disaster) event.
+ *
+ * @see {@link https://en.wikipedia.org/wiki/Disaster}
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 1.0.0
+ * @public
+ */
+const router = new Router({
+  version: API_VERSION,
+});
+
+/**
+ * @name GetEvents
+ * @memberof EventHttpRouter
+ * @description Returns a list of events
+ */
+router.get(
+  PATH_LIST,
+  getFor({
+    get: (options, done) => getEvents(options, done),
+  })
+);
+
+/**
+ * @name GetEventSchema
+ * @memberof EventHttpRouter
+ * @description Returns event json schema definition
+ */
+router.get(
+  PATH_SCHEMA,
+  schemaFor({
+    getSchema: (query, done) => getEventJsonSchema(query, done),
+  })
+);
+
+/**
+ * @name ExportEvents
+ * @memberof EventHttpRouter
+ * @description Export events as csv
+ */
+router.get(
+  PATH_EXPORT,
+  downloadFor({
+    download: (options, done) => exportEvents(options, done),
+  })
+);
+
+/**
+ * @name PostEvent
+ * @memberof EventHttpRouter
+ * @description Create new event
+ */
+router.post(
+  PATH_LIST,
+  postFor({
+    post: (body, done) => postEventWithChanges(body, done),
+  })
+);
+
+/**
+ * @name GetEvent
+ * @memberof EventHttpRouter
+ * @description Get existing event
+ */
+router.get(
+  PATH_SINGLE,
+  getByIdFor({
+    getById: (options, done) => getEventById(options, done),
+  })
+);
+
+/**
+ * @name PatchEvent
+ * @memberof EventHttpRouter
+ * @description Patch existing event
+ */
+router.patch(
+  PATH_SINGLE,
+  patchFor({
+    patch: (options, done) => patchEventWithChanges(options, done),
+  })
+);
+
+/**
+ * @name PutEvent
+ * @memberof EventHttpRouter
+ * @description Put existing event
+ */
+router.put(
+  PATH_SINGLE,
+  putFor({
+    put: (options, done) => putEventWithChanges(options, done),
+  })
+);
+
+/**
+ * @name DeleteEvent
+ * @memberof EventHttpRouter
+ * @description Delete existing event
+ */
+router.delete(
+  PATH_SINGLE,
+  deleteFor({
+    del: (options, done) => deleteEventWithChanges(options, done),
+    soft: true,
+  })
+);
+
 /* constants */
 const API_VERSION$1 = getString('API_VERSION', '1.0.0');
 const PATH_SINGLE$1 = '/changelogs/:id';
@@ -2126,7 +2185,7 @@ const router$1 = new Router({
 router$1.get(
   PATH_LIST$1,
   getFor({
-    get: (options, done) => EventChangeLog.get(options, done),
+    get: (options, done) => getChangeLogs(options, done),
   })
 );
 
@@ -2138,10 +2197,7 @@ router$1.get(
 router$1.get(
   PATH_SCHEMA$1,
   schemaFor({
-    getSchema: (query, done) => {
-      const jsonSchema = EventChangeLog.jsonSchema();
-      return done(null, jsonSchema);
-    },
+    getSchema: (query, done) => getChangeLogJsonSchema(query, done),
   })
 );
 
@@ -2153,11 +2209,7 @@ router$1.get(
 router$1.get(
   PATH_EXPORT$1,
   downloadFor({
-    download: (options, done) => {
-      const fileName = `changelogs_exports_${Date.now()}.csv`;
-      const readStream = EventChangeLog.exportCsv(options);
-      return done(null, { fileName, readStream });
-    },
+    download: (options, done) => exportChangeLogs(options, done),
   })
 );
 
@@ -2171,7 +2223,7 @@ router$1.post(
   uploaderFor(),
   postFor({
     // TODO: Event.putWithChanges
-    post: (body, done) => EventChangeLog.post(body, done),
+    post: (body, done) => postChangeLogWithChanges(body, done),
   })
 );
 
@@ -2183,7 +2235,7 @@ router$1.post(
 router$1.get(
   PATH_SINGLE$1,
   getByIdFor({
-    getById: (options, done) => EventChangeLog.getById(options, done),
+    getById: (options, done) => getChangeLogById(options, done),
   })
 );
 
@@ -2197,7 +2249,7 @@ router$1.patch(
   uploaderFor(),
   patchFor({
     // TODO: Event.patchWithChanges
-    patch: (options, done) => EventChangeLog.patch(options, done),
+    patch: (options, done) => patchChangeLogWithChanges(options, done),
   })
 );
 
@@ -2211,7 +2263,7 @@ router$1.put(
   uploaderFor(),
   putFor({
     // TODO: Event.putWithChanges
-    put: (options, done) => EventChangeLog.put(options, done),
+    put: (options, done) => putChangeLogWithChanges(options, done),
   })
 );
 
@@ -2224,7 +2276,7 @@ router$1.delete(
   PATH_SINGLE$1,
   deleteFor({
     // TODO: methodNotAllowed
-    del: (options, done) => EventChangeLog.del(options, done),
+    del: (options, done) => deleteChangeLogWithChanges(options, done),
     soft: true,
   })
 );
