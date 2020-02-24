@@ -1,3 +1,20 @@
+#### 0.5.2 (2020-02-24)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([ac7db9ca](https://github.com/codetanzania/ewea-event/commit/ac7db9ca9699aaa68258eec4d06a55b79152a179))
+
+##### New Features
+
+* **api:**
+  *  introduce notification api contract ([39cce794](https://github.com/codetanzania/ewea-event/commit/39cce794a4bcd41ae0d631b1335bad80713207cd))
+  *  extract changelog methods to api contracts ([2ab007ee](https://github.com/codetanzania/ewea-event/commit/2ab007ee228fe446e7d121caa3d5ee6b5b20fc46))
+  *  extract http methods to api contracts ([dff6582c](https://github.com/codetanzania/ewea-event/commit/dff6582c004970b369ea2c064720fc924e1dc7b7))
+
+##### Code Style Changes
+
+* **api:**  add todos ([9e74197c](https://github.com/codetanzania/ewea-event/commit/9e74197ca7d86792999989f7b66eb811a0f760b5))
+
 #### 0.5.1 (2020-02-22)
 
 ##### New Features
