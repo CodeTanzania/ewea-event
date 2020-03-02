@@ -66,6 +66,7 @@ export const postEventWithChanges = (optns, done) => {
         return Event.post(event, next);
       },
       (event, next) => {
+        // TODO: check AUTO_EVENT_NOTIFICATION_ENABLED=true
         return sendEventNotification(event, (/* error, sent */) => {
           // TODO: notify(or log) swallowed error
           return next(null, event);
