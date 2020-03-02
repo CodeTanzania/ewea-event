@@ -1,3 +1,17 @@
+#### 0.6.0 (2020-03-02)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([2dab627d](https://github.com/codetanzania/ewea-event/commit/2dab627d8a8e870108648e07ac3c31afad79bed8))
+  *  force latest version & audit fix ([efbedcad](https://github.com/codetanzania/ewea-event/commit/efbedcadc1ff3f5c219c59364795ffabaa52f070))
+  *  force latest version & audit fix ([d3e105c1](https://github.com/codetanzania/ewea-event/commit/d3e105c15df209ab33d971fc27e6c28a04185c9e))
+
+##### New Features
+
+* **notification:**  autosent event notification after create ([ee5e1ac4](https://github.com/codetanzania/ewea-event/commit/ee5e1ac43f97cb7c5e17078914f76c5475cba36f))
+* **notifications:**  send generic campaign ([42bd4259](https://github.com/codetanzania/ewea-event/commit/42bd4259307d89588643fd5c89feb05a43fcf3c1))
+
 #### 0.5.2 (2020-02-24)
 
 ##### Chores

@@ -30,6 +30,15 @@ const PATH_LIST = '/changelogs';
 const PATH_EXPORT = '/changelogs/export';
 const PATH_SCHEMA = '/changelogs/schema/';
 
+/* middlewares */
+const ensureInitiator = (request, response, next) => {
+  // TODO: refactor & test
+  if (request.party && request.body) {
+    request.body.initiator = request.party;
+  }
+  return next();
+};
+
 /**
  * @name EventChangeLogHttpRouter
  * @namespace EventChangeLogHttpRouter
@@ -93,6 +102,7 @@ router.get(
 router.post(
   PATH_LIST,
   uploaderFor(),
+  ensureInitiator,
   postFor({
     // TODO: Event.putWithChanges
     post: (body, done) => postChangeLogWithChanges(body, done),

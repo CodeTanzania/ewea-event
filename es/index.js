@@ -1,18 +1,20 @@
 import { COLLECTION_NAME_EVENT, POPULATION_MAX_DEPTH, COLLECTION_NAME_EVENTCHANGELOG, MODEL_NAME_EVENT, MODEL_NAME_EVENTCHANGELOG } from '@codetanzania/ewea-internals';
-import { join, compact, mergeObjects, idOf, pkg } from '@lykmapipo/common';
-import { getString, apiVersion as apiVersion$1 } from '@lykmapipo/env';
+import { join, compact, mergeObjects, idOf, uniq, parseTemplate, pkg } from '@lykmapipo/common';
+import { getString, getBoolean, getStringSet, isProduction, apiVersion as apiVersion$1 } from '@lykmapipo/env';
 import { ObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
 import { FileTypes, uploaderFor, createModels } from '@lykmapipo/file';
-import { get, pick } from 'lodash';
+import { get, pick, map } from 'lodash';
 import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
 import { Point } from 'mongoose-geojson-schemas';
+import { Contact, CHANNEL_EMAIL, Campaign } from '@lykmapipo/postman';
 import { Party } from '@codetanzania/emis-stakeholder';
 import moment from 'moment';
+import { waterfall, parallel } from 'async';
 
 // common constants
 const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
@@ -813,6 +815,33 @@ const address = {
 };
 
 /**
+ * @name reporter
+ * @description A party i.e civilian, customer etc which the event.
+ *
+ * @memberof Event
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} index - ensure database index
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   name: "Jane Doe",
+ *   mobile: "+255715463739",
+ *   email: "jane.doe@example.com",
+ * }
+ */
+const reporter = Contact; // TODO: index, test
+
+/**
  * @name initiator
  * @alias changer
  * @description A party(i.e company, organization, individual etc) who
@@ -1476,7 +1505,7 @@ const SCHEMA = mergeObjects(
   { location, address },
   { causes, description, places },
   { areas },
-  { agencies, focals },
+  { reporter, agencies, focals },
   { instructions, interventions, impacts, remarks, startedAt, endedAt }
 );
 
@@ -1598,6 +1627,114 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 /* export event model */
 var Event = model(MODEL_NAME_EVENT, EventSchema);
 
+const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
+
+const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
+  CHANNEL_EMAIL,
+]);
+
+/* templates */
+const TEMPLATES_EVENT_NOTIFICATION_TITLE =
+  '{level} Advisory: {type} {stage} - #{number}';
+const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
+  'Description: {description} \n\n Instructions:{instructions} \n\n Areas: {areas} \n\n Places: {places}';
+
+// TODO
+// sendMessage
+// sendChangeLogNotification
+// sendActionNotification
+
+const sendCampaign = (message, done) => {
+  // prepare campaign
+  const isCampaignInstance = message instanceof Campaign;
+  let campaign = isCampaignInstance ? message.toObject() : message;
+
+  // ensure campaign channels
+  campaign.channels = uniq(
+    [].concat(NOTIFICATION_CHANNELS).concat(message.channels)
+  );
+
+  // instantiate campaign
+  campaign = new Campaign(message);
+
+  // queue campaign in production
+  // or if is asynchronous send
+  if (isProduction() && !ENABLE_SYNC_TRANSPORT) {
+    campaign.queue();
+    done(null, campaign);
+  }
+
+  // direct send campaign in development & test
+  else {
+    campaign.send(done);
+  }
+};
+
+const sendEventNotification = (event, done) => {
+  // prepare recipient criteria
+  let areaIds = map([].concat(event.areas), area => {
+    return get(area, '_id');
+  });
+  areaIds = uniq(areaIds).concat(null);
+  const criteria = { area: { $in: areaIds } };
+
+  // prepare notification title/subject
+  const subject = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_TITLE, {
+    level: get(event, 'level.strings.name.en'),
+    type: get(event, 'type.strings.name.en'),
+    stage: event.stage,
+    number: event.number,
+  });
+
+  // prepare notification areas body
+  let areaNames = map([].concat(event.areas), area => {
+    return get(area, 'strings.name.en', 'N/A');
+  });
+  areaNames = uniq(areaNames);
+
+  // prepare notification body
+  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
+    description: get(event, 'description', 'N/A'),
+    instructions: get(event, 'instructions', 'N/A'),
+    areas: areaNames.join(', '),
+    places: get(event, 'places', 'N/A'),
+  });
+
+  // sent campaign
+  sendCampaign({ criteria, subject, message }, done);
+};
+
+const preLoadRelated = (optns, done) => {
+  // ensure options
+  const options = mergeObjects(optns);
+
+  const ensureType = next => {
+    const typeId = idOf(options.type) || options.type;
+    if (typeId) {
+      // TODO: or find default
+      return Predefine.getById({ _id: typeId }, next);
+    }
+    return next(null, typeId);
+  };
+
+  const ensureGroup = next => {
+    const typeId = idOf(options.type) || options.type;
+    if (typeId) {
+      // TODO: or find default
+      // TODO: try use group if exists
+      return Predefine.getById({ _id: typeId }, (error, type) => {
+        const group = get(type, 'relations.group');
+        return next(error, group);
+      });
+    }
+    return next(null, null);
+  };
+
+  // execute tasks
+  const tasks = { type: ensureType, group: ensureGroup };
+  return parallel(tasks, done);
+};
+
 const getEventJsonSchema = (optns, done) => {
   const jsonSchema = Event.jsonSchema();
   return done(null, jsonSchema);
@@ -1618,7 +1755,27 @@ const getEventById = (optns, done) => {
 };
 
 const postEventWithChanges = (optns, done) => {
-  return Event.post(optns, done);
+  const options = mergeObjects(optns);
+
+  return waterfall(
+    [
+      next => preLoadRelated(options, next),
+      (related, next) => {
+        const event = mergeObjects(options, related);
+        return Event.post(event, next);
+      },
+      (event, next) => {
+        // TODO: check AUTO_EVENT_NOTIFICATION_ENABLED=true
+        return sendEventNotification(event, (/* error, sent */) => {
+          // TODO: notify(or log) swallowed error
+          return next(null, event);
+        });
+      },
+      // TODO: ensure level, severity, certainty, status, urgency
+      // TODO: save initial changelog
+    ],
+    done
+  );
 };
 
 const putEventWithChanges = (optns, done) => {
@@ -2035,6 +2192,15 @@ const PATH_LIST = '/events';
 const PATH_EXPORT = '/events/export';
 const PATH_SCHEMA = '/events/schema/';
 
+/* middlewares */
+const ensureReporter = (request, response, next) => {
+  // TODO: refactor & test
+  if (request.party && request.body) {
+    request.body.reporter = request.party.asContact();
+  }
+  return next();
+};
+
 /**
  * @name EventHttpRouter
  * @namespace EventHttpRouter
@@ -2097,6 +2263,7 @@ router.get(
  */
 router.post(
   PATH_LIST,
+  ensureReporter,
   postFor({
     post: (body, done) => postEventWithChanges(body, done),
   })
@@ -2157,6 +2324,15 @@ const PATH_SINGLE$1 = '/changelogs/:id';
 const PATH_LIST$1 = '/changelogs';
 const PATH_EXPORT$1 = '/changelogs/export';
 const PATH_SCHEMA$1 = '/changelogs/schema/';
+
+/* middlewares */
+const ensureInitiator = (request, response, next) => {
+  // TODO: refactor & test
+  if (request.party && request.body) {
+    request.body.initiator = request.party;
+  }
+  return next();
+};
 
 /**
  * @name EventChangeLogHttpRouter
@@ -2221,6 +2397,7 @@ router$1.get(
 router$1.post(
   PATH_LIST$1,
   uploaderFor(),
+  ensureInitiator,
   postFor({
     // TODO: Event.putWithChanges
     post: (body, done) => postChangeLogWithChanges(body, done),
