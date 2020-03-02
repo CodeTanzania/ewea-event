@@ -29,6 +29,15 @@ const PATH_LIST = '/events';
 const PATH_EXPORT = '/events/export';
 const PATH_SCHEMA = '/events/schema/';
 
+/* middlewares */
+const ensureReporter = (request, response, next) => {
+  // TODO: refactor & test
+  if (request.party && request.body) {
+    request.body.reporter = request.party.asContact();
+  }
+  return next();
+};
+
 /**
  * @name EventHttpRouter
  * @namespace EventHttpRouter
@@ -91,6 +100,7 @@ router.get(
  */
 router.post(
   PATH_LIST,
+  ensureReporter,
   postFor({
     post: (body, done) => postEventWithChanges(body, done),
   })

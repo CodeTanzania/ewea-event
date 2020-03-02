@@ -106,7 +106,7 @@
     "mongoose": ">=5.9.2"
   },
   "dependencies": {
-    "@codetanzania/emis-stakeholder": ">=2.1.0",
+    "@codetanzania/emis-stakeholder": ">=2.2.1",
     "@codetanzania/ewea-common": ">=0.6.3",
     "@codetanzania/ewea-internals": ">=0.6.2",
     "@lykmapipo/common": ">=0.30.6",

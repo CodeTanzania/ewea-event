@@ -1,10 +1,38 @@
 import { get } from 'lodash';
 import { join } from '@lykmapipo/common';
 import { ObjectId } from '@lykmapipo/mongoose-common';
+import { Contact } from '@lykmapipo/postman';
 import { Predefine } from '@lykmapipo/predefine';
 import { Party } from '@codetanzania/emis-stakeholder';
 
 import { PREDEFINE_OPTION_AUTOPOPULATE } from '../internals';
+
+/**
+ * @name reporter
+ * @description A party i.e civilian, customer etc which the event.
+ *
+ * @memberof Event
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} index - ensure database index
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   name: "Jane Doe",
+ *   mobile: "+255715463739",
+ *   email: "jane.doe@example.com",
+ * }
+ */
+export const reporter = Contact; // TODO: index, test
 
 /**
  * @name initiator

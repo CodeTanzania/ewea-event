@@ -2,11 +2,23 @@ import {
   clear as clearHttp,
   testRouter,
 } from '@lykmapipo/express-test-helpers';
-import { clear as clearDb, expect } from '@lykmapipo/mongoose-test-helpers';
+import {
+  create,
+  clear as clearDb,
+  expect,
+} from '@lykmapipo/mongoose-test-helpers';
+import { Predefine } from '@lykmapipo/predefine';
+import { Party } from '@codetanzania/emis-stakeholder';
 import { Event, eventRouter } from '../../src';
 
 describe('Event Rest API', () => {
+  const party = Party.fake();
+  const group = Predefine.fake();
+  const type = Predefine.fake();
+  type.set({ relations: { group: group._id } });
+
   const event = Event.fakeExcept('number');
+  event.set({ type: type._id });
 
   const options = {
     pathSingle: '/events/:id',
@@ -19,6 +31,8 @@ describe('Event Rest API', () => {
 
   before(() => clearHttp());
 
+  before(done => create([party, group, type], done));
+
   it('should handle HTTP POST on /events', done => {
     const { testPost } = testRouter(options, eventRouter);
     testPost({ ...event.toObject() })
@@ -30,6 +44,8 @@ describe('Event Rest API', () => {
         const created = new Event(body);
         expect(created._id).to.exist.and.be.eql(event._id);
         expect(created.number).to.exist;
+        expect(created.type).to.exist;
+        expect(created.group).to.exist;
         done(error, body);
       });
   });

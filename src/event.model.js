@@ -28,7 +28,7 @@ import {
   urgency,
 } from './schema/base.schema';
 import { location, address, areas } from './schema/geos.schema';
-import { agencies, focals } from './schema/parties.schema';
+import { reporter, agencies, focals } from './schema/parties.schema';
 import {
   stage,
   number,
@@ -49,7 +49,7 @@ const SCHEMA = mergeObjects(
   { location, address },
   { causes, description, places },
   { areas },
-  { agencies, focals },
+  { reporter, agencies, focals },
   { instructions, interventions, impacts, remarks, startedAt, endedAt }
 );
 
