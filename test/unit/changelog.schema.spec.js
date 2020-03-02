@@ -276,6 +276,26 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have catalogue field', () => {
+    const catalogue = ChangeLog.path('catalogue');
+
+    expect(catalogue).to.exist;
+    expect(catalogue).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(catalogue.options).to.exist;
+    expect(catalogue.options).to.be.an('object');
+    expect(catalogue.options.type).to.exist;
+    expect(catalogue.options.ref).to.exist;
+    expect(catalogue.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(catalogue.options.index).to.be.true;
+    // expect(catalogue.options.required).to.be.true;
+    expect(catalogue.options.exists).to.be.true;
+    expect(catalogue.options.autopopulate).to.exist;
+    expect(catalogue.options.taggable).to.exist;
+    expect(catalogue.options.exportable).to.exist;
+    // expect(catalogue.options.aggregatable).to.exist;
+    expect(catalogue.options.default).to.be.undefined;
+  });
+
   it('should have indicator field', () => {
     const indicator = ChangeLog.path('indicator');
 
@@ -314,6 +334,26 @@ describe('ChangeLog Schema', () => {
     expect(topic.options.exportable).to.exist;
     // expect(topic.options.aggregatable).to.exist;
     expect(topic.options.default).to.be.undefined;
+  });
+
+  it('should have question field', () => {
+    const question = ChangeLog.path('question');
+
+    expect(question).to.exist;
+    expect(question).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(question.options).to.exist;
+    expect(question.options).to.be.an('object');
+    expect(question.options.type).to.exist;
+    expect(question.options.ref).to.exist;
+    expect(question.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(question.options.index).to.be.true;
+    // expect(question.options.required).to.be.true;
+    expect(question.options.exists).to.be.true;
+    expect(question.options.autopopulate).to.exist;
+    expect(question.options.taggable).to.exist;
+    expect(question.options.exportable).to.exist;
+    // expect(question.options.aggregatable).to.exist;
+    expect(question.options.default).to.be.undefined;
   });
 
   it('should have need field', () => {

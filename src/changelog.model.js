@@ -5,6 +5,7 @@ import {
 import { pick } from 'lodash';
 import { mergeObjects, idOf } from '@lykmapipo/common';
 import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
+import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 
@@ -38,10 +39,12 @@ import {
   urgency,
   fanction,
   action,
+  catalogue,
   indicator,
   topic,
-  need,
-  effect,
+  question,
+  need, // TODO: remove
+  effect, // TODO: remove
   unit,
 } from './schema/base.schema';
 
@@ -60,8 +63,8 @@ const SCHEMA = mergeObjects(
   { initiator, verifier },
   { group, type, level, severity, certainty, status, urgency },
   { event },
-  { function: fanction, action },
-  { indicator, topic, need, effect, value, unit },
+  { function: fanction, action, catalogue },
+  { indicator, topic, question, need, effect, value, unit },
   { areas },
   { groups, roles, agencies, focals },
   { image, audio, video, document },

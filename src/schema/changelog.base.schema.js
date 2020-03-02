@@ -96,8 +96,8 @@ export const use = {
  * @description Human readable, unique identifier used to reply
  * on event changelog.
  *
- * It consist of; the year of the event; and a six-digit, sequential
- * reply number e.g 2001-000033.
+ * It consist of; 4-digit year of the event; 2-digit month of the event;
+ * and a four-digit, sequential reply number e.g 2001-000033.
  *
  * @type {object}
  * @property {object} type - schema(data) type
@@ -130,13 +130,13 @@ export const keyword = {
   exportable: true,
   sequenceable: {
     prefix: function prefix() {
-      const year = moment(new Date()).format('YYYY');
+      const year = moment(new Date()).format('YYYYMM');
       return compact([year]).join('');
     },
     suffix: '',
-    length: 6,
+    length: 4,
     pad: '0',
-    separator: '-',
+    separator: '',
   },
   fake: {
     generator: 'random',
