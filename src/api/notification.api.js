@@ -15,7 +15,7 @@ export const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
 export const TEMPLATES_EVENT_NOTIFICATION_TITLE =
   '{level} Advisory: {type} {stage} - #{number}';
 export const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
-  'Description: {description} \n\n Instructions:{instructions} \n\n Areas: {areas} \n\n Places: {places}';
+  'Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places}';
 
 // TODO
 // sendMessage
