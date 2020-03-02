@@ -1,4 +1,5 @@
-import { uniq } from '@lykmapipo/common';
+import { get, map } from 'lodash';
+import { uniq, parseTemplate } from '@lykmapipo/common';
 import { getStringSet, getBoolean, isProduction } from '@lykmapipo/env';
 import { CHANNEL_EMAIL, Campaign } from '@lykmapipo/postman';
 
@@ -10,11 +11,16 @@ export const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
   CHANNEL_EMAIL,
 ]);
 
+/* templates */
+export const TEMPLATES_EVENT_NOTIFICATION_TITLE =
+  '{level} Advisory: {type} {stage} - #{number}';
+export const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
+  'Description: {description} \n\n Instructions:{instructions} \n\n Areas: {areas} \n\n Places: {places}';
+
 // TODO
 // sendMessage
-// sendChangeLog
-// sendAction
-// sendEvent
+// sendChangeLogNotification
+// sendActionNotification
 
 export const sendCampaign = (message, done) => {
   // prepare campaign
@@ -40,4 +46,38 @@ export const sendCampaign = (message, done) => {
   else {
     campaign.send(done);
   }
+};
+
+export const sendEventNotification = (event, done) => {
+  // prepare recipient criteria
+  let areaIds = map([].concat(event.areas), area => {
+    return get(area, '_id');
+  });
+  areaIds = uniq(areaIds).concat(null);
+  const criteria = { area: { $in: areaIds } };
+
+  // prepare notification title/subject
+  const subject = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_TITLE, {
+    level: get(event, 'level.strings.name.en'),
+    type: get(event, 'type.strings.name.en'),
+    stage: event.stage,
+    number: event.number,
+  });
+
+  // prepare notification areas body
+  let areaNames = map([].concat(event.areas), area => {
+    return get(area, 'strings.name.en', 'N/A');
+  });
+  areaNames = uniq(areaNames);
+
+  // prepare notification body
+  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
+    description: get(event, 'description', 'N/A'),
+    instructions: get(event, 'instructions', 'N/A'),
+    areas: areaNames.join(', '),
+    places: get(event, 'places', 'N/A'),
+  });
+
+  // sent campaign
+  sendCampaign({ criteria, subject, message }, done);
 };

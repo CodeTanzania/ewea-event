@@ -3,6 +3,7 @@ import { waterfall, parallel } from 'async';
 import { idOf, mergeObjects } from '@lykmapipo/common';
 import { Predefine } from '@lykmapipo/predefine';
 import Event from '../event.model';
+import { sendEventNotification } from './notification.api';
 
 export const preLoadRelated = (optns, done) => {
   // ensure options
@@ -64,9 +65,14 @@ export const postEventWithChanges = (optns, done) => {
         const event = mergeObjects(options, related);
         return Event.post(event, next);
       },
+      (event, next) => {
+        return sendEventNotification(event, (/* error, sent */) => {
+          // TODO: notify(or log) swallowed error
+          return next(null, event);
+        });
+      },
       // TODO: ensure level, severity, certainty, status, urgency
       // TODO: save initial changelog
-      // TODO: queue notification
     ],
     done
   );
