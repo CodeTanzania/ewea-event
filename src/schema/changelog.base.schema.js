@@ -1,5 +1,7 @@
 import { MODEL_NAME_EVENT } from '@codetanzania/ewea-internals';
 import { get } from 'lodash';
+import moment from 'moment';
+import { compact } from '@lykmapipo/common';
 import { ObjectId } from '@lykmapipo/mongoose-common';
 
 import {
@@ -87,6 +89,59 @@ export const use = {
   exportable: true,
   default: CHANGELOG_USE_CHANGE,
   fake: true,
+};
+
+/**
+ * @name keyword
+ * @description Human readable, unique identifier used to reply
+ * on event changelog.
+ *
+ * It consist of; the year of the event; and a six-digit, sequential
+ * reply number e.g 2001-000033.
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {boolean} uppercase - force value to uppercase
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} unique - ensure unique database index
+ * @property {boolean} searchable - allow searching
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * 2018-000033
+ */
+export const keyword = {
+  type: String,
+  trim: true,
+  uppercase: true,
+  required: true,
+  index: true,
+  // unique: true,
+  searchable: true,
+  taggable: true,
+  exportable: true,
+  sequenceable: {
+    prefix: function prefix() {
+      const year = moment(new Date()).format('YYYY');
+      return compact([year]).join('');
+    },
+    suffix: '',
+    length: 6,
+    pad: '0',
+    separator: '-',
+  },
+  fake: {
+    generator: 'random',
+    type: 'uuid',
+  },
 };
 
 /**

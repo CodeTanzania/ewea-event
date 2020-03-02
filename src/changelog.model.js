@@ -46,11 +46,17 @@ import {
 } from './schema/base.schema';
 
 import { areas, location, address } from './schema/geos.schema';
-import { event, use, comment, value } from './schema/changelog.base.schema';
+import {
+  event,
+  use,
+  keyword,
+  comment,
+  value,
+} from './schema/changelog.base.schema';
 import { image, audio, video, document } from './schema/files.schema';
 
 const SCHEMA = mergeObjects(
-  { use },
+  { use, keyword },
   { initiator, verifier },
   { group, type, level, severity, certainty, status, urgency },
   { event },

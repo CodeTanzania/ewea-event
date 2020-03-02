@@ -24,6 +24,24 @@ describe('ChangeLog Schema', () => {
     expect(use.options.fake).to.exist;
   });
 
+  it('should have keyword field', () => {
+    const keyword = ChangeLog.path('keyword');
+
+    expect(keyword).to.exist;
+    expect(keyword).to.be.instanceof(SchemaTypes.String);
+    expect(keyword.options).to.exist;
+    expect(keyword.options).to.be.an('object');
+    expect(keyword.options.type).to.exist;
+    expect(keyword.options.trim).to.be.true;
+    expect(keyword.options.uppercase).to.be.true;
+    expect(keyword.options.index).to.be.true;
+    // expect(keyword.options.unique).to.be.true;
+    // expect(keyword.options.required).to.be.true;
+    expect(keyword.options.searchable).to.be.true;
+    expect(keyword.options.taggable).to.be.true;
+    expect(keyword.options.fake).to.exist;
+  });
+
   it('should have initiator field', () => {
     const initiator = ChangeLog.path('initiator');
 
