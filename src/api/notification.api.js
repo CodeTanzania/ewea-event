@@ -48,6 +48,7 @@ export const sendCampaign = (message, done) => {
   }
 };
 
+// send create event notification
 export const sendEventNotification = (event, done) => {
   // prepare recipient criteria
   let areaIds = map([].concat(event.areas), area => {
@@ -80,4 +81,12 @@ export const sendEventNotification = (event, done) => {
 
   // sent campaign
   sendCampaign({ criteria, subject, message }, done);
+};
+
+// send event changes/changelogs notifications
+export const sendEventUpdates = (event, changelog, done) => {
+  // TODO: compute message updates from changelog
+  // TODO: compute title from event
+  // TODO: Resticts updates channels
+  return done();
 };

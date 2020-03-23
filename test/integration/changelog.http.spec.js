@@ -8,7 +8,7 @@ import { clear as clearDb, expect } from '@lykmapipo/mongoose-test-helpers';
 import { createModels } from '@lykmapipo/file';
 import { Event, EventChangeLog, eventChangeLogRouter } from '../../src';
 
-describe('Event ChangeLog Rest API', () => {
+describe.only('Event ChangeLog Rest API', () => {
   const { SEED_PATH } = process.env;
   let event;
   const changelog = EventChangeLog.fakeOnly('comment');
@@ -29,6 +29,7 @@ describe('Event ChangeLog Rest API', () => {
   });
 
   before(done =>
+    // TODO: use fake
     Event.seed((error, seeded) => {
       event = _.first([].concat(seeded));
       changelog.set({ event });
@@ -44,6 +45,7 @@ describe('Event ChangeLog Rest API', () => {
       .expect(201)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
+        console.log('reply', body);
         expect(error).to.not.exist;
         expect(body).to.exist;
         const created = new EventChangeLog(body);

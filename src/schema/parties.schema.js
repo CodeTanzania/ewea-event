@@ -1,11 +1,21 @@
 import { get } from 'lodash';
-import { join } from '@lykmapipo/common';
-import { ObjectId } from '@lykmapipo/mongoose-common';
+import { idOf, join } from '@lykmapipo/common';
+import { ObjectId, isObjectId } from '@lykmapipo/mongoose-common';
 import { Contact } from '@lykmapipo/postman';
 import { Predefine } from '@lykmapipo/predefine';
 import { Party } from '@codetanzania/emis-stakeholder';
 
 import { PREDEFINE_OPTION_AUTOPOPULATE } from '../internals';
+
+const deduplicate = (a, b) => {
+  // TODO: refactor to areSameObjectId(vali8&common)
+  const idOfA = idOf(a) || a;
+  const idOfB = idOf(b) || b;
+  if (isObjectId(idOfA)) {
+    return idOfA.equals(idOfB);
+  }
+  return idOfA === idOfB;
+};
 
 /**
  * @name reporter
@@ -168,6 +178,7 @@ export const groups = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -214,6 +225,7 @@ export const roles = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -263,6 +275,7 @@ export const agencies = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -311,6 +324,7 @@ export const focals = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {

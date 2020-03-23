@@ -8,6 +8,7 @@ import {
   expect,
 } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@lykmapipo/predefine';
+import { createModels } from '@lykmapipo/file';
 import { Party } from '@codetanzania/emis-stakeholder';
 import { Event, eventRouter } from '../../src';
 
@@ -30,6 +31,8 @@ describe('Event Rest API', () => {
   before(done => clearDb(Event, done));
 
   before(() => clearHttp());
+
+  beforeEach(() => createModels());
 
   before(done => create([party, group, type], done));
 
@@ -125,6 +128,7 @@ describe('Event Rest API', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
+        console.log('reply', body);
         expect(error).to.not.exist;
         expect(body).to.exist;
         const patched = new Event(body);
