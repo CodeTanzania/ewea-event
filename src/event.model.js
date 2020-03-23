@@ -2,7 +2,8 @@ import {
   MODEL_NAME_EVENT,
   COLLECTION_NAME_EVENT,
 } from '@codetanzania/ewea-internals';
-import { pick } from 'lodash';
+import { waterfall } from 'async';
+import { forEach, get, includes, omit, pick, union } from 'lodash';
 import { mergeObjects, idOf } from '@lykmapipo/common';
 import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
 import '@lykmapipo/mongoose-sequenceable';
@@ -16,7 +17,11 @@ import {
   EVENT_STAGES,
   EVENT_OPTION_SELECT,
   EVENT_OPTION_AUTOPOPULATE,
+  EVENT_UPDATE_ARRAY_FIELDS,
+  EVENT_UPDATE_IGNORED_FIELDS,
 } from './internals';
+
+import { sendEventUpdates } from './api/notification.api';
 
 import {
   group,
@@ -43,6 +48,10 @@ import {
   endedAt,
 } from './schema/event.base.schema';
 
+// TODO: calculate expose(risk) after create
+// TODO: send actions after create
+// TODO: ensure all fields in changelog schema?
+
 const SCHEMA = mergeObjects(
   { group, type, level, severity, certainty, status, urgency },
   { stage, number },
@@ -52,11 +61,6 @@ const SCHEMA = mergeObjects(
   { reporter, agencies, focals },
   { instructions, interventions, impacts, remarks, startedAt, endedAt }
 );
-
-// TODO: send notification after create
-// TODO: calculate expose(risk) after create
-// TODO: send actions after create
-// TODO: responding agencies and focals
 
 /**
  * @module Event
@@ -166,6 +170,105 @@ EventSchema.statics.prepareSeedCriteria = seed => {
     : pick(copyOfSeed, 'group', 'type', 'number');
 
   return criteria;
+};
+
+/**
+ * @name updateWithChanges
+ * @function updateWithChanges
+ * @description Update existing Event with the given changes
+ * @param {object} criteria valid event query criteria
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const criteria = { _id: '...' };
+ * const changes = { remarks: '...' };
+ * Event.updateWithChanges(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWithChanges = (criteria, changes, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // find existing event by given criteria
+  const findEvent = next => {
+    return Event.findOne(criteria)
+      .orFail()
+      .exec(next);
+  };
+
+  // apply changes to found event
+  const applyChanges = (event, next) => {
+    // compute updates with ignores
+    const updates = { updatedAt: new Date() };
+    const allowedChanges = omit(changes, ...EVENT_UPDATE_IGNORED_FIELDS);
+    forEach(allowedChanges, (value, key) => {
+      const isArrayField = includes(EVENT_UPDATE_ARRAY_FIELDS, key);
+      if (isArrayField) {
+        const existValue = get(event, key);
+        updates[key] = union(existValue, [].concat(value));
+      }
+      updates[key] = value;
+    });
+
+    // persist event changes
+    event.set(updates);
+    return event.save(next);
+  };
+
+  // notify event updates
+  const sendUpdates = (event, next) => {
+    return sendEventUpdates(event, changes, (error /* , campaign */) => {
+      return next(error, event);
+    });
+  };
+
+  // update event
+  const tasks = [findEvent, applyChanges, sendUpdates];
+  return waterfall(tasks, done);
+};
+
+/**
+ * @name updateWithChangeLog
+ * @function updateWithChangeLog
+ * @description Update existing event with the given changelog instance
+ * @param {object} changelog valid event changelog to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { _id: '...', comment: '...' };
+ * Event.updateWithChangeLog(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWithChangeLog = (changelog, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // return if changelog has no event
+  if (!changelog.event) {
+    return done(null, changelog);
+  }
+
+  // convert changelog to object
+  const changes = changelog.toObject();
+
+  // ensure event criteria
+  const criteria = { _id: idOf(changes.event) || changes.event };
+
+  // update event with changelog
+  return Event.updateWithChanges(criteria, changes, done);
 };
 
 /* export event model */

@@ -7,7 +7,17 @@ import Event from '../event.model';
 import EventChangeLog from '../changelog.model';
 
 // TODO: move to internal/common
-export const ignoredFields = ['_id', 'id', 'event', 'keyword', 'number'];
+export const ignoredFields = [
+  '_id',
+  'id',
+  'event',
+  'keyword',
+  'number',
+  'location',
+  'address',
+  'createdAt',
+  'use',
+];
 
 export const arrayFields = ['areas', 'agencies', 'focals'];
 
@@ -95,18 +105,10 @@ export const postEventWithChanges = (optns, done) => {
   );
 };
 
-export const updateEventWithChangelog = (changelog, done) => {
-  // TODO: obtain event from changelog
-  // TODO: apply changes from changelog
-  // TODO: save event
-  done(null, changelog);
-};
-
 // TODO: accept changelog?
 export const updateEvent = (optns, done) => {
   // obtain eventId
   const eventId = idOf(optns.event) || optns.event || optns.id;
-  console.log('options', eventId, optns);
 
   // fetch existing event
   const fetchEvent = next => {
@@ -128,7 +130,6 @@ export const updateEvent = (optns, done) => {
         }
         changes[key] = value;
       });
-      console.log('changes', changes);
       // apply changes
       event.set(changes);
       return event.save(next); // TODO: put|patch
@@ -141,9 +142,23 @@ export const updateEvent = (optns, done) => {
   return waterfall(tasks, done);
 };
 
+export const updateEventWithChangeLog = (changelog, done) => {
+  // return if changelog has no event
+  if (!changelog.event) {
+    return done(null, changelog);
+  }
+
+  // convert changelog to object
+  const changes = changelog.toObject();
+  // ensure event id
+  changes.event = idOf(changes.event) || changes.event;
+
+  // update event with changelog
+  return updateEvent(changes, done);
+};
+
 // update event with changes
 export const updateEventWithChanges = (optns, done) => {
-  console.log(optns);
   // save received changelogs
   const saveChangeLog = next => {
     return EventChangeLog.post(omitIgnored(optns), next);
@@ -151,11 +166,7 @@ export const updateEventWithChanges = (optns, done) => {
 
   // update event with received changes
   const saveEventChanges = (changelog, next) => {
-    console.log('changelog', changelog);
     return updateEvent(optns, (error, event) => {
-      console.log('error', error);
-      console.log('event', event);
-      console.log('changelog', changelog);
       return next(error, event, changelog);
     });
   };

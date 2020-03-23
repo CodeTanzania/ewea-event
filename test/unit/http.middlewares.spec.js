@@ -1,7 +1,7 @@
 import { expect } from '@lykmapipo/mongoose-test-helpers';
 import { ensureInitiator, ensureVerifier } from '../../src/http.middlewares';
 
-describe.only('Http Middlewares', () => {
+describe('Http Middlewares', () => {
   it('should ensure initiator if not set', done => {
     const request = { body: {}, party: {} };
     ensureInitiator(request, {}, () => {

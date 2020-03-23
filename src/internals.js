@@ -57,3 +57,27 @@ export const PREDEFINE_OPTION_AUTOPOPULATE = {
   select: PREDEFINE_OPTION_SELECT,
   maxDepth: POPULATION_MAX_DEPTH,
 };
+
+export const EVENT_UPDATE_ARRAY_FIELDS = ['areas', 'agencies', 'focals'];
+
+export const EVENT_UPDATE_IGNORED_FIELDS = [
+  '_id',
+  'id',
+  'event',
+  'keyword',
+  'number',
+  'location',
+  'address',
+  'createdAt',
+  'use',
+];
+
+export const EVENT_CHANGELOG_RELATED_FIELDS = [
+  'group',
+  'type',
+  'level',
+  'severity',
+  'certainty',
+  'status',
+  'urgency',
+];

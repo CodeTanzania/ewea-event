@@ -128,7 +128,6 @@ describe('Event Rest API', () => {
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
-        console.log('reply', body);
         expect(error).to.not.exist;
         expect(body).to.exist;
         const patched = new Event(body);
