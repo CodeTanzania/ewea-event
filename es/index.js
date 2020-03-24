@@ -1,20 +1,20 @@
 import { COLLECTION_NAME_EVENT, POPULATION_MAX_DEPTH, COLLECTION_NAME_EVENTCHANGELOG, MODEL_NAME_EVENT, MODEL_NAME_EVENTCHANGELOG } from '@codetanzania/ewea-internals';
-import { join, compact, mergeObjects, idOf, uniq, parseTemplate, pkg } from '@lykmapipo/common';
+import { uniq, parseTemplate, join, idOf, compact, mergeObjects, pkg } from '@lykmapipo/common';
 import { getString, getBoolean, getStringSet, isProduction, apiVersion as apiVersion$1 } from '@lykmapipo/env';
-import { ObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
+import { ObjectId, isObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
 import { FileTypes, uploaderFor, createModels } from '@lykmapipo/file';
-import { get, pick, map } from 'lodash';
+import { parallel, waterfall } from 'async';
+import { map, get, pick, forEach, omit, includes, union } from 'lodash';
 import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
+import { CHANNEL_EMAIL, Campaign, Contact } from '@lykmapipo/postman';
 import { Point } from 'mongoose-geojson-schemas';
-import { Contact, CHANNEL_EMAIL, Campaign } from '@lykmapipo/postman';
 import { Party } from '@codetanzania/emis-stakeholder';
 import moment from 'moment';
-import { waterfall, parallel } from 'async';
 
 // common constants
 const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
@@ -67,6 +67,169 @@ const PREDEFINE_OPTION_SELECT = {
 const PREDEFINE_OPTION_AUTOPOPULATE = {
   select: PREDEFINE_OPTION_SELECT,
   maxDepth: POPULATION_MAX_DEPTH,
+};
+
+const EVENT_UPDATE_ARRAY_FIELDS = ['areas', 'agencies', 'focals'];
+
+const EVENT_UPDATE_IGNORED_FIELDS = [
+  '_id',
+  'id',
+  'event',
+  'keyword',
+  'number',
+  // 'location', ignore for changelog
+  // 'address', ignore for changelog
+  'createdAt',
+  'use',
+];
+
+const EVENT_CHANGELOG_RELATED_FIELDS = [
+  'group',
+  'type',
+  'level',
+  'severity',
+  'certainty',
+  'status',
+  'urgency',
+];
+
+const EVENT_RELATION_PREDEFINE_FIELDS = {
+  // group: undefined, // TODO: default group(Unknown)
+  type: undefined, // TODO: default type(Unknown)
+  level: { 'strings.name.en': 'White', namespace: 'EventLevel' },
+  severity: { 'strings.name.en': 'Unknown', namespace: 'EventSeverity' },
+  certainty: { 'strings.name.en': 'Unknown', namespace: 'EventCertainty' },
+  status: { 'strings.name.en': 'Actual', namespace: 'EventStatus' },
+  urgency: { 'strings.name.en': 'Unknown', namespace: 'EventUrgency' },
+  response: { 'strings.name.en': 'None', namespace: 'EventResponse' },
+};
+
+const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
+
+const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
+  CHANNEL_EMAIL,
+]);
+
+// TODO use localized templates
+// TODO per changelog field message template
+/* templates */
+const TEMPLATES_EVENT_NOTIFICATION_TITLE =
+  '{level} Advisory: {type} {stage} - No. {number}';
+const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
+  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places}';
+const TEMPLATES_EVENT_STATUS_UPDATE_TITLE =
+  'Status Update: {type} {stage} - No. {number}';
+const TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE =
+  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places} \n\n Updates: {updates}';
+
+// TODO
+// sendMessage
+// sendActionNotification
+// sendActionsNotification
+
+const sendCampaign = (message, done) => {
+  // prepare campaign
+  const isCampaignInstance = message instanceof Campaign;
+  let campaign = isCampaignInstance ? message.toObject() : message;
+
+  // ensure campaign channels
+  campaign.channels = uniq(
+    [].concat(NOTIFICATION_CHANNELS).concat(message.channels)
+  );
+
+  // instantiate campaign
+  campaign = new Campaign(message);
+
+  // queue campaign in production
+  // or if is asynchronous send
+  if (isProduction() && !ENABLE_SYNC_TRANSPORT) {
+    campaign.queue();
+    done(null, campaign);
+  }
+
+  // direct send campaign in development & test
+  else {
+    campaign.send(done);
+  }
+};
+
+// send create event notification
+const sendEventNotification = (event, done) => {
+  // prepare recipient criteria
+  // TODO: handle agencies, focals
+  let areaIds = map([].concat(event.areas), area => {
+    return get(area, '_id');
+  });
+  areaIds = uniq(areaIds).concat(null);
+  const criteria = { area: { $in: areaIds } };
+
+  // prepare notification title/subject
+  const subject = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_TITLE, {
+    level: get(event, 'level.strings.name.en'),
+    type: get(event, 'type.strings.name.en'),
+    stage: event.stage,
+    number: event.number,
+  });
+
+  // prepare notification areas body
+  let areaNames = map([].concat(event.areas), area => {
+    return get(area, 'strings.name.en', 'N/A');
+  });
+  areaNames = uniq(areaNames);
+
+  // prepare notification body
+  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
+    causes: get(event, 'causes', 'N/A'),
+    description: get(event, 'description', 'N/A'),
+    instructions: get(event, 'instructions', 'N/A'),
+    areas: areaNames.join(', '),
+    places: get(event, 'places', 'N/A'),
+  });
+
+  // send campaign
+  sendCampaign({ criteria, subject, message }, done);
+};
+
+// send event changes/changelogs notifications
+const sendEventUpdates = (event, changelog, done) => {
+  // prepare recipient criteria
+  // TODO: handle agencies, focals
+  let areaIds = map([].concat(event.areas), area => {
+    return get(area, '_id');
+  });
+  areaIds = uniq(areaIds).concat(null);
+  const criteria = { area: { $in: areaIds } };
+
+  // prepare notification title/subject
+  const subject = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_TITLE, {
+    type: get(event, 'type.strings.name.en'),
+    stage: event.stage,
+    number: event.number,
+  });
+
+  // prepare notification areas body
+  let areaNames = map([].concat(event.areas), area => {
+    return get(area, 'strings.name.en', 'N/A');
+  });
+  areaNames = uniq(areaNames);
+
+  // prepare updates
+  // TODO: compute updates from other changelog attributes i.e
+  // agencies, focals, areas, effect, need, impacts etc
+  const updates = changelog.comment || 'N/A';
+
+  // prepare notification body
+  const message = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE, {
+    causes: get(event, 'causes', 'N/A'),
+    description: get(event, 'description', 'N/A'),
+    instructions: get(event, 'instructions', 'N/A'),
+    areas: areaNames.join(', '),
+    places: get(event, 'places', 'N/A'),
+    updates,
+  });
+
+  // send campaign
+  sendCampaign({ criteria, subject, message }, done);
 };
 
 /**
@@ -385,6 +548,51 @@ const urgency = {
 };
 
 /**
+ * @name response
+ * @description Currently assigned response of an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: '5dde6ca33631a92c2d616284',
+ *   strings: { name: { en: 'Evacuate' } },
+ * }
+ */
+const response = {
+  type: ObjectId,
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
  * @name function
  * @alias fanction
  * @description Group event response activities(i.e actions)
@@ -477,6 +685,52 @@ const action = {
 };
 
 /**
+ * @name catalogue
+ * @alias catalogue
+ * @description Define an event response activity catalogue.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: '5dde6ca33631a92c2d616298',
+ *   strings: { name: { en: 'Disseminating warning information' } },
+ * }
+ */
+const catalogue = {
+  type: ObjectId,
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
  * @name indicator
  * @alias indicator
  * @description Define indicator used to assess need, effects, situation
@@ -524,8 +778,8 @@ const indicator = {
 };
 
 /**
- * @name indicator
- * @alias indicator
+ * @name topic
+ * @alias topic
  * @description Define topic used to assess need, effects, situation
  * and characteristics of an event.
  *
@@ -555,6 +809,52 @@ const indicator = {
  * }
  */
 const topic = {
+  type: ObjectId,
+  ref: Predefine.MODEL_NAME,
+  // required: true,
+  index: true,
+  exists: true,
+  autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
+  taggable: true,
+  exportable: {
+    format: v => get(v, 'strings.name.en'),
+    default: 'NA',
+  },
+  aggregatable: { unwind: true },
+  default: undefined,
+};
+
+/**
+ * @name question
+ * @alias question
+ * @description Define a question used to assess need and effects of an event.
+ *
+ * @memberof Event
+ * @memberof ChangeLog
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} exists - ensure ref exists before save
+ * @property {object} autopopulate - auto populate(eager loading) options
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {boolean} aggregatable - allow field use for aggregation
+ * @property {boolean} default - default value set when none provided
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * {
+ *   _id: '5dde6ca33631a92c2d616298',
+ *   strings: { name: { en: 'Food' } },
+ * }
+ */
+const question = {
   type: ObjectId,
   ref: Predefine.MODEL_NAME,
   // required: true,
@@ -814,6 +1114,16 @@ const address = {
   },
 };
 
+const deduplicate = (a, b) => {
+  // TODO: refactor to areSameObjectId(vali8&common)
+  const idOfA = idOf(a) || a;
+  const idOfB = idOf(b) || b;
+  if (isObjectId(idOfA)) {
+    return idOfA.equals(idOfB);
+  }
+  return idOfA === idOfB;
+};
+
 /**
  * @name reporter
  * @description A party i.e civilian, customer etc which the event.
@@ -975,6 +1285,7 @@ const groups = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -1021,6 +1332,7 @@ const roles = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -1070,6 +1382,7 @@ const agencies = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -1118,6 +1431,7 @@ const focals = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -1499,8 +1813,12 @@ const endedAt = {
   },
 };
 
+// TODO: calculate expose(risk) after create
+// TODO: send actions after create
+// TODO: ensure all fields in changelog schema?
+
 const SCHEMA = mergeObjects(
-  { group, type, level, severity, certainty, status, urgency },
+  { group, type, level, severity, certainty, status, urgency, response },
   { stage, number },
   { location, address },
   { causes, description, places },
@@ -1508,11 +1826,6 @@ const SCHEMA = mergeObjects(
   { reporter, agencies, focals },
   { instructions, interventions, impacts, remarks, startedAt, endedAt }
 );
-
-// TODO: send notification after create
-// TODO: calculate expose(risk) after create
-// TODO: send actions after create
-// TODO: responding agencies and focals
 
 /**
  * @module Event
@@ -1583,6 +1896,11 @@ EventSchema.methods.preValidate = function preValidate(done) {
   // ensure started(or reported) date
   this.startedAt = this.startedAt || new Date();
 
+  // ensure group from type
+  if (this.type) {
+    this.group = get(this, 'type.relations.group', this.group);
+  }
+
   return done(null, this);
 };
 
@@ -1624,171 +1942,430 @@ EventSchema.statics.prepareSeedCriteria = seed => {
   return criteria;
 };
 
+/**
+ * @name preloadRelations
+ * @function preloadRelations
+ * @description Preload given event relations
+ * @param {object} event valid event instance or object
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} pre-loaded relations or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const event = { _id: '...', group: '...', type: '...' };
+ * Event.preloadRelations(event, (error, updated) => { ... });
+ */
+EventSchema.statics.preloadRelations = (event, done) => {
+  // prepare relations to preload
+  const relations = {};
+
+  // prepare predefines loader
+  forEach(EVENT_RELATION_PREDEFINE_FIELDS, (criteria, relation) => {
+    const related = get(event, relation);
+    const relatedId = idOf(related) || related;
+    // event has relation
+    if (relatedId) {
+      relations[relation] = next => Predefine.getById({ _id: relatedId }, next);
+    }
+    // use default criteria
+    else if (criteria) {
+      relations[relation] = next => Predefine.findOne(criteria, next);
+    }
+    // continue
+    else {
+      relations[relation] = next => next(null, null);
+    }
+  });
+
+  // execute loader
+  return parallel(relations, done);
+};
+
+/**
+ * @name postWithChanges
+ * @function postWithChanges
+ * @description Update existing Event with the given changes
+ * @param {object} event valid event object to save
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} created event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const event = { type: '...', description: '...' };
+ * Event.postWithChanges(event, (error, created) => { ... });
+ *
+ */
+EventSchema.statics.postWithChanges = (event, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // preload event relations
+  const preloadRelated = next => Event.preloadRelations(event, next);
+
+  // save event
+  const saveEvent = (relations, next) => {
+    const eventi = mergeObjects(event, relations);
+    return Event.post(eventi, next);
+  };
+
+  // send event notification
+  const sendNotification = (eventi, next) => {
+    // TODO: check AUTO_EVENT_NOTIFICATION_ENABLED=true
+    return sendEventNotification(eventi, (error /* , campaign */) => {
+      return next(error, eventi);
+    });
+  };
+
+  // TODO: ensure level, severity, certainty, status, urgency, response
+  // TODO: save initial changelog(reported)
+
+  // save event
+  const tasks = [preloadRelated, saveEvent, sendNotification];
+  return waterfall(tasks, done);
+};
+
+/**
+ * @name updateWith
+ * @function updateWith
+ * @description Update existing Event with the given criteria and changes
+ * @param {object} criteria valid event query criteria
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const criteria = { _id: '...' };
+ * const changes = { remarks: '...' };
+ * Event.updateWith(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWith = (criteria, changes, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // find existing event by given criteria
+  const findEvent = next => {
+    return Event.findOne(criteria)
+      .orFail()
+      .exec(next);
+  };
+
+  // apply changes to found event
+  const applyChanges = (event, next) => {
+    // compute updates with ignores
+    const updates = { updatedAt: new Date() };
+    const allowedChanges = omit(changes, ...EVENT_UPDATE_IGNORED_FIELDS);
+    forEach(allowedChanges, (value, key) => {
+      const isArrayField = includes(EVENT_UPDATE_ARRAY_FIELDS, key);
+      if (isArrayField) {
+        const existValue = get(event, key);
+        updates[key] = union(existValue, [].concat(value));
+      }
+      updates[key] = value;
+    });
+
+    // persist event changes
+    event.set(updates);
+    return event.save(next);
+  };
+
+  // notify event updates
+  const sendUpdates = (event, next) => {
+    return sendEventUpdates(event, changes, (error /* , campaign */) => {
+      return next(error, event);
+    });
+  };
+
+  // update event
+  const tasks = [findEvent, applyChanges, sendUpdates];
+  return waterfall(tasks, done);
+};
+
+/**
+ * @name updateWithChanges
+ * @function updateWithChanges
+ * @description Update existing Event with the given changes
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { _id: '...', remarks: '...' };
+ * Event.updateWithChanges(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWithChanges = (changes, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+  const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
+
+  // obtain event id
+  const eventId = idOf(changes) || changes.id;
+
+  // post changelog
+  const postChangeLog = next => {
+    let changed = omit(changes, EVENT_UPDATE_IGNORED_FIELDS);
+    // TODO ensure event fields(description, instructions etc) in changelog
+    const comment =
+      changes.causes ||
+      changes.impacts ||
+      changes.interventions ||
+      changes.remarks ||
+      changes.places ||
+      changes.instructions ||
+      changes.description;
+    changed = mergeObjects(changed, { event: eventId, comment });
+
+    // TODO use EventChangeLog.postWithChanges once
+    // all event fields are also in changelog
+    return EventChangeLog.post(changed, next);
+  };
+
+  // update event with changes
+  const updateEvent = (changelog, next) => {
+    const criteria = { _id: eventId };
+    return Event.updateWith(criteria, changes, next);
+  };
+
+  // update event with changes
+  const tasks = [postChangeLog, updateEvent];
+  return waterfall(tasks, done);
+};
+
+/**
+ * @name updateWithChangeLog
+ * @function updateWithChangeLog
+ * @description Update existing event with the given changelog instance
+ * @param {object} changelog valid event changelog to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { _id: '...', comment: '...' };
+ * Event.updateWithChangeLog(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWithChangeLog = (changelog, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // return if changelog has no event
+  if (!changelog.event) {
+    return done(null, changelog);
+  }
+
+  // convert changelog to object
+  const changes = changelog.toObject();
+
+  // ensure event criteria
+  const criteria = { _id: idOf(changes.event) || changes.event };
+
+  // update event with changelog
+  return Event.updateWith(criteria, changes, done);
+};
+
 /* export event model */
 var Event = model(MODEL_NAME_EVENT, EventSchema);
 
-const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
-
-const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
-  CHANNEL_EMAIL,
-]);
-
-/* templates */
-const TEMPLATES_EVENT_NOTIFICATION_TITLE =
-  '{level} Advisory: {type} {stage} - #{number}';
-const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
-  'Description: {description} \n\n Instructions:{instructions} \n\n Areas: {areas} \n\n Places: {places}';
-
-// TODO
-// sendMessage
-// sendChangeLogNotification
-// sendActionNotification
-
-const sendCampaign = (message, done) => {
-  // prepare campaign
-  const isCampaignInstance = message instanceof Campaign;
-  let campaign = isCampaignInstance ? message.toObject() : message;
-
-  // ensure campaign channels
-  campaign.channels = uniq(
-    [].concat(NOTIFICATION_CHANNELS).concat(message.channels)
-  );
-
-  // instantiate campaign
-  campaign = new Campaign(message);
-
-  // queue campaign in production
-  // or if is asynchronous send
-  if (isProduction() && !ENABLE_SYNC_TRANSPORT) {
-    campaign.queue();
-    done(null, campaign);
+/**
+ * @name ensureInitiator
+ * @description Set changelog initiator on request body
+ * @author lally elias <lallyelias87@gmail.com>
+ *
+ * @param {object} request valid http request
+ * @param {object} response valid http response
+ * @param {Function} next next middlware to invoke
+ * @returns {Function} next middlware to invoke
+ *
+ * @license MIT
+ * @since 0.1.0
+ * @version 1.0.0
+ * @public
+ */
+const ensureInitiator = (request, response, next) => {
+  if (request.body && request.party) {
+    request.body.initiator = request.body.initiator || request.party;
   }
+  return next();
+};
 
-  // direct send campaign in development & test
-  else {
-    campaign.send(done);
+/**
+ * @name ensureReporter
+ * @description Set event reporter on request body
+ *
+ * @param {object} request valid http request
+ * @param {object} response valid http response
+ * @param {Function} next next middlware to invoke
+ * @returns {Function} next middlware to invoke
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 1.0.0
+ * @public
+ */
+const ensureReporter = (request, response, next) => {
+  if (request.body && request.party) {
+    request.body.reporter = request.body.reporter || request.party.asContact();
   }
+  return next();
 };
 
-const sendEventNotification = (event, done) => {
-  // prepare recipient criteria
-  let areaIds = map([].concat(event.areas), area => {
-    return get(area, '_id');
-  });
-  areaIds = uniq(areaIds).concat(null);
-  const criteria = { area: { $in: areaIds } };
+/* constants */
+const API_VERSION = getString('API_VERSION', '1.0.0');
+const PATH_SINGLE = '/events/:id';
+const PATH_LIST = '/events';
+const PATH_EXPORT = '/events/export';
+const PATH_SCHEMA = '/events/schema/';
 
-  // prepare notification title/subject
-  const subject = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_TITLE, {
-    level: get(event, 'level.strings.name.en'),
-    type: get(event, 'type.strings.name.en'),
-    stage: event.stage,
-    number: event.number,
-  });
+/**
+ * @name EventHttpRouter
+ * @namespace EventHttpRouter
+ *
+ * @description A representation of an entity which define and track an
+ * instance(or occurrence) of an emergency(or disaster) event.
+ *
+ * @see {@link https://en.wikipedia.org/wiki/Disaster}
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 1.0.0
+ * @public
+ */
+const router = new Router({
+  version: API_VERSION,
+});
 
-  // prepare notification areas body
-  let areaNames = map([].concat(event.areas), area => {
-    return get(area, 'strings.name.en', 'N/A');
-  });
-  areaNames = uniq(areaNames);
+/**
+ * @name GetEvents
+ * @memberof EventHttpRouter
+ * @description Returns a list of events
+ */
+router.get(
+  PATH_LIST,
+  getFor({
+    get: (options, done) => Event.get(options, done),
+  })
+);
 
-  // prepare notification body
-  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
-    description: get(event, 'description', 'N/A'),
-    instructions: get(event, 'instructions', 'N/A'),
-    areas: areaNames.join(', '),
-    places: get(event, 'places', 'N/A'),
-  });
+/**
+ * @name GetEventSchema
+ * @memberof EventHttpRouter
+ * @description Returns event json schema definition
+ */
+router.get(
+  PATH_SCHEMA,
+  schemaFor({
+    getSchema: (query, done) => {
+      const jsonSchema = Event.jsonSchema();
+      return done(null, jsonSchema);
+    },
+  })
+);
 
-  // sent campaign
-  sendCampaign({ criteria, subject, message }, done);
-};
+/**
+ * @name ExportEvents
+ * @memberof EventHttpRouter
+ * @description Export events as csv
+ */
+router.get(
+  PATH_EXPORT,
+  downloadFor({
+    download: (options, done) => {
+      const fileName = `events_exports_${Date.now()}.csv`;
+      const readStream = Event.exportCsv(options);
+      return done(null, { fileName, readStream });
+    },
+  })
+);
 
-const preLoadRelated = (optns, done) => {
-  // ensure options
-  const options = mergeObjects(optns);
+/**
+ * @name PostEvent
+ * @memberof EventHttpRouter
+ * @description Create new event
+ */
+router.post(
+  PATH_LIST,
+  ensureReporter,
+  postFor({
+    post: (body, done) => Event.postWithChanges(body, done),
+  })
+);
 
-  const ensureType = next => {
-    const typeId = idOf(options.type) || options.type;
-    if (typeId) {
-      // TODO: or find default
-      return Predefine.getById({ _id: typeId }, next);
-    }
-    return next(null, typeId);
-  };
+/**
+ * @name GetEvent
+ * @memberof EventHttpRouter
+ * @description Get existing event
+ */
+router.get(
+  PATH_SINGLE,
+  getByIdFor({
+    getById: (options, done) => Event.getById(options, done),
+  })
+);
 
-  const ensureGroup = next => {
-    const typeId = idOf(options.type) || options.type;
-    if (typeId) {
-      // TODO: or find default
-      // TODO: try use group if exists
-      return Predefine.getById({ _id: typeId }, (error, type) => {
-        const group = get(type, 'relations.group');
-        return next(error, group);
-      });
-    }
-    return next(null, null);
-  };
+/**
+ * @name PatchEvent
+ * @memberof EventHttpRouter
+ * @description Patch existing event
+ */
+router.patch(
+  PATH_SINGLE,
+  ensureInitiator,
+  patchFor({
+    patch: (options, done) => Event.updateWithChanges(options, done),
+  })
+);
 
-  // execute tasks
-  const tasks = { type: ensureType, group: ensureGroup };
-  return parallel(tasks, done);
-};
+/**
+ * @name PutEvent
+ * @memberof EventHttpRouter
+ * @description Put existing event
+ */
+router.put(
+  PATH_SINGLE,
+  ensureInitiator,
+  putFor({
+    put: (options, done) => Event.updateWithChanges(options, done),
+  })
+);
 
-const getEventJsonSchema = (optns, done) => {
-  const jsonSchema = Event.jsonSchema();
-  return done(null, jsonSchema);
-};
-
-const exportEvents = (optns, done) => {
-  const fileName = `events_exports_${Date.now()}.csv`;
-  const readStream = Event.exportCsv(optns);
-  return done(null, { fileName, readStream });
-};
-
-const getEvents = (optns, done) => {
-  return Event.get(optns, done);
-};
-
-const getEventById = (optns, done) => {
-  return Event.getById(optns, done);
-};
-
-const postEventWithChanges = (optns, done) => {
-  const options = mergeObjects(optns);
-
-  return waterfall(
-    [
-      next => preLoadRelated(options, next),
-      (related, next) => {
-        const event = mergeObjects(options, related);
-        return Event.post(event, next);
-      },
-      (event, next) => {
-        // TODO: check AUTO_EVENT_NOTIFICATION_ENABLED=true
-        return sendEventNotification(event, (/* error, sent */) => {
-          // TODO: notify(or log) swallowed error
-          return next(null, event);
-        });
-      },
-      // TODO: ensure level, severity, certainty, status, urgency
-      // TODO: save initial changelog
-    ],
-    done
-  );
-};
-
-const putEventWithChanges = (optns, done) => {
-  return Event.put(optns, done);
-};
-
-const patchEventWithChanges = (optns, done) => {
-  return Event.patch(optns, done);
-};
-
-const deleteEventWithChanges = (optns, done) => {
-  return Event.del(optns, done);
-};
+/**
+ * @name DeleteEvent
+ * @memberof EventHttpRouter
+ * @description Delete existing event
+ */
+router.delete(
+  PATH_SINGLE,
+  ensureInitiator,
+  deleteFor({
+    del: (options, done) => Event.del(options, done),
+    soft: true,
+  })
+);
 
 /**
  * @name event
@@ -1869,6 +2446,59 @@ const use = {
   exportable: true,
   default: CHANGELOG_USE_CHANGE,
   fake: true,
+};
+
+/**
+ * @name keyword
+ * @description Human readable, unique identifier used to reply
+ * on event changelog.
+ *
+ * It consist of; 4-digit year of the event; 2-digit month of the event;
+ * and a four-digit, sequential reply number e.g 2001-000033.
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {boolean} uppercase - force value to uppercase
+ * @property {boolean} required - mark required
+ * @property {boolean} index - ensure database index
+ * @property {boolean} unique - ensure unique database index
+ * @property {boolean} searchable - allow searching
+ * @property {boolean} taggable - allow field use for tagging
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * 2018-000033
+ */
+const keyword = {
+  type: String,
+  trim: true,
+  uppercase: true,
+  required: true,
+  index: true,
+  // unique: true,
+  searchable: true,
+  taggable: true,
+  exportable: true,
+  sequenceable: {
+    prefix: function prefix() {
+      const year = moment(new Date()).format('YYYYMM');
+      return compact([year]).join('');
+    },
+    suffix: '',
+    length: 4,
+    pad: '0',
+    separator: '',
+  },
+  fake: {
+    generator: 'random',
+    type: 'uuid',
+  },
 };
 
 /**
@@ -2007,12 +2637,12 @@ const video = FileTypes.Video;
 const document = FileTypes.Document;
 
 const SCHEMA$1 = mergeObjects(
-  { use },
+  { use, keyword },
   { initiator, verifier },
-  { group, type, level, severity, certainty, status, urgency },
+  { group, type, level, severity, certainty, status, urgency, response },
   { event },
-  { function: fanction, action },
-  { indicator, topic, need, effect, value, unit },
+  { function: fanction, action, catalogue },
+  { indicator, topic, question, need, effect, value, unit },
   { areas },
   { groups, roles, agencies, focals },
   { image, audio, video, document },
@@ -2021,9 +2651,11 @@ const SCHEMA$1 = mergeObjects(
 );
 
 // TODO: all criteria use $in operator
-// TODO: update event after save
+// TODO: update event after post, update, patch and delete
 // TODO: send notification after save
 // TODO: notify respective parties after save
+// TODO: handle endedAt changelog to close event
+// TODO: add all event fields to best track changes
 
 /**
  * @module ChangeLog
@@ -2091,7 +2723,47 @@ ChangeLogSchema.pre('validate', function onPreValidate(done) {
  * @instance
  */
 ChangeLogSchema.methods.preValidate = function preValidate(done) {
+  // TODO: ensureRelated or ensureDefaults
   return done(null, this);
+};
+
+/**
+ * @name updateEvent
+ * @function updateEvent
+ * @description Update existing event with the changes from this changelog
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid changelog or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * changelog.updateEvent((error, changelog) => { ... });
+ *
+ */
+ChangeLogSchema.methods.updateEvent = function updateEvent(done) {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // update event with changes
+  const updateRelatedEvent = next => Event.updateWithChangeLog(this, next);
+
+  // ensure changelog event fields
+  const updateSelfRelated = (eventi, next) => {
+    const old = pick(this, ...EVENT_CHANGELOG_RELATED_FIELDS);
+    const now = pick(eventi, ...EVENT_CHANGELOG_RELATED_FIELDS);
+    const updates = mergeObjects(now, old);
+
+    // update changelog
+    this.set(updates);
+    return this.save(next);
+  };
+
+  // update event
+  const tasks = [updateRelatedEvent, updateSelfRelated];
+  return waterfall(tasks, done);
 };
 
 /*
@@ -2147,176 +2819,110 @@ ChangeLogSchema.statics.prepareSeedCriteria = seed => {
   return criteria;
 };
 
-/* export changelog model */
-var EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG, ChangeLogSchema);
-
-const getChangeLogJsonSchema = (optns, done) => {
-  const jsonSchema = EventChangeLog.jsonSchema();
-  return done(null, jsonSchema);
-};
-
-const exportChangeLogs = (optns, done) => {
-  const fileName = `changelogs_exports_${Date.now()}.csv`;
-  const readStream = EventChangeLog.exportCsv(optns);
-  return done(null, { fileName, readStream });
-};
-
-const getChangeLogs = (optns, done) => {
-  return EventChangeLog.get(optns, done);
-};
-
-const getChangeLogById = (optns, done) => {
-  return EventChangeLog.getById(optns, done);
-};
-
-const postChangeLogWithChanges = (optns, done) => {
-  return EventChangeLog.post(optns, done);
-};
-
-const putChangeLogWithChanges = (optns, done) => {
-  return EventChangeLog.put(optns, done);
-};
-
-const patchChangeLogWithChanges = (optns, done) => {
-  return EventChangeLog.patch(optns, done);
-};
-
-const deleteChangeLogWithChanges = (optns, done) => {
-  return EventChangeLog.del(optns, done);
-};
-
-/* constants */
-const API_VERSION = getString('API_VERSION', '1.0.0');
-const PATH_SINGLE = '/events/:id';
-const PATH_LIST = '/events';
-const PATH_EXPORT = '/events/export';
-const PATH_SCHEMA = '/events/schema/';
-
-/* middlewares */
-const ensureReporter = (request, response, next) => {
-  // TODO: refactor & test
-  if (request.party && request.body) {
-    request.body.reporter = request.party.asContact();
-  }
-  return next();
-};
-
 /**
- * @name EventHttpRouter
- * @namespace EventHttpRouter
- *
- * @description A representation of an entity which define and track an
- * instance(or occurrence) of an emergency(or disaster) event.
- *
- * @see {@link https://en.wikipedia.org/wiki/Disaster}
+ * @name postWithChanges
+ * @function postWithChanges
+ * @description Post changelog and update existing event with the given changes
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid changelog or error
  *
  * @author lally elias <lallyelias87@gmail.com>
- * @license MIT
- * @since 0.1.0
- * @version 1.0.0
- * @public
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { comment: '...' };
+ * EventChangeLog.postWithChanges(changes, (error, changelog) => { ... });
+ *
  */
-const router = new Router({
-  version: API_VERSION,
-});
+ChangeLogSchema.statics.postWithChanges = (changes, done) => {
+  // ref
+  // const Event = model(MODEL_NAME_EVENT);
+  const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
+
+  // save changes
+  const saveChangeLog = next => EventChangeLog.post(changes, next);
+
+  // update event with changes
+  const updateEvent = (changelog, next) => changelog.updateEvent(next);
+
+  // post changelog
+  const tasks = [saveChangeLog, updateEvent];
+  return waterfall(tasks, done);
+};
 
 /**
- * @name GetEvents
- * @memberof EventHttpRouter
- * @description Returns a list of events
+ * @name putWithChanges
+ * @function putWithChanges
+ * @description Put changelog and update existing event with
+ * the given changes
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid changelog or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { comment: '...' };
+ * EventChangeLog.putWithChanges(changes, (error, changelog) => { ... });
+ *
  */
-router.get(
-  PATH_LIST,
-  getFor({
-    get: (options, done) => getEvents(options, done),
-  })
-);
+ChangeLogSchema.statics.putWithChanges = (changes, done) => {
+  // ref
+  const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
+
+  // put existing changelog
+  const putChangeLog = next => EventChangeLog.put(changes, next);
+
+  // update event with changes
+  const updateEvent = (changelog, next) => changelog.updateEvent(next);
+
+  // put changelog
+  const tasks = [putChangeLog, updateEvent];
+  return waterfall(tasks, done);
+};
 
 /**
- * @name GetEventSchema
- * @memberof EventHttpRouter
- * @description Returns event json schema definition
+ * @name patchWithChanges
+ * @function patchWithChanges
+ * @description Patch changelog and update existing event with
+ * the given changes
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} valid changelog or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { comment: '...' };
+ * EventChangeLog.patchWithChanges(changes, (error, changelog) => { ... });
+ *
  */
-router.get(
-  PATH_SCHEMA,
-  schemaFor({
-    getSchema: (query, done) => getEventJsonSchema(query, done),
-  })
-);
+ChangeLogSchema.statics.patchWithChanges = (changes, done) => {
+  // ref
+  const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
-/**
- * @name ExportEvents
- * @memberof EventHttpRouter
- * @description Export events as csv
- */
-router.get(
-  PATH_EXPORT,
-  downloadFor({
-    download: (options, done) => exportEvents(options, done),
-  })
-);
+  // patch existing changelog
+  const patchChangeLog = next => EventChangeLog.patch(changes, next);
 
-/**
- * @name PostEvent
- * @memberof EventHttpRouter
- * @description Create new event
- */
-router.post(
-  PATH_LIST,
-  ensureReporter,
-  postFor({
-    post: (body, done) => postEventWithChanges(body, done),
-  })
-);
+  // update event with changes
+  const updateEvent = (changelog, next) => changelog.updateEvent(next);
 
-/**
- * @name GetEvent
- * @memberof EventHttpRouter
- * @description Get existing event
- */
-router.get(
-  PATH_SINGLE,
-  getByIdFor({
-    getById: (options, done) => getEventById(options, done),
-  })
-);
+  // patch changelog
+  const tasks = [patchChangeLog, updateEvent];
+  return waterfall(tasks, done);
+};
 
-/**
- * @name PatchEvent
- * @memberof EventHttpRouter
- * @description Patch existing event
- */
-router.patch(
-  PATH_SINGLE,
-  patchFor({
-    patch: (options, done) => patchEventWithChanges(options, done),
-  })
-);
-
-/**
- * @name PutEvent
- * @memberof EventHttpRouter
- * @description Put existing event
- */
-router.put(
-  PATH_SINGLE,
-  putFor({
-    put: (options, done) => putEventWithChanges(options, done),
-  })
-);
-
-/**
- * @name DeleteEvent
- * @memberof EventHttpRouter
- * @description Delete existing event
- */
-router.delete(
-  PATH_SINGLE,
-  deleteFor({
-    del: (options, done) => deleteEventWithChanges(options, done),
-    soft: true,
-  })
-);
+/* export changelog model */
+var EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG, ChangeLogSchema);
 
 /* constants */
 const API_VERSION$1 = getString('API_VERSION', '1.0.0');
@@ -2324,15 +2930,6 @@ const PATH_SINGLE$1 = '/changelogs/:id';
 const PATH_LIST$1 = '/changelogs';
 const PATH_EXPORT$1 = '/changelogs/export';
 const PATH_SCHEMA$1 = '/changelogs/schema/';
-
-/* middlewares */
-const ensureInitiator = (request, response, next) => {
-  // TODO: refactor & test
-  if (request.party && request.body) {
-    request.body.initiator = request.party;
-  }
-  return next();
-};
 
 /**
  * @name EventChangeLogHttpRouter
@@ -2361,7 +2958,7 @@ const router$1 = new Router({
 router$1.get(
   PATH_LIST$1,
   getFor({
-    get: (options, done) => getChangeLogs(options, done),
+    get: (options, done) => EventChangeLog.get(options, done),
   })
 );
 
@@ -2373,7 +2970,10 @@ router$1.get(
 router$1.get(
   PATH_SCHEMA$1,
   schemaFor({
-    getSchema: (query, done) => getChangeLogJsonSchema(query, done),
+    getSchema: (query, done) => {
+      const jsonSchema = EventChangeLog.jsonSchema();
+      return done(null, jsonSchema);
+    },
   })
 );
 
@@ -2385,7 +2985,11 @@ router$1.get(
 router$1.get(
   PATH_EXPORT$1,
   downloadFor({
-    download: (options, done) => exportChangeLogs(options, done),
+    download: (options, done) => {
+      const fileName = `changelogs_exports_${Date.now()}.csv`;
+      const readStream = EventChangeLog.exportCsv(options);
+      return done(null, { fileName, readStream });
+    },
   })
 );
 
@@ -2399,8 +3003,7 @@ router$1.post(
   uploaderFor(),
   ensureInitiator,
   postFor({
-    // TODO: Event.putWithChanges
-    post: (body, done) => postChangeLogWithChanges(body, done),
+    post: (body, done) => EventChangeLog.postWithChanges(body, done),
   })
 );
 
@@ -2412,7 +3015,7 @@ router$1.post(
 router$1.get(
   PATH_SINGLE$1,
   getByIdFor({
-    getById: (options, done) => getChangeLogById(options, done),
+    getById: (options, done) => EventChangeLog.getById(options, done),
   })
 );
 
@@ -2425,8 +3028,7 @@ router$1.patch(
   PATH_SINGLE$1,
   uploaderFor(),
   patchFor({
-    // TODO: Event.patchWithChanges
-    patch: (options, done) => patchChangeLogWithChanges(options, done),
+    patch: (options, done) => EventChangeLog.patchWithChanges(options, done),
   })
 );
 
@@ -2439,8 +3041,7 @@ router$1.put(
   PATH_SINGLE$1,
   uploaderFor(),
   putFor({
-    // TODO: Event.putWithChanges
-    put: (options, done) => putChangeLogWithChanges(options, done),
+    put: (options, done) => EventChangeLog.putWithChanges(options, done),
   })
 );
 
@@ -2452,8 +3053,7 @@ router$1.put(
 router$1.delete(
   PATH_SINGLE$1,
   deleteFor({
-    // TODO: methodNotAllowed
-    del: (options, done) => deleteChangeLogWithChanges(options, done),
+    del: (options, done) => EventChangeLog.del(options, done),
     soft: true,
   })
 );

@@ -1,3 +1,18 @@
+#### 0.7.0 (2020-03-24)
+
+##### New Features
+
+* **changelog:**
+  *  restore event http router ([9ba11ca5](https://github.com/codetanzania/ewea-event/commit/9ba11ca5478e9ff964420b9d584434717a6e83eb))
+  *  restore http router ([0cca9757](https://github.com/codetanzania/ewea-event/commit/0cca9757142891dd6bcdd7c7ac7061cbe2742c9e))
+  *  add catalogue, keyword & question ([82532466](https://github.com/codetanzania/ewea-event/commit/825324663aab7727614afe159a6b2d9107f59c8e))
+  *  add reply keyword ([4ad865b7](https://github.com/codetanzania/ewea-event/commit/4ad865b76e9ecfceea913acc46107b4f5711d4f0))
+* **http:**  start refactor routers and add middleware module ([07c101a7](https://github.com/codetanzania/ewea-event/commit/07c101a79aaaff2109cefe35feb94563f3410622))
+
+##### Bug Fixes
+
+* **notification:**  ensure spacing on notification message ([0da3c738](https://github.com/codetanzania/ewea-event/commit/0da3c7384df1259aee6947ef56a7768466c5eb74))
+
 #### 0.6.0 (2020-03-02)
 
 ##### Chores
