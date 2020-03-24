@@ -8,17 +8,21 @@ import {
   expect,
 } from '@lykmapipo/mongoose-test-helpers';
 import { Predefine } from '@lykmapipo/predefine';
+import { createModels } from '@lykmapipo/file';
 import { Party } from '@codetanzania/emis-stakeholder';
 import { Event, eventRouter } from '../../src';
 
 describe('Event Rest API', () => {
-  const party = Party.fake();
+  const areas = Predefine.fake(2);
+  const agencies = Party.fake(2);
+  const focals = Party.fake(2);
   const group = Predefine.fake();
   const type = Predefine.fake();
-  type.set({ relations: { group: group._id } });
+  const level = Predefine.fake();
+  type.set({ relations: { group } });
 
   const event = Event.fakeExcept('number');
-  event.set({ type: type._id });
+  event.set({ level, group, type, areas });
 
   const options = {
     pathSingle: '/events/:id',
@@ -31,7 +35,10 @@ describe('Event Rest API', () => {
 
   before(() => clearHttp());
 
-  before(done => create([party, group, type], done));
+  beforeEach(() => createModels());
+
+  before(done => create(...areas, ...agencies, ...focals, done));
+  before(done => create(level, group, type, done));
 
   it('should handle HTTP POST on /events', done => {
     const { testPost } = testRouter(options, eventRouter);
@@ -113,6 +120,7 @@ describe('Event Rest API', () => {
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
         expect(patched.number).to.exist;
+        expect(patched.description).to.exist.and.be.eql(description);
         done(error, body);
       });
   });
@@ -130,6 +138,7 @@ describe('Event Rest API', () => {
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
         expect(patched.number).to.exist;
+        expect(patched.description).to.exist.and.be.eql(description);
         done(error, body);
       });
   });
@@ -146,6 +155,7 @@ describe('Event Rest API', () => {
         const patched = new Event(body);
         expect(patched._id).to.exist.and.be.eql(event._id);
         expect(patched.number).to.exist;
+        expect(patched.deletedAt).to.exist;
         done(error, body);
       });
   });

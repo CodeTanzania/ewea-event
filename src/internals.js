@@ -57,3 +57,38 @@ export const PREDEFINE_OPTION_AUTOPOPULATE = {
   select: PREDEFINE_OPTION_SELECT,
   maxDepth: POPULATION_MAX_DEPTH,
 };
+
+export const EVENT_UPDATE_ARRAY_FIELDS = ['areas', 'agencies', 'focals'];
+
+export const EVENT_UPDATE_IGNORED_FIELDS = [
+  '_id',
+  'id',
+  'event',
+  'keyword',
+  'number',
+  // 'location', ignore for changelog
+  // 'address', ignore for changelog
+  'createdAt',
+  'use',
+];
+
+export const EVENT_CHANGELOG_RELATED_FIELDS = [
+  'group',
+  'type',
+  'level',
+  'severity',
+  'certainty',
+  'status',
+  'urgency',
+];
+
+export const EVENT_RELATION_PREDEFINE_FIELDS = {
+  // group: undefined, // TODO: default group(Unknown)
+  type: undefined, // TODO: default type(Unknown)
+  level: { 'strings.name.en': 'White', namespace: 'EventLevel' },
+  severity: { 'strings.name.en': 'Unknown', namespace: 'EventSeverity' },
+  certainty: { 'strings.name.en': 'Unknown', namespace: 'EventCertainty' },
+  status: { 'strings.name.en': 'Actual', namespace: 'EventStatus' },
+  urgency: { 'strings.name.en': 'Unknown', namespace: 'EventUrgency' },
+  response: { 'strings.name.en': 'None', namespace: 'EventResponse' },
+};

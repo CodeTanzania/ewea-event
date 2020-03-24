@@ -1,17 +1,30 @@
-import path from 'path';
-import _ from 'lodash';
 import {
   clear as clearHttp,
   testRouter,
 } from '@lykmapipo/express-test-helpers';
-import { clear as clearDb, expect } from '@lykmapipo/mongoose-test-helpers';
+import {
+  clear as clearDb,
+  create,
+  expect,
+} from '@lykmapipo/mongoose-test-helpers';
+import { Predefine } from '@lykmapipo/predefine';
 import { createModels } from '@lykmapipo/file';
+import { Party } from '@codetanzania/emis-stakeholder';
 import { Event, EventChangeLog, eventChangeLogRouter } from '../../src';
 
 describe('Event ChangeLog Rest API', () => {
-  const { SEED_PATH } = process.env;
-  let event;
+  const areas = Predefine.fake(2);
+  const agencies = Party.fake(2);
+  const focals = Party.fake(2);
+  const group = Predefine.fake();
+  const type = Predefine.fake();
+  type.set({ relations: { group } });
+
+  const event = Event.fakeExcept('number');
+  event.set({ group, type, areas });
+
   const changelog = EventChangeLog.fakeOnly('comment');
+  changelog.set({ event, areas, focals, agencies });
 
   const options = {
     pathSingle: '/changelogs/:id',
@@ -20,25 +33,17 @@ describe('Event ChangeLog Rest API', () => {
     pathExport: '/changelogs/export/',
   };
 
-  before(done => clearDb(done));
+  before(done => clearDb(Event, done));
 
   before(() => clearHttp());
 
-  before(() => {
-    process.env.SEED_PATH = path.join(__dirname, '..', 'fixtures');
-  });
-
-  before(done =>
-    Event.seed((error, seeded) => {
-      event = _.first([].concat(seeded));
-      changelog.set({ event });
-      return done(error, seeded);
-    })
-  );
-
   beforeEach(() => createModels());
 
-  it('should handle HTTP POST on /changelogs', done => {
+  before(done => create(...areas, ...agencies, ...focals, done));
+  before(done => create(group, type, done));
+  before(done => create(event, done));
+
+  it('should handle HTTP POST comment on /changelogs', done => {
     const { testPost } = testRouter(options, eventChangeLogRouter);
     testPost({ ...changelog.toObject() })
       .expect(201)
@@ -105,9 +110,9 @@ describe('Event ChangeLog Rest API', () => {
 
   it('should handle HTTP PATCH on /changelogs/:id', done => {
     const { testPatch } = testRouter(options, eventChangeLogRouter);
-    const { description } = changelog.fakeOnly('comment');
+    const { comment } = changelog.fakeOnly('comment');
     const params = { id: changelog._id.toString() };
-    testPatch(params, { description })
+    testPatch(params, { comment })
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
@@ -116,15 +121,16 @@ describe('Event ChangeLog Rest API', () => {
         const patched = new EventChangeLog(body);
         expect(patched._id).to.exist.and.be.eql(changelog._id);
         expect(patched.use).to.exist.and.be.eql(changelog.use);
+        expect(patched.comment).to.exist.and.be.eql(comment);
         done(error, body);
       });
   });
 
   it('should handle HTTP PUT on /changelogs/:id', done => {
     const { testPut } = testRouter(options, eventChangeLogRouter);
-    const { description } = changelog.fakeOnly('comment');
+    const { comment } = changelog.fakeOnly('comment');
     const params = { id: changelog._id.toString() };
-    testPut(params, { description })
+    testPut(params, { comment })
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
@@ -133,6 +139,7 @@ describe('Event ChangeLog Rest API', () => {
         const patched = new EventChangeLog(body);
         expect(patched._id).to.exist.and.be.eql(changelog._id);
         expect(patched.use).to.exist.and.be.eql(changelog.use);
+        expect(patched.comment).to.exist.and.be.eql(comment);
         done(error, body);
       });
   });
@@ -149,6 +156,7 @@ describe('Event ChangeLog Rest API', () => {
         const patched = new EventChangeLog(body);
         expect(patched._id).to.exist.and.be.eql(changelog._id);
         expect(patched.use).to.exist.and.be.eql(changelog.use);
+        expect(patched.deletedAt).to.exist;
         done(error, body);
       });
   });
@@ -156,8 +164,4 @@ describe('Event ChangeLog Rest API', () => {
   after(() => clearHttp());
 
   after(done => clearDb(done));
-
-  after(() => {
-    process.env.SEED_PATH = SEED_PATH;
-  });
 });

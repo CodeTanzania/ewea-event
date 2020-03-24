@@ -24,6 +24,24 @@ describe('ChangeLog Schema', () => {
     expect(use.options.fake).to.exist;
   });
 
+  it('should have keyword field', () => {
+    const keyword = ChangeLog.path('keyword');
+
+    expect(keyword).to.exist;
+    expect(keyword).to.be.instanceof(SchemaTypes.String);
+    expect(keyword.options).to.exist;
+    expect(keyword.options).to.be.an('object');
+    expect(keyword.options.type).to.exist;
+    expect(keyword.options.trim).to.be.true;
+    expect(keyword.options.uppercase).to.be.true;
+    expect(keyword.options.index).to.be.true;
+    // expect(keyword.options.unique).to.be.true;
+    // expect(keyword.options.required).to.be.true;
+    expect(keyword.options.searchable).to.be.true;
+    expect(keyword.options.taggable).to.be.true;
+    expect(keyword.options.fake).to.exist;
+  });
+
   it('should have initiator field', () => {
     const initiator = ChangeLog.path('initiator');
 
@@ -198,6 +216,25 @@ describe('ChangeLog Schema', () => {
     expect(urgency.options.default).to.be.undefined;
   });
 
+  it('should have response field', () => {
+    const response = ChangeLog.path('response');
+
+    expect(response).to.exist;
+    expect(response).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(response.options).to.exist;
+    expect(response.options).to.be.an('object');
+    expect(response.options.type).to.exist;
+    expect(response.options.ref).to.exist;
+    expect(response.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(response.options.required).to.be.true;
+    expect(response.options.exists).to.be.true;
+    expect(response.options.autopopulate).to.exist;
+    expect(response.options.taggable).to.exist;
+    expect(response.options.exportable).to.exist;
+    // expect(response.options.aggregatable).to.exist;
+    expect(response.options.default).to.be.undefined;
+  });
+
   it('should have event field', () => {
     const event = ChangeLog.path('event');
 
@@ -258,6 +295,26 @@ describe('ChangeLog Schema', () => {
     expect(action.options.default).to.be.undefined;
   });
 
+  it('should have catalogue field', () => {
+    const catalogue = ChangeLog.path('catalogue');
+
+    expect(catalogue).to.exist;
+    expect(catalogue).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(catalogue.options).to.exist;
+    expect(catalogue.options).to.be.an('object');
+    expect(catalogue.options.type).to.exist;
+    expect(catalogue.options.ref).to.exist;
+    expect(catalogue.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(catalogue.options.index).to.be.true;
+    // expect(catalogue.options.required).to.be.true;
+    expect(catalogue.options.exists).to.be.true;
+    expect(catalogue.options.autopopulate).to.exist;
+    expect(catalogue.options.taggable).to.exist;
+    expect(catalogue.options.exportable).to.exist;
+    // expect(catalogue.options.aggregatable).to.exist;
+    expect(catalogue.options.default).to.be.undefined;
+  });
+
   it('should have indicator field', () => {
     const indicator = ChangeLog.path('indicator');
 
@@ -296,6 +353,26 @@ describe('ChangeLog Schema', () => {
     expect(topic.options.exportable).to.exist;
     // expect(topic.options.aggregatable).to.exist;
     expect(topic.options.default).to.be.undefined;
+  });
+
+  it('should have question field', () => {
+    const question = ChangeLog.path('question');
+
+    expect(question).to.exist;
+    expect(question).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(question.options).to.exist;
+    expect(question.options).to.be.an('object');
+    expect(question.options.type).to.exist;
+    expect(question.options.ref).to.exist;
+    expect(question.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    expect(question.options.index).to.be.true;
+    // expect(question.options.required).to.be.true;
+    expect(question.options.exists).to.be.true;
+    expect(question.options.autopopulate).to.exist;
+    expect(question.options.taggable).to.exist;
+    expect(question.options.exportable).to.exist;
+    // expect(question.options.aggregatable).to.exist;
+    expect(question.options.default).to.be.undefined;
   });
 
   it('should have need field', () => {
