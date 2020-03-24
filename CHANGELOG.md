@@ -1,3 +1,9 @@
+#### 0.7.2 (2020-03-24)
+
+##### Bug Fixes
+
+* **event:**  ensure unique admnistrative areas ([2ef1bdde](https://github.com/codetanzania/ewea-event/commit/2ef1bddeb488502edeb95aa82d02955b7f21399f))
+
 #### 0.7.1 (2020-03-24)
 
 ##### Bug Fixes

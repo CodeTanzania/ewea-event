@@ -1,7 +1,7 @@
 import { COLLECTION_NAME_EVENT, POPULATION_MAX_DEPTH, COLLECTION_NAME_EVENTCHANGELOG, MODEL_NAME_EVENT, MODEL_NAME_EVENTCHANGELOG } from '@codetanzania/ewea-internals';
-import { uniq, parseTemplate, join, idOf, compact, mergeObjects, pkg } from '@lykmapipo/common';
+import { idOf, uniq, parseTemplate, join, compact, mergeObjects, pkg } from '@lykmapipo/common';
 import { getString, getBoolean, getStringSet, isProduction, apiVersion as apiVersion$1 } from '@lykmapipo/env';
-import { ObjectId, isObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
+import { isObjectId, ObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
 import { FileTypes, uploaderFor, createModels } from '@lykmapipo/file';
@@ -102,6 +102,16 @@ const EVENT_RELATION_PREDEFINE_FIELDS = {
   status: { 'strings.name.en': 'Actual', namespace: 'EventStatus' },
   urgency: { 'strings.name.en': 'Unknown', namespace: 'EventUrgency' },
   response: { 'strings.name.en': 'None', namespace: 'EventResponse' },
+};
+
+// TODO: refactor to areSameObjectId(vali8&common)
+const deduplicate = (a, b) => {
+  const idOfA = idOf(a) || a;
+  const idOfB = idOf(b) || b;
+  if (isObjectId(idOfA)) {
+    return idOfA.equals(idOfB);
+  }
+  return idOfA === idOfB;
 };
 
 const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
@@ -1049,6 +1059,7 @@ const areas = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
@@ -1112,16 +1123,6 @@ const address = {
     generator: 'address',
     type: 'county',
   },
-};
-
-const deduplicate = (a, b) => {
-  // TODO: refactor to areSameObjectId(vali8&common)
-  const idOfA = idOf(a) || a;
-  const idOfB = idOf(b) || b;
-  if (isObjectId(idOfA)) {
-    return idOfA.equals(idOfB);
-  }
-  return idOfA === idOfB;
 };
 
 /**
@@ -2565,6 +2566,7 @@ const comment = {
  * 99
  */
 const value = {
+  // TODO: fetch associated unit from question before save
   type: Number,
   min: 0,
   // required: true,
