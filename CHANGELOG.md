@@ -1,3 +1,9 @@
+#### 0.7.1 (2020-03-24)
+
+##### Bug Fixes
+
+* **event:**  apply correct changes on updates ([028d6393](https://github.com/codetanzania/ewea-event/commit/028d639388a5bf4e6e8d57d51f6dd5e0e73b01ff))
+
 #### 0.7.0 (2020-03-24)
 
 ##### New Features
