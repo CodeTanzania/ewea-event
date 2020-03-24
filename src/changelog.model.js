@@ -40,6 +40,7 @@ import {
   certainty,
   status,
   urgency,
+  response,
   fanction,
   action,
   catalogue,
@@ -64,7 +65,7 @@ import { image, audio, video, document } from './schema/files.schema';
 const SCHEMA = mergeObjects(
   { use, keyword },
   { initiator, verifier },
-  { group, type, level, severity, certainty, status, urgency },
+  { group, type, level, severity, certainty, status, urgency, response },
   { event },
   { function: fanction, action, catalogue },
   { indicator, topic, question, need, effect, value, unit },
@@ -80,6 +81,7 @@ const SCHEMA = mergeObjects(
 // TODO: send notification after save
 // TODO: notify respective parties after save
 // TODO: handle endedAt changelog to close event
+// TODO: add all event fields to best track changes
 
 /**
  * @module ChangeLog

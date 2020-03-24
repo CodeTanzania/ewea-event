@@ -12,7 +12,7 @@ import { createModels } from '@lykmapipo/file';
 import { Party } from '@codetanzania/emis-stakeholder';
 import { Event, EventChangeLog, eventChangeLogRouter } from '../../src';
 
-describe.only('Event ChangeLog Rest API', () => {
+describe('Event ChangeLog Rest API', () => {
   const areas = Predefine.fake(2);
   const agencies = Party.fake(2);
   const focals = Party.fake(2);

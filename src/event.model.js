@@ -1,14 +1,16 @@
 import {
   MODEL_NAME_EVENT,
+  MODEL_NAME_EVENTCHANGELOG,
   COLLECTION_NAME_EVENT,
 } from '@codetanzania/ewea-internals';
-import { waterfall } from 'async';
+import { parallel, waterfall } from 'async';
 import { forEach, get, includes, omit, pick, union } from 'lodash';
 import { mergeObjects, idOf } from '@lykmapipo/common';
 import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
 import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
+import { Predefine } from '@lykmapipo/predefine';
 
 import {
   EVENT_SCHEMA_OPTIONS,
@@ -19,9 +21,13 @@ import {
   EVENT_OPTION_AUTOPOPULATE,
   EVENT_UPDATE_ARRAY_FIELDS,
   EVENT_UPDATE_IGNORED_FIELDS,
+  EVENT_RELATION_PREDEFINE_FIELDS,
 } from './internals';
 
-import { sendEventUpdates } from './api/notification.api';
+import {
+  sendEventUpdates,
+  sendEventNotification,
+} from './api/notification.api';
 
 import {
   group,
@@ -31,6 +37,7 @@ import {
   certainty,
   status,
   urgency,
+  response,
 } from './schema/base.schema';
 import { location, address, areas } from './schema/geos.schema';
 import { reporter, agencies, focals } from './schema/parties.schema';
@@ -53,7 +60,7 @@ import {
 // TODO: ensure all fields in changelog schema?
 
 const SCHEMA = mergeObjects(
-  { group, type, level, severity, certainty, status, urgency },
+  { group, type, level, severity, certainty, status, urgency, response },
   { stage, number },
   { location, address },
   { causes, description, places },
@@ -131,6 +138,11 @@ EventSchema.methods.preValidate = function preValidate(done) {
   // ensure started(or reported) date
   this.startedAt = this.startedAt || new Date();
 
+  // ensure group from type
+  if (this.type) {
+    this.group = get(this, 'type.relations.group', this.group);
+  }
+
   return done(null, this);
 };
 
@@ -173,9 +185,98 @@ EventSchema.statics.prepareSeedCriteria = seed => {
 };
 
 /**
- * @name updateWithChanges
- * @function updateWithChanges
+ * @name preloadRelations
+ * @function preloadRelations
+ * @description Preload given event relations
+ * @param {object} event valid event instance or object
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} pre-loaded relations or error
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const event = { _id: '...', group: '...', type: '...' };
+ * Event.preloadRelations(event, (error, updated) => { ... });
+ */
+EventSchema.statics.preloadRelations = (event, done) => {
+  // prepare relations to preload
+  const relations = {};
+
+  // prepare predefines loader
+  forEach(EVENT_RELATION_PREDEFINE_FIELDS, (criteria, relation) => {
+    const related = get(event, relation);
+    const relatedId = idOf(related) || related;
+    // event has relation
+    if (relatedId) {
+      relations[relation] = next => Predefine.getById({ _id: relatedId }, next);
+    }
+    // use default criteria
+    else if (criteria) {
+      relations[relation] = next => Predefine.findOne(criteria, next);
+    }
+    // continue
+    else {
+      relations[relation] = next => next(null, null);
+    }
+  });
+
+  // execute loader
+  return parallel(relations, done);
+};
+
+/**
+ * @name postWithChanges
+ * @function postWithChanges
  * @description Update existing Event with the given changes
+ * @param {object} event valid event object to save
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} created event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const event = { type: '...', description: '...' };
+ * Event.postWithChanges(event, (error, created) => { ... });
+ *
+ */
+EventSchema.statics.postWithChanges = (event, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+
+  // preload event relations
+  const preloadRelated = next => Event.preloadRelations(event, next);
+
+  // save event
+  const saveEvent = (relations, next) => {
+    const eventi = mergeObjects(event, relations);
+    return Event.post(eventi, next);
+  };
+
+  // send event notification
+  const sendNotification = (eventi, next) => {
+    // TODO: check AUTO_EVENT_NOTIFICATION_ENABLED=true
+    return sendEventNotification(eventi, (error /* , campaign */) => {
+      return next(error, eventi);
+    });
+  };
+
+  // TODO: ensure level, severity, certainty, status, urgency, response
+  // TODO: save initial changelog(reported)
+
+  // save event
+  const tasks = [preloadRelated, saveEvent, sendNotification];
+  return waterfall(tasks, done);
+};
+
+/**
+ * @name updateWith
+ * @function updateWith
+ * @description Update existing Event with the given criteria and changes
  * @param {object} criteria valid event query criteria
  * @param {object} changes valid event changes to apply
  * @param {Function} done callback to invoke on success or error
@@ -189,10 +290,10 @@ EventSchema.statics.prepareSeedCriteria = seed => {
  *
  * const criteria = { _id: '...' };
  * const changes = { remarks: '...' };
- * Event.updateWithChanges(criteria, changes, (error, updated) => { ... });
+ * Event.updateWith(criteria, changes, (error, updated) => { ... });
  *
  */
-EventSchema.statics.updateWithChanges = (criteria, changes, done) => {
+EventSchema.statics.updateWith = (criteria, changes, done) => {
   // ref
   const Event = model(MODEL_NAME_EVENT);
 
@@ -235,6 +336,62 @@ EventSchema.statics.updateWithChanges = (criteria, changes, done) => {
 };
 
 /**
+ * @name updateWithChanges
+ * @function updateWithChanges
+ * @description Update existing Event with the given changes
+ * @param {object} changes valid event changes to apply
+ * @param {Function} done callback to invoke on success or error
+ * @returns {object|Error} updated event or error
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.6.0
+ * @version 0.1.0
+ * @static
+ * @example
+ *
+ * const changes = { _id: '...', remarks: '...' };
+ * Event.updateWithChanges(criteria, changes, (error, updated) => { ... });
+ *
+ */
+EventSchema.statics.updateWithChanges = (changes, done) => {
+  // ref
+  const Event = model(MODEL_NAME_EVENT);
+  const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
+
+  // obtain event id
+  const eventId = idOf(changes) || changes.id;
+
+  // post changelog
+  const postChangeLog = next => {
+    let changed = omit(changes, EVENT_UPDATE_IGNORED_FIELDS);
+    // TODO ensure event fields(description, instructions etc) in changelog
+    const comment =
+      changes.causes ||
+      changes.impacts ||
+      changes.interventions ||
+      changes.remarks ||
+      changes.places ||
+      changes.instructions ||
+      changes.description;
+    changed = mergeObjects(changed, { event: eventId, comment });
+
+    // TODO use EventChangeLog.postWithChanges once
+    // all event fields are also in changelog
+    return EventChangeLog.post(changed, next);
+  };
+
+  // update event with changes
+  const updateEvent = (changelog, next) => {
+    const criteria = { _id: eventId };
+    return Event.updateWith(criteria, changes, next);
+  };
+
+  // update event with changes
+  const tasks = [postChangeLog, updateEvent];
+  return waterfall(tasks, done);
+};
+
+/**
  * @name updateWithChangeLog
  * @function updateWithChangeLog
  * @description Update existing event with the given changelog instance
@@ -268,7 +425,7 @@ EventSchema.statics.updateWithChangeLog = (changelog, done) => {
   const criteria = { _id: idOf(changes.event) || changes.event };
 
   // update event with changelog
-  return Event.updateWithChanges(criteria, changes, done);
+  return Event.updateWith(criteria, changes, done);
 };
 
 /* export event model */

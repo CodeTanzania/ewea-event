@@ -216,6 +216,25 @@ describe('ChangeLog Schema', () => {
     expect(urgency.options.default).to.be.undefined;
   });
 
+  it('should have response field', () => {
+    const response = ChangeLog.path('response');
+
+    expect(response).to.exist;
+    expect(response).to.be.instanceof(SchemaTypes.ObjectId);
+    expect(response.options).to.exist;
+    expect(response.options).to.be.an('object');
+    expect(response.options.type).to.exist;
+    expect(response.options.ref).to.exist;
+    expect(response.options.ref).to.be.equal(Predefine.MODEL_NAME);
+    // expect(response.options.required).to.be.true;
+    expect(response.options.exists).to.be.true;
+    expect(response.options.autopopulate).to.exist;
+    expect(response.options.taggable).to.exist;
+    expect(response.options.exportable).to.exist;
+    // expect(response.options.aggregatable).to.exist;
+    expect(response.options.default).to.be.undefined;
+  });
+
   it('should have event field', () => {
     const event = ChangeLog.path('event');
 

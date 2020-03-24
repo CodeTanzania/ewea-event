@@ -11,16 +11,9 @@ import {
   Router,
 } from '@lykmapipo/express-rest-actions';
 
-import {
-  getEventJsonSchema,
-  exportEvents,
-  getEvents,
-  getEventById,
-  postEventWithChanges,
-  putEventWithChanges,
-  patchEventWithChanges,
-  deleteEventWithChanges,
-} from './api/index';
+import Event from './event.model';
+
+import { ensureReporter, ensureInitiator } from './http.middlewares';
 
 /* constants */
 const API_VERSION = getString('API_VERSION', '1.0.0');
@@ -28,15 +21,6 @@ const PATH_SINGLE = '/events/:id';
 const PATH_LIST = '/events';
 const PATH_EXPORT = '/events/export';
 const PATH_SCHEMA = '/events/schema/';
-
-/* middlewares */
-const ensureReporter = (request, response, next) => {
-  // TODO: refactor & test
-  if (request.party && request.body) {
-    request.body.reporter = request.party.asContact();
-  }
-  return next();
-};
 
 /**
  * @name EventHttpRouter
@@ -65,7 +49,7 @@ const router = new Router({
 router.get(
   PATH_LIST,
   getFor({
-    get: (options, done) => getEvents(options, done),
+    get: (options, done) => Event.get(options, done),
   })
 );
 
@@ -77,7 +61,10 @@ router.get(
 router.get(
   PATH_SCHEMA,
   schemaFor({
-    getSchema: (query, done) => getEventJsonSchema(query, done),
+    getSchema: (query, done) => {
+      const jsonSchema = Event.jsonSchema();
+      return done(null, jsonSchema);
+    },
   })
 );
 
@@ -89,7 +76,11 @@ router.get(
 router.get(
   PATH_EXPORT,
   downloadFor({
-    download: (options, done) => exportEvents(options, done),
+    download: (options, done) => {
+      const fileName = `events_exports_${Date.now()}.csv`;
+      const readStream = Event.exportCsv(options);
+      return done(null, { fileName, readStream });
+    },
   })
 );
 
@@ -102,7 +93,7 @@ router.post(
   PATH_LIST,
   ensureReporter,
   postFor({
-    post: (body, done) => postEventWithChanges(body, done),
+    post: (body, done) => Event.postWithChanges(body, done),
   })
 );
 
@@ -114,7 +105,7 @@ router.post(
 router.get(
   PATH_SINGLE,
   getByIdFor({
-    getById: (options, done) => getEventById(options, done),
+    getById: (options, done) => Event.getById(options, done),
   })
 );
 
@@ -125,8 +116,9 @@ router.get(
  */
 router.patch(
   PATH_SINGLE,
+  ensureInitiator,
   patchFor({
-    patch: (options, done) => patchEventWithChanges(options, done),
+    patch: (options, done) => Event.updateWithChanges(options, done),
   })
 );
 
@@ -137,8 +129,9 @@ router.patch(
  */
 router.put(
   PATH_SINGLE,
+  ensureInitiator,
   putFor({
-    put: (options, done) => putEventWithChanges(options, done),
+    put: (options, done) => Event.updateWithChanges(options, done),
   })
 );
 
@@ -149,8 +142,9 @@ router.put(
  */
 router.delete(
   PATH_SINGLE,
+  ensureInitiator,
   deleteFor({
-    del: (options, done) => deleteEventWithChanges(options, done),
+    del: (options, done) => Event.del(options, done),
     soft: true,
   })
 );

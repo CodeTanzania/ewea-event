@@ -41,3 +41,25 @@ export const ensureVerifier = (request, response, next) => {
   }
   return next();
 };
+
+/**
+ * @name ensureReporter
+ * @description Set event reporter on request body
+ *
+ * @param {object} request valid http request
+ * @param {object} response valid http response
+ * @param {Function} next next middlware to invoke
+ * @returns {Function} next middlware to invoke
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @license MIT
+ * @since 0.1.0
+ * @version 1.0.0
+ * @public
+ */
+export const ensureReporter = (request, response, next) => {
+  if (request.body && request.party) {
+    request.body.reporter = request.body.reporter || request.party.asContact();
+  }
+  return next();
+};

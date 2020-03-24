@@ -66,8 +66,8 @@ export const EVENT_UPDATE_IGNORED_FIELDS = [
   'event',
   'keyword',
   'number',
-  'location',
-  'address',
+  // 'location', ignore for changelog
+  // 'address', ignore for changelog
   'createdAt',
   'use',
 ];
@@ -81,3 +81,14 @@ export const EVENT_CHANGELOG_RELATED_FIELDS = [
   'status',
   'urgency',
 ];
+
+export const EVENT_RELATION_PREDEFINE_FIELDS = {
+  // group: undefined, // TODO: default group(Unknown)
+  type: undefined, // TODO: default type(Unknown)
+  level: { 'strings.name.en': 'White', namespace: 'EventLevel' },
+  severity: { 'strings.name.en': 'Unknown', namespace: 'EventSeverity' },
+  certainty: { 'strings.name.en': 'Unknown', namespace: 'EventCertainty' },
+  status: { 'strings.name.en': 'Actual', namespace: 'EventStatus' },
+  urgency: { 'strings.name.en': 'Unknown', namespace: 'EventUrgency' },
+  response: { 'strings.name.en': 'None', namespace: 'EventResponse' },
+};
