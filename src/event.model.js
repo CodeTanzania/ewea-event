@@ -311,11 +311,15 @@ EventSchema.statics.updateWith = (criteria, changes, done) => {
     const allowedChanges = omit(changes, ...EVENT_UPDATE_IGNORED_FIELDS);
     forEach(allowedChanges, (value, key) => {
       const isArrayField = includes(EVENT_UPDATE_ARRAY_FIELDS, key);
+      // update array fields
       if (isArrayField) {
         const existValue = get(event, key);
         updates[key] = union(existValue, [].concat(value));
       }
-      updates[key] = value;
+      // update simple fields
+      else {
+        updates[key] = value;
+      }
     });
 
     // persist event changes
