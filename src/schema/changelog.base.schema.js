@@ -204,6 +204,7 @@ export const comment = {
  * 99
  */
 export const value = {
+  // TODO: fetch associated unit from question before save
   type: Number,
   min: 0,
   // required: true,
