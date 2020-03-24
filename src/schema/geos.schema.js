@@ -3,7 +3,7 @@ import { ObjectId } from '@lykmapipo/mongoose-common';
 import { Point } from 'mongoose-geojson-schemas';
 import { Predefine } from '@lykmapipo/predefine';
 
-import { PREDEFINE_OPTION_AUTOPOPULATE } from '../internals';
+import { PREDEFINE_OPTION_AUTOPOPULATE, deduplicate } from '../internals';
 
 /**
  * @name areas
@@ -45,6 +45,7 @@ export const areas = {
   // required: true,
   index: true,
   exists: true,
+  duplicate: deduplicate,
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {

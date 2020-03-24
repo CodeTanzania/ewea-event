@@ -3,7 +3,9 @@ import {
   COLLECTION_NAME_EVENT,
   COLLECTION_NAME_EVENTCHANGELOG,
 } from '@codetanzania/ewea-internals';
+import { idOf } from '@lykmapipo/common';
 import { getString } from '@lykmapipo/env';
+import { isObjectId } from '@lykmapipo/mongoose-common';
 
 // common constants
 export const DEFAULT_COUNTRY_CODE = getString('DEFAULT_COUNTRY_CODE', 'TZ');
@@ -91,4 +93,14 @@ export const EVENT_RELATION_PREDEFINE_FIELDS = {
   status: { 'strings.name.en': 'Actual', namespace: 'EventStatus' },
   urgency: { 'strings.name.en': 'Unknown', namespace: 'EventUrgency' },
   response: { 'strings.name.en': 'None', namespace: 'EventResponse' },
+};
+
+// TODO: refactor to areSameObjectId(vali8&common)
+export const deduplicate = (a, b) => {
+  const idOfA = idOf(a) || a;
+  const idOfB = idOf(b) || b;
+  if (isObjectId(idOfA)) {
+    return idOfA.equals(idOfB);
+  }
+  return idOfA === idOfB;
 };

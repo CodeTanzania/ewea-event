@@ -1,21 +1,11 @@
 import { get } from 'lodash';
-import { idOf, join } from '@lykmapipo/common';
-import { ObjectId, isObjectId } from '@lykmapipo/mongoose-common';
+import { join } from '@lykmapipo/common';
+import { ObjectId } from '@lykmapipo/mongoose-common';
 import { Contact } from '@lykmapipo/postman';
 import { Predefine } from '@lykmapipo/predefine';
 import { Party } from '@codetanzania/emis-stakeholder';
 
-import { PREDEFINE_OPTION_AUTOPOPULATE } from '../internals';
-
-const deduplicate = (a, b) => {
-  // TODO: refactor to areSameObjectId(vali8&common)
-  const idOfA = idOf(a) || a;
-  const idOfB = idOf(b) || b;
-  if (isObjectId(idOfA)) {
-    return idOfA.equals(idOfB);
-  }
-  return idOfA === idOfB;
-};
+import { PREDEFINE_OPTION_AUTOPOPULATE, deduplicate } from '../internals';
 
 /**
  * @name reporter
