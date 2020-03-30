@@ -1,3 +1,13 @@
+#### 0.8.0 (2020-03-30)
+
+##### New Features
+
+* **notification:**  support footer & trim pads on notification sections ([3adb0368](https://github.com/codetanzania/ewea-event/commit/3adb03683b185f4993d6d41ddab4839b3a17e40f))
+
+##### Bug Fixes
+
+* **utils:**  depuplicate using primitive convertion ([5fc3a1e9](https://github.com/codetanzania/ewea-event/commit/5fc3a1e9fb7936209e3bfa303083fcb0db699e59))
+
 #### 0.7.2 (2020-03-24)
 
 ##### Bug Fixes
