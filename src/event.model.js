@@ -58,6 +58,9 @@ import {
 // TODO: calculate expose(risk) after create
 // TODO: send actions after create
 // TODO: ensure all fields in changelog schema?
+// TODO: ensure administrative hierarchy
+// TODO: ensure sources(name, email, link)
+// TODO: provide impact summary
 
 const SCHEMA = mergeObjects(
   { group, type, level, severity, certainty, status, urgency, response },
