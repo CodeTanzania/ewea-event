@@ -1,11 +1,18 @@
 import { get, map } from 'lodash';
 import { uniq, parseTemplate } from '@lykmapipo/common';
-import { getStringSet, getBoolean, isProduction } from '@lykmapipo/env';
+import {
+  getString,
+  getStringSet,
+  getBoolean,
+  isProduction,
+} from '@lykmapipo/env';
 import { CHANNEL_EMAIL, Campaign } from '@lykmapipo/postman';
 
 export { CHANNEL_EMAIL, Campaign };
 
 export const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
+
+export const SMTP_FROM_NAME = getString('SMTP_FROM_NAME', 'EWEA Notification');
 
 export const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
   CHANNEL_EMAIL,
@@ -14,14 +21,15 @@ export const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
 // TODO use localized templates
 // TODO per changelog field message template
 /* templates */
+export const TEMPLATES_EVENT_NOTIFICATION_FOOTER = '\n\nRegards,\n{sender}';
 export const TEMPLATES_EVENT_NOTIFICATION_TITLE =
   '{level} Advisory: {type} {stage} - No. {number}';
 export const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
-  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places}';
+  'Causes: {causes} \n\nDescription: {description} \n\nInstructions: {instructions} \n\nAreas: {areas} \n\nPlaces: {places}';
 export const TEMPLATES_EVENT_STATUS_UPDATE_TITLE =
   'Status Update: {type} {stage} - No. {number}';
 export const TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE =
-  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places} \n\n Updates: {updates}';
+  'Causes: {causes} \n\nDescription: {description} \n\nInstructions: {instructions} \n\nAreas: {areas} \n\nPlaces: {places} \n\nUpdates: {updates}';
 
 // TODO
 // sendMessage
@@ -79,13 +87,21 @@ export const sendEventNotification = (event, done) => {
   areaNames = uniq(areaNames);
 
   // prepare notification body
-  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
+  const body = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
     causes: get(event, 'causes', 'N/A'),
     description: get(event, 'description', 'N/A'),
     instructions: get(event, 'instructions', 'N/A'),
     areas: areaNames.join(', '),
     places: get(event, 'places', 'N/A'),
   });
+
+  // prepare notification footer
+  const footer = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_FOOTER, {
+    sender: SMTP_FROM_NAME,
+  });
+
+  // prepare notification message
+  const message = body + footer;
 
   // send campaign
   sendCampaign({ criteria, subject, message }, done);
@@ -120,7 +136,7 @@ export const sendEventUpdates = (event, changelog, done) => {
   const updates = changelog.comment || 'N/A';
 
   // prepare notification body
-  const message = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE, {
+  const body = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE, {
     causes: get(event, 'causes', 'N/A'),
     description: get(event, 'description', 'N/A'),
     instructions: get(event, 'instructions', 'N/A'),
@@ -128,6 +144,14 @@ export const sendEventUpdates = (event, changelog, done) => {
     places: get(event, 'places', 'N/A'),
     updates,
   });
+
+  // prepare notification footer
+  const footer = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_FOOTER, {
+    sender: SMTP_FROM_NAME,
+  });
+
+  // prepare notification message
+  const message = body + footer;
 
   // send campaign
   sendCampaign({ criteria, subject, message }, done);
