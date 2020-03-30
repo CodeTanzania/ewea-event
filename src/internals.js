@@ -97,10 +97,14 @@ export const EVENT_RELATION_PREDEFINE_FIELDS = {
 
 // TODO: refactor to areSameObjectId(vali8&common)
 export const deduplicate = (a, b) => {
+  // grab actual ids
   const idOfA = idOf(a) || a;
   const idOfB = idOf(b) || b;
-  if (isObjectId(idOfA)) {
-    return idOfA.equals(idOfB);
-  }
-  return idOfA === idOfB;
+
+  // convert to string
+  const idA = isObjectId(idOfA) ? idOfA.toString() : idOfA;
+  const idB = isObjectId(idOfB) ? idOfB.toString() : idOfB;
+
+  // check if are equal
+  return idA === idB;
 };
