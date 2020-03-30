@@ -106,15 +106,21 @@ const EVENT_RELATION_PREDEFINE_FIELDS = {
 
 // TODO: refactor to areSameObjectId(vali8&common)
 const deduplicate = (a, b) => {
+  // grab actual ids
   const idOfA = idOf(a) || a;
   const idOfB = idOf(b) || b;
-  if (isObjectId(idOfA)) {
-    return idOfA.equals(idOfB);
-  }
-  return idOfA === idOfB;
+
+  // convert to string
+  const idA = isObjectId(idOfA) ? idOfA.toString() : idOfA;
+  const idB = isObjectId(idOfB) ? idOfB.toString() : idOfB;
+
+  // check if are equal
+  return idA === idB;
 };
 
 const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
+
+const SMTP_FROM_NAME = getString('SMTP_FROM_NAME', 'EWEA Notification');
 
 const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
   CHANNEL_EMAIL,
@@ -123,14 +129,15 @@ const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
 // TODO use localized templates
 // TODO per changelog field message template
 /* templates */
+const TEMPLATES_EVENT_NOTIFICATION_FOOTER = '\n\nRegards,\n{sender}';
 const TEMPLATES_EVENT_NOTIFICATION_TITLE =
   '{level} Advisory: {type} {stage} - No. {number}';
 const TEMPLATES_EVENT_NOTIFICATION_MESSAGE =
-  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places}';
+  'Causes: {causes} \n\nDescription: {description} \n\nInstructions: {instructions} \n\nAreas: {areas} \n\nPlaces: {places}';
 const TEMPLATES_EVENT_STATUS_UPDATE_TITLE =
   'Status Update: {type} {stage} - No. {number}';
 const TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE =
-  'Causes: {causes} \n\n Description: {description} \n\n Instructions: {instructions} \n\n Areas: {areas} \n\n Places: {places} \n\n Updates: {updates}';
+  'Causes: {causes} \n\nDescription: {description} \n\nInstructions: {instructions} \n\nAreas: {areas} \n\nPlaces: {places} \n\nUpdates: {updates}';
 
 // TODO
 // sendMessage
@@ -188,13 +195,21 @@ const sendEventNotification = (event, done) => {
   areaNames = uniq(areaNames);
 
   // prepare notification body
-  const message = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
+  const body = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_MESSAGE, {
     causes: get(event, 'causes', 'N/A'),
     description: get(event, 'description', 'N/A'),
     instructions: get(event, 'instructions', 'N/A'),
     areas: areaNames.join(', '),
     places: get(event, 'places', 'N/A'),
   });
+
+  // prepare notification footer
+  const footer = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_FOOTER, {
+    sender: SMTP_FROM_NAME,
+  });
+
+  // prepare notification message
+  const message = body + footer;
 
   // send campaign
   sendCampaign({ criteria, subject, message }, done);
@@ -229,7 +244,7 @@ const sendEventUpdates = (event, changelog, done) => {
   const updates = changelog.comment || 'N/A';
 
   // prepare notification body
-  const message = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE, {
+  const body = parseTemplate(TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE, {
     causes: get(event, 'causes', 'N/A'),
     description: get(event, 'description', 'N/A'),
     instructions: get(event, 'instructions', 'N/A'),
@@ -237,6 +252,14 @@ const sendEventUpdates = (event, changelog, done) => {
     places: get(event, 'places', 'N/A'),
     updates,
   });
+
+  // prepare notification footer
+  const footer = parseTemplate(TEMPLATES_EVENT_NOTIFICATION_FOOTER, {
+    sender: SMTP_FROM_NAME,
+  });
+
+  // prepare notification message
+  const message = body + footer;
 
   // send campaign
   sendCampaign({ criteria, subject, message }, done);
@@ -1817,6 +1840,9 @@ const endedAt = {
 // TODO: calculate expose(risk) after create
 // TODO: send actions after create
 // TODO: ensure all fields in changelog schema?
+// TODO: ensure administrative hierarchy
+// TODO: ensure sources(name, email, link)
+// TODO: provide impact summary
 
 const SCHEMA = mergeObjects(
   { group, type, level, severity, certainty, status, urgency, response },
