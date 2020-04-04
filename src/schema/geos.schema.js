@@ -49,7 +49,7 @@ export const areas = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },

@@ -21,9 +21,9 @@ describe('Notification', () => {
   const event = Event.fake();
   event.set({ level, type, areas });
 
-  before(done => clear(done));
-  before(done => create([level, type, ...areas], done));
-  before(done => create(event, done));
+  before((done) => clear(done));
+  before((done) => create([level, type, ...areas], done));
+  before((done) => create(event, done));
 
   it('should parse & expose common config', () => {
     expect(CHANNEL_EMAIL).to.exist;
@@ -33,7 +33,7 @@ describe('Notification', () => {
     expect(TEMPLATES_EVENT_NOTIFICATION_MESSAGE).to.exist;
   });
 
-  it('should send a campaign', done => {
+  it('should send a campaign', (done) => {
     const message = Campaign.fake().toObject();
     sendCampaign(message, (error, sent) => {
       expect(error).to.not.exist;
@@ -42,7 +42,7 @@ describe('Notification', () => {
     });
   });
 
-  it('should send event alert', done => {
+  it('should send event alert', (done) => {
     sendEventNotification(event, (error, sent) => {
       expect(error).to.not.exist;
       expect(sent).to.exist;
@@ -50,5 +50,5 @@ describe('Notification', () => {
     });
   });
 
-  after(done => clear(done));
+  after((done) => clear(done));
 });

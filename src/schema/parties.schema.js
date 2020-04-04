@@ -76,7 +76,7 @@ export const initiator = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'name'),
+    format: (v) => get(v, 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -125,7 +125,7 @@ export const verifier = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'name'),
+    format: (v) => get(v, 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -172,7 +172,7 @@ export const groups = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -219,7 +219,7 @@ export const roles = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -269,7 +269,7 @@ export const agencies = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'name'),
+    format: (v) => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -318,7 +318,7 @@ export const focals = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'name'),
+    format: (v) => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },

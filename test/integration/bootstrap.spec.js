@@ -17,8 +17,8 @@ process.env.DEFAULT_TRANSPORT_NAME = 'echo';
 process.env.ENABLE_SYNC_TRANSPORT = true;
 process.env.NOTIFICATION_CHANNELS = 'EMAIL';
 
-before(done => connect(done));
+before((done) => connect(done));
 
-before(done => clear(done));
+before((done) => clear(done));
 
-after(done => drop(done));
+after((done) => drop(done));

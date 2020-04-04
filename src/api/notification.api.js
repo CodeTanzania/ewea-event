@@ -66,7 +66,7 @@ export const sendCampaign = (message, done) => {
 export const sendEventNotification = (event, done) => {
   // prepare recipient criteria
   // TODO: handle agencies, focals
-  let areaIds = map([].concat(event.areas), area => {
+  let areaIds = map([].concat(event.areas), (area) => {
     return get(area, '_id');
   });
   areaIds = uniq(areaIds).concat(null);
@@ -81,7 +81,7 @@ export const sendEventNotification = (event, done) => {
   });
 
   // prepare notification areas body
-  let areaNames = map([].concat(event.areas), area => {
+  let areaNames = map([].concat(event.areas), (area) => {
     return get(area, 'strings.name.en', 'N/A');
   });
   areaNames = uniq(areaNames);
@@ -111,7 +111,7 @@ export const sendEventNotification = (event, done) => {
 export const sendEventUpdates = (event, changelog, done) => {
   // prepare recipient criteria
   // TODO: handle agencies, focals
-  let areaIds = map([].concat(event.areas), area => {
+  let areaIds = map([].concat(event.areas), (area) => {
     return get(area, '_id');
   });
   areaIds = uniq(areaIds).concat(null);
@@ -125,7 +125,7 @@ export const sendEventUpdates = (event, changelog, done) => {
   });
 
   // prepare notification areas body
-  let areaNames = map([].concat(event.areas), area => {
+  let areaNames = map([].concat(event.areas), (area) => {
     return get(area, 'strings.name.en', 'N/A');
   });
   areaNames = uniq(areaNames);

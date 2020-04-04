@@ -33,17 +33,17 @@ describe('Event ChangeLog Rest API', () => {
     pathExport: '/changelogs/export/',
   };
 
-  before(done => clearDb(Event, done));
+  before((done) => clearDb(Event, done));
 
   before(() => clearHttp());
 
   beforeEach(() => createModels());
 
-  before(done => create(...areas, ...agencies, ...focals, done));
-  before(done => create(group, type, done));
-  before(done => create(event, done));
+  before((done) => create(...areas, ...agencies, ...focals, done));
+  before((done) => create(group, type, done));
+  before((done) => create(event, done));
 
-  it('should handle HTTP POST comment on /changelogs', done => {
+  it('should handle HTTP POST comment on /changelogs', (done) => {
     const { testPost } = testRouter(options, eventChangeLogRouter);
     testPost({ ...changelog.toObject() })
       .expect(201)
@@ -58,7 +58,7 @@ describe('Event ChangeLog Rest API', () => {
       });
   });
 
-  it('should handle HTTP GET on /changelogs', done => {
+  it('should handle HTTP GET on /changelogs', (done) => {
     const { testGet } = testRouter(options, eventChangeLogRouter);
     testGet()
       .expect(200)
@@ -77,12 +77,12 @@ describe('Event ChangeLog Rest API', () => {
       });
   });
 
-  it('should handle GET /changelogs/schema', done => {
+  it('should handle GET /changelogs/schema', (done) => {
     const { testGetSchema } = testRouter(options, eventChangeLogRouter);
     testGetSchema().expect(200, done);
   });
 
-  it('should handle GET /changelogs/export', done => {
+  it('should handle GET /changelogs/export', (done) => {
     const { testGetExport } = testRouter(options, eventChangeLogRouter);
     testGetExport()
       .expect('Content-Type', 'text/csv; charset=utf-8')
@@ -92,7 +92,7 @@ describe('Event ChangeLog Rest API', () => {
       .expect(200, done);
   });
 
-  it('should handle HTTP GET on /changelogs/:id', done => {
+  it('should handle HTTP GET on /changelogs/:id', (done) => {
     const { testGet } = testRouter(options, eventChangeLogRouter);
     const params = { id: changelog._id.toString() };
     testGet(params)
@@ -108,7 +108,7 @@ describe('Event ChangeLog Rest API', () => {
       });
   });
 
-  it('should handle HTTP PATCH on /changelogs/:id', done => {
+  it('should handle HTTP PATCH on /changelogs/:id', (done) => {
     const { testPatch } = testRouter(options, eventChangeLogRouter);
     const { comment } = changelog.fakeOnly('comment');
     const params = { id: changelog._id.toString() };
@@ -126,7 +126,7 @@ describe('Event ChangeLog Rest API', () => {
       });
   });
 
-  it('should handle HTTP PUT on /changelogs/:id', done => {
+  it('should handle HTTP PUT on /changelogs/:id', (done) => {
     const { testPut } = testRouter(options, eventChangeLogRouter);
     const { comment } = changelog.fakeOnly('comment');
     const params = { id: changelog._id.toString() };
@@ -144,7 +144,7 @@ describe('Event ChangeLog Rest API', () => {
       });
   });
 
-  it('should handle HTTP DELETE on /changelogs/:id', done => {
+  it('should handle HTTP DELETE on /changelogs/:id', (done) => {
     const { testDelete } = testRouter(options, eventChangeLogRouter);
     const params = { id: changelog._id.toString() };
     testDelete(params)
@@ -163,5 +163,5 @@ describe('Event ChangeLog Rest API', () => {
 
   after(() => clearHttp());
 
-  after(done => clearDb(done));
+  after((done) => clearDb(done));
 });

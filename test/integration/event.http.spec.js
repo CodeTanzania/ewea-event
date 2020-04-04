@@ -31,16 +31,16 @@ describe('Event Rest API', () => {
     pathExport: '/events/export/',
   };
 
-  before(done => clearDb(Event, done));
+  before((done) => clearDb(Event, done));
 
   before(() => clearHttp());
 
   beforeEach(() => createModels());
 
-  before(done => create(...areas, ...agencies, ...focals, done));
-  before(done => create(level, group, type, done));
+  before((done) => create(...areas, ...agencies, ...focals, done));
+  before((done) => create(level, group, type, done));
 
-  it('should handle HTTP POST on /events', done => {
+  it('should handle HTTP POST on /events', (done) => {
     const { testPost } = testRouter(options, eventRouter);
     testPost({ ...event.toObject() })
       .expect(201)
@@ -57,7 +57,7 @@ describe('Event Rest API', () => {
       });
   });
 
-  it('should handle HTTP GET on /events', done => {
+  it('should handle HTTP GET on /events', (done) => {
     const { testGet } = testRouter(options, eventRouter);
     testGet()
       .expect(200)
@@ -76,12 +76,12 @@ describe('Event Rest API', () => {
       });
   });
 
-  it('should handle GET /events/schema', done => {
+  it('should handle GET /events/schema', (done) => {
     const { testGetSchema } = testRouter(options, eventRouter);
     testGetSchema().expect(200, done);
   });
 
-  it('should handle GET /events/export', done => {
+  it('should handle GET /events/export', (done) => {
     const { testGetExport } = testRouter(options, eventRouter);
     testGetExport()
       .expect('Content-Type', 'text/csv; charset=utf-8')
@@ -91,7 +91,7 @@ describe('Event Rest API', () => {
       .expect(200, done);
   });
 
-  it('should handle HTTP GET on /events/:id', done => {
+  it('should handle HTTP GET on /events/:id', (done) => {
     const { testGet } = testRouter(options, eventRouter);
     const params = { id: event._id.toString() };
     testGet(params)
@@ -107,7 +107,7 @@ describe('Event Rest API', () => {
       });
   });
 
-  it('should handle HTTP PATCH on /events/:id', done => {
+  it('should handle HTTP PATCH on /events/:id', (done) => {
     const { testPatch } = testRouter(options, eventRouter);
     const { description } = event.fakeOnly('description');
     const params = { id: event._id.toString() };
@@ -125,7 +125,7 @@ describe('Event Rest API', () => {
       });
   });
 
-  it('should handle HTTP PUT on /events/:id', done => {
+  it('should handle HTTP PUT on /events/:id', (done) => {
     const { testPut } = testRouter(options, eventRouter);
     const { description } = event.fakeOnly('description');
     const params = { id: event._id.toString() };
@@ -143,7 +143,7 @@ describe('Event Rest API', () => {
       });
   });
 
-  it('should handle HTTP DELETE on /events/:id', done => {
+  it('should handle HTTP DELETE on /events/:id', (done) => {
     const { testDelete } = testRouter(options, eventRouter);
     const params = { id: event._id.toString() };
     testDelete(params)
@@ -162,5 +162,5 @@ describe('Event Rest API', () => {
 
   after(() => clearHttp());
 
-  after(done => clearDb(Event, done));
+  after((done) => clearDb(Event, done));
 });
