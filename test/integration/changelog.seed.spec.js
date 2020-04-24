@@ -9,13 +9,13 @@ describe('Event Changelog Seed', () => {
   let changelog;
   let event;
 
-  before(done => clear(done));
+  before((done) => clear(done));
 
   before(() => {
     process.env.SEED_PATH = path.join(__dirname, '..', 'fixtures');
   });
 
-  before(done =>
+  before((done) =>
     Event.seed((error, seeded) => {
       event = _.first([].concat(seeded));
       return done(error, seeded);
@@ -24,7 +24,7 @@ describe('Event Changelog Seed', () => {
 
   beforeEach(() => createModels());
 
-  it('should be able to seed', done => {
+  it('should be able to seed', (done) => {
     EventChangeLog.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -34,7 +34,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should not throw if seed exist', done => {
+  it('should not throw if seed exist', (done) => {
     EventChangeLog.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -43,7 +43,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should seed provided', done => {
+  it('should seed provided', (done) => {
     const seed = EventChangeLog.fakeOnly('comment');
     seed.set({ event });
 
@@ -55,7 +55,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should seed provided', done => {
+  it('should seed provided', (done) => {
     const seed = EventChangeLog.fakeOnly('comment');
     seed.set({ event });
 
@@ -67,7 +67,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should not throw if provided exist', done => {
+  it('should not throw if provided exist', (done) => {
     const seed = changelog.toObject();
     EventChangeLog.seed(seed, (error, seeded) => {
       expect(error).to.not.exist;
@@ -77,7 +77,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should be able to seed from environment', done => {
+  it('should be able to seed from environment', (done) => {
     EventChangeLog.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -86,7 +86,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  it('should not throw if seed from environment exist', done => {
+  it('should not throw if seed from environment exist', (done) => {
     EventChangeLog.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -95,7 +95,7 @@ describe('Event Changelog Seed', () => {
     });
   });
 
-  after(done => clear(done));
+  after((done) => clear(done));
 
   after(() => {
     process.env.SEED_PATH = SEED_PATH;

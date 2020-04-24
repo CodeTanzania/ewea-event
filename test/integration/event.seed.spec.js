@@ -7,13 +7,13 @@ describe('Event Seed', () => {
   const { SEED_PATH } = process.env;
   let event;
 
-  before(done => clear(done));
+  before((done) => clear(done));
 
   before(() => {
     process.env.SEED_PATH = path.join(__dirname, '..', 'fixtures');
   });
 
-  it('should be able to seed', done => {
+  it('should be able to seed', (done) => {
     Event.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -23,7 +23,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should not throw if seed exist', done => {
+  it('should not throw if seed exist', (done) => {
     Event.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -32,7 +32,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should seed provided', done => {
+  it('should seed provided', (done) => {
     const seed = Event.fake().toObject();
     Event.seed(seed, (error, seeded) => {
       expect(error).to.not.exist;
@@ -42,7 +42,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should seed provided', done => {
+  it('should seed provided', (done) => {
     const seed = Event.fake().toObject();
     Event.seed([seed], (error, seeded) => {
       expect(error).to.not.exist;
@@ -52,7 +52,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should not throw if provided exist', done => {
+  it('should not throw if provided exist', (done) => {
     const seed = event.toObject();
     Event.seed(seed, (error, seeded) => {
       expect(error).to.not.exist;
@@ -62,7 +62,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should be able to seed from environment', done => {
+  it('should be able to seed from environment', (done) => {
     Event.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -71,7 +71,7 @@ describe('Event Seed', () => {
     });
   });
 
-  it('should not throw if seed from environment exist', done => {
+  it('should not throw if seed from environment exist', (done) => {
     Event.seed((error, seeded) => {
       expect(error).to.not.exist;
       expect(seeded).to.exist;
@@ -80,7 +80,7 @@ describe('Event Seed', () => {
     });
   });
 
-  after(done => clear(done));
+  after((done) => clear(done));
 
   after(() => {
     process.env.SEED_PATH = SEED_PATH;

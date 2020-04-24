@@ -47,7 +47,7 @@ export const event = {
   autopopulate: EVENT_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'type.strings.name.en'),
+    format: (v) => get(v, 'type.strings.name.en'),
     default: 'NA',
   },
   aggregatable: {

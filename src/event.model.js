@@ -50,6 +50,7 @@ import {
   instructions,
   interventions,
   impacts,
+  constraints,
   remarks,
   startedAt,
   endedAt,
@@ -69,7 +70,15 @@ const SCHEMA = mergeObjects(
   { causes, description, places },
   { areas },
   { reporter, agencies, focals },
-  { instructions, interventions, impacts, remarks, startedAt, endedAt }
+  {
+    instructions,
+    interventions,
+    impacts,
+    constraints,
+    remarks,
+    startedAt,
+    endedAt,
+  }
 );
 
 /**
@@ -177,7 +186,7 @@ EventSchema.statics.STAGES = EVENT_STAGES;
  * @version 0.1.0
  * @static
  */
-EventSchema.statics.prepareSeedCriteria = seed => {
+EventSchema.statics.prepareSeedCriteria = (seed) => {
   const copyOfSeed = copyInstance(seed);
 
   const criteria = idOf(copyOfSeed)
@@ -213,15 +222,16 @@ EventSchema.statics.preloadRelations = (event, done) => {
     const relatedId = idOf(related) || related;
     // event has relation
     if (relatedId) {
-      relations[relation] = next => Predefine.getById({ _id: relatedId }, next);
+      relations[relation] = (next) =>
+        Predefine.getById({ _id: relatedId }, next);
     }
     // use default criteria
     else if (criteria) {
-      relations[relation] = next => Predefine.findOne(criteria, next);
+      relations[relation] = (next) => Predefine.findOne(criteria, next);
     }
     // continue
     else {
-      relations[relation] = next => next(null, null);
+      relations[relation] = (next) => next(null, null);
     }
   });
 
@@ -252,7 +262,7 @@ EventSchema.statics.postWithChanges = (event, done) => {
   const Event = model(MODEL_NAME_EVENT);
 
   // preload event relations
-  const preloadRelated = next => Event.preloadRelations(event, next);
+  const preloadRelated = (next) => Event.preloadRelations(event, next);
 
   // save event
   const saveEvent = (relations, next) => {
@@ -301,10 +311,8 @@ EventSchema.statics.updateWith = (criteria, changes, done) => {
   const Event = model(MODEL_NAME_EVENT);
 
   // find existing event by given criteria
-  const findEvent = next => {
-    return Event.findOne(criteria)
-      .orFail()
-      .exec(next);
+  const findEvent = (next) => {
+    return Event.findOne(criteria).orFail().exec(next);
   };
 
   // apply changes to found event
@@ -369,7 +377,7 @@ EventSchema.statics.updateWithChanges = (changes, done) => {
   const eventId = idOf(changes) || changes.id;
 
   // post changelog
-  const postChangeLog = next => {
+  const postChangeLog = (next) => {
     let changed = omit(changes, EVENT_UPDATE_IGNORED_FIELDS);
     // TODO ensure event fields(description, instructions etc) in changelog
     const comment =

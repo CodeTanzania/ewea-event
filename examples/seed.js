@@ -20,7 +20,7 @@ let seedStart;
 let seedEnd;
 
 // seed events
-const seedEvent = done => {
+const seedEvent = (done) => {
   Event.seed((error, seeded) => {
     log('events', error, seeded);
     done(error);
@@ -28,7 +28,7 @@ const seedEvent = done => {
 };
 
 // seed changelogs
-const seedEventChangeLog = done => {
+const seedEventChangeLog = (done) => {
   EventChangeLog.seed((error, seeded) => {
     log('changelogs', error, seeded);
     done(error);
@@ -36,18 +36,18 @@ const seedEventChangeLog = done => {
 };
 
 // ensure indexes
-const ensureIndexes = done => syncIndexes(error => done(error));
+const ensureIndexes = (done) => syncIndexes((error) => done(error));
 
 // ensure connections
-const ensureConnection = done => connect(error => done(error));
+const ensureConnection = (done) => connect((error) => done(error));
 
-const ensureFileModels = done => {
+const ensureFileModels = (done) => {
   createModels();
   return done();
 };
 
 // do seed
-const seed = done => {
+const seed = (done) => {
   seedStart = Date.now();
   return waterfall(
     [

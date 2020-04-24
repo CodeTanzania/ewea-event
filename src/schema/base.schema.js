@@ -42,7 +42,7 @@ export const group = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -87,7 +87,7 @@ export const type = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -132,7 +132,7 @@ export const level = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -177,7 +177,7 @@ export const severity = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -222,7 +222,7 @@ export const certainty = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -267,7 +267,7 @@ export const status = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -312,7 +312,7 @@ export const urgency = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -357,7 +357,7 @@ export const response = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -403,7 +403,7 @@ export const fanction = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -449,7 +449,7 @@ export const action = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -495,7 +495,7 @@ export const catalogue = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -542,7 +542,7 @@ export const indicator = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -589,7 +589,7 @@ export const topic = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -635,7 +635,7 @@ export const question = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -681,7 +681,7 @@ export const need = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -727,7 +727,7 @@ export const effect = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -774,7 +774,7 @@ export const unit = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },

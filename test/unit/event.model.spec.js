@@ -11,11 +11,11 @@ describe('Event Instance', () => {
     expect(event.preValidate.name).to.be.equal('preValidate');
   });
 
-  it('should set startedAt on pre validate', done => {
+  it('should set startedAt on pre validate', (done) => {
     const event = Event.fakeExcept('startedAt');
 
     expect(event.startedAt).to.not.exist;
-    event.preValidate(error => {
+    event.preValidate((error) => {
       expect(event.startedAt).to.exist;
       done(error);
     });
@@ -23,10 +23,10 @@ describe('Event Instance', () => {
 });
 
 describe('Event Validations', () => {
-  it('should generate number', done => {
+  it('should generate number', (done) => {
     const event = Event.fakeExcept('number');
     // expect(event.number).to.not.exist;
-    event.validate(error => {
+    event.validate((error) => {
       expect(error).to.not.exist;
       expect(event.number).to.exist;
       expect(event.number).to.contain('TZ');

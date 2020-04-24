@@ -174,7 +174,7 @@ ChangeLogSchema.methods.updateEvent = function updateEvent(done) {
   const Event = model(MODEL_NAME_EVENT);
 
   // update event with changes
-  const updateRelatedEvent = next => Event.updateWithChangeLog(this, next);
+  const updateRelatedEvent = (next) => Event.updateWithChangeLog(this, next);
 
   // ensure changelog event fields
   const updateSelfRelated = (eventi, next) => {
@@ -222,7 +222,7 @@ ChangeLogSchema.statics.USES = CHANGELOG_USES;
  * @version 0.1.0
  * @static
  */
-ChangeLogSchema.statics.prepareSeedCriteria = seed => {
+ChangeLogSchema.statics.prepareSeedCriteria = (seed) => {
   const copyOfSeed = copyInstance(seed);
   const fields = [
     'use',
@@ -269,7 +269,7 @@ ChangeLogSchema.statics.postWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // save changes
-  const saveChangeLog = next => EventChangeLog.post(changes, next);
+  const saveChangeLog = (next) => EventChangeLog.post(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);
@@ -303,7 +303,7 @@ ChangeLogSchema.statics.putWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // put existing changelog
-  const putChangeLog = next => EventChangeLog.put(changes, next);
+  const putChangeLog = (next) => EventChangeLog.put(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);
@@ -337,7 +337,7 @@ ChangeLogSchema.statics.patchWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // patch existing changelog
-  const patchChangeLog = next => EventChangeLog.patch(changes, next);
+  const patchChangeLog = (next) => EventChangeLog.patch(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);

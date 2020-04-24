@@ -339,7 +339,7 @@ describe('Event Schema', () => {
     const interventions = Event.path('interventions');
 
     expect(interventions).to.exist;
-    expect(interventions).to.be.instanceof(SchemaTypes.String);
+    expect(interventions).to.be.instanceof(SchemaTypes.Array);
     expect(interventions.options).to.exist;
     expect(interventions.options).to.be.an('object');
     expect(interventions.options.type).to.exist;
@@ -365,11 +365,26 @@ describe('Event Schema', () => {
     expect(impacts.options.fake).to.exist;
   });
 
+  it('should have constraints field', () => {
+    const constraints = Event.path('constraints');
+
+    expect(constraints).to.exist;
+    expect(constraints).to.be.instanceof(SchemaTypes.Array);
+    expect(constraints.options).to.exist;
+    expect(constraints.options).to.be.an('object');
+    expect(constraints.options.type).to.exist;
+    expect(constraints.options.trim).to.be.true;
+    expect(constraints.options.index).to.be.true;
+    expect(constraints.options.searchable).to.be.true;
+    expect(constraints.options.exportable).to.be.true;
+    expect(constraints.options.fake).to.exist;
+  });
+
   it('should have remarks field', () => {
     const remarks = Event.path('remarks');
 
     expect(remarks).to.exist;
-    expect(remarks).to.be.instanceof(SchemaTypes.String);
+    expect(remarks).to.be.instanceof(SchemaTypes.Array);
     expect(remarks.options).to.exist;
     expect(remarks.options).to.be.an('object');
     expect(remarks.options.type).to.exist;
