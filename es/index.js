@@ -174,7 +174,7 @@ const sendCampaign = (message, done) => {
 const sendEventNotification = (event, done) => {
   // prepare recipient criteria
   // TODO: handle agencies, focals
-  let areaIds = map([].concat(event.areas), area => {
+  let areaIds = map([].concat(event.areas), (area) => {
     return get(area, '_id');
   });
   areaIds = uniq(areaIds).concat(null);
@@ -189,7 +189,7 @@ const sendEventNotification = (event, done) => {
   });
 
   // prepare notification areas body
-  let areaNames = map([].concat(event.areas), area => {
+  let areaNames = map([].concat(event.areas), (area) => {
     return get(area, 'strings.name.en', 'N/A');
   });
   areaNames = uniq(areaNames);
@@ -219,7 +219,7 @@ const sendEventNotification = (event, done) => {
 const sendEventUpdates = (event, changelog, done) => {
   // prepare recipient criteria
   // TODO: handle agencies, focals
-  let areaIds = map([].concat(event.areas), area => {
+  let areaIds = map([].concat(event.areas), (area) => {
     return get(area, '_id');
   });
   areaIds = uniq(areaIds).concat(null);
@@ -233,7 +233,7 @@ const sendEventUpdates = (event, changelog, done) => {
   });
 
   // prepare notification areas body
-  let areaNames = map([].concat(event.areas), area => {
+  let areaNames = map([].concat(event.areas), (area) => {
     return get(area, 'strings.name.en', 'N/A');
   });
   areaNames = uniq(areaNames);
@@ -303,7 +303,7 @@ const group = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -348,7 +348,7 @@ const type = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -393,7 +393,7 @@ const level = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -438,7 +438,7 @@ const severity = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -483,7 +483,7 @@ const certainty = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -528,7 +528,7 @@ const status = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -573,7 +573,7 @@ const urgency = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -618,7 +618,7 @@ const response = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -664,7 +664,7 @@ const fanction = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -710,7 +710,7 @@ const action = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -756,7 +756,7 @@ const catalogue = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -803,7 +803,7 @@ const indicator = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -850,7 +850,7 @@ const topic = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -896,7 +896,7 @@ const question = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -942,7 +942,7 @@ const need = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -988,7 +988,7 @@ const effect = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1035,7 +1035,7 @@ const unit = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'strings.name.en'),
+    format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1086,7 +1086,7 @@ const areas = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1217,7 +1217,7 @@ const initiator = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'name'),
+    format: (v) => get(v, 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1266,7 +1266,7 @@ const verifier = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'name'),
+    format: (v) => get(v, 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1313,7 +1313,7 @@ const groups = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1360,7 +1360,7 @@ const roles = {
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'strings.name.en'),
+    format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1410,7 +1410,7 @@ const agencies = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'name'),
+    format: (v) => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1459,7 +1459,7 @@ const focals = {
   autopopulate: Party.OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => join(v, ', ', 'name'),
+    format: (v) => join(v, ', ', 'name'),
     default: 'NA',
   },
   aggregatable: { unwind: true },
@@ -1691,7 +1691,8 @@ const instructions = {
 
 /**
  * @name interventions
- * @description A brief human readable effect(s) an event.
+ * @description A brief human readable interventions and directives
+ * of an event.
  *
  * @type {object}
  * @property {object} type - schema(data) type
@@ -1709,7 +1710,7 @@ const instructions = {
  * Affected victims were evacuated and relocated
  */
 const interventions = {
-  type: String,
+  type: [String],
   trim: true,
   index: true,
   searchable: true,
@@ -1752,6 +1753,38 @@ const impacts = {
 };
 
 /**
+ * @name constraints
+ * @description A brief human readable gaps and constraints
+ * about an event.
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {boolean} index - ensure database index
+ * @property {boolean} searchable - allow for searching
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * Rehabilitation and reconstruction resources
+ */
+const constraints = {
+  type: [String],
+  trim: true,
+  index: true,
+  searchable: true,
+  exportable: true,
+  fake: {
+    generator: 'lorem',
+    type: 'sentences',
+  },
+};
+
+/**
  * @name remarks
  * @description A brief human readable comments and recommendations
  * about an event.
@@ -1772,14 +1805,14 @@ const impacts = {
  * Requested relief items should be provided to the victims immediately
  */
 const remarks = {
-  type: String,
+  type: [String],
   trim: true,
   index: true,
   searchable: true,
   exportable: true,
   fake: {
     generator: 'lorem',
-    type: 'sentence',
+    type: 'sentences',
   },
 };
 
@@ -1851,7 +1884,15 @@ const SCHEMA = mergeObjects(
   { causes, description, places },
   { areas },
   { reporter, agencies, focals },
-  { instructions, interventions, impacts, remarks, startedAt, endedAt }
+  {
+    instructions,
+    interventions,
+    impacts,
+    constraints,
+    remarks,
+    startedAt,
+    endedAt,
+  }
 );
 
 /**
@@ -1959,7 +2000,7 @@ EventSchema.statics.STAGES = EVENT_STAGES;
  * @version 0.1.0
  * @static
  */
-EventSchema.statics.prepareSeedCriteria = seed => {
+EventSchema.statics.prepareSeedCriteria = (seed) => {
   const copyOfSeed = copyInstance(seed);
 
   const criteria = idOf(copyOfSeed)
@@ -1995,15 +2036,16 @@ EventSchema.statics.preloadRelations = (event, done) => {
     const relatedId = idOf(related) || related;
     // event has relation
     if (relatedId) {
-      relations[relation] = next => Predefine.getById({ _id: relatedId }, next);
+      relations[relation] = (next) =>
+        Predefine.getById({ _id: relatedId }, next);
     }
     // use default criteria
     else if (criteria) {
-      relations[relation] = next => Predefine.findOne(criteria, next);
+      relations[relation] = (next) => Predefine.findOne(criteria, next);
     }
     // continue
     else {
-      relations[relation] = next => next(null, null);
+      relations[relation] = (next) => next(null, null);
     }
   });
 
@@ -2034,7 +2076,7 @@ EventSchema.statics.postWithChanges = (event, done) => {
   const Event = model(MODEL_NAME_EVENT);
 
   // preload event relations
-  const preloadRelated = next => Event.preloadRelations(event, next);
+  const preloadRelated = (next) => Event.preloadRelations(event, next);
 
   // save event
   const saveEvent = (relations, next) => {
@@ -2083,10 +2125,8 @@ EventSchema.statics.updateWith = (criteria, changes, done) => {
   const Event = model(MODEL_NAME_EVENT);
 
   // find existing event by given criteria
-  const findEvent = next => {
-    return Event.findOne(criteria)
-      .orFail()
-      .exec(next);
+  const findEvent = (next) => {
+    return Event.findOne(criteria).orFail().exec(next);
   };
 
   // apply changes to found event
@@ -2151,7 +2191,7 @@ EventSchema.statics.updateWithChanges = (changes, done) => {
   const eventId = idOf(changes) || changes.id;
 
   // post changelog
-  const postChangeLog = next => {
+  const postChangeLog = (next) => {
     let changed = omit(changes, EVENT_UPDATE_IGNORED_FIELDS);
     // TODO ensure event fields(description, instructions etc) in changelog
     const comment =
@@ -2435,7 +2475,7 @@ const event = {
   autopopulate: EVENT_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
-    format: v => get(v, 'type.strings.name.en'),
+    format: (v) => get(v, 'type.strings.name.en'),
     default: 'NA',
   },
   aggregatable: {
@@ -2780,7 +2820,7 @@ ChangeLogSchema.methods.updateEvent = function updateEvent(done) {
   const Event = model(MODEL_NAME_EVENT);
 
   // update event with changes
-  const updateRelatedEvent = next => Event.updateWithChangeLog(this, next);
+  const updateRelatedEvent = (next) => Event.updateWithChangeLog(this, next);
 
   // ensure changelog event fields
   const updateSelfRelated = (eventi, next) => {
@@ -2828,7 +2868,7 @@ ChangeLogSchema.statics.USES = CHANGELOG_USES;
  * @version 0.1.0
  * @static
  */
-ChangeLogSchema.statics.prepareSeedCriteria = seed => {
+ChangeLogSchema.statics.prepareSeedCriteria = (seed) => {
   const copyOfSeed = copyInstance(seed);
   const fields = [
     'use',
@@ -2875,7 +2915,7 @@ ChangeLogSchema.statics.postWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // save changes
-  const saveChangeLog = next => EventChangeLog.post(changes, next);
+  const saveChangeLog = (next) => EventChangeLog.post(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);
@@ -2909,7 +2949,7 @@ ChangeLogSchema.statics.putWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // put existing changelog
-  const putChangeLog = next => EventChangeLog.put(changes, next);
+  const putChangeLog = (next) => EventChangeLog.put(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);
@@ -2943,7 +2983,7 @@ ChangeLogSchema.statics.patchWithChanges = (changes, done) => {
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
 
   // patch existing changelog
-  const patchChangeLog = next => EventChangeLog.patch(changes, next);
+  const patchChangeLog = (next) => EventChangeLog.patch(changes, next);
 
   // update event with changes
   const updateEvent = (changelog, next) => changelog.updateEvent(next);
@@ -3154,9 +3194,9 @@ const apiVersion = apiVersion$1();
  * @since 0.1.0
  * @version 0.1.0
  */
-const start = done => {
+const start = (done) => {
   // connect mongodb
-  connect(error => {
+  connect((error) => {
     // back-off on connect error
     if (error) {
       return done(error);

@@ -1,3 +1,19 @@
+#### 0.9.0 (2020-04-24)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([9d24e754](https://github.com/codetanzania/ewea-event/commit/9d24e754d3ebbe8e9be63ab3cb3defd25a3efc37))
+  *  force latest version & audit fix ([298f80d9](https://github.com/codetanzania/ewea-event/commit/298f80d92d6ad194d919e00af64df935033bea90))
+  *  force latest version & audit fix ([a3fedd8c](https://github.com/codetanzania/ewea-event/commit/a3fedd8cb791e00421ef5e1764ad35ead9533f32))
+  *  force latest version & audit fix ([032c539e](https://github.com/codetanzania/ewea-event/commit/032c539e5e9d3ac83d3f3c3b2452ddf2106b15d1))
+  *  force latest version & audit fix ([66977805](https://github.com/codetanzania/ewea-event/commit/66977805010b0cc6068c00bf7069f46d2098d113))
+  *  force latest version & audit fix ([b4da001b](https://github.com/codetanzania/ewea-event/commit/b4da001b9144b913f3743430158dc6dd1889961c))
+
+##### Refactors
+
+* **event:**  allow list of interventions, constraints and remarks ([ba810add](https://github.com/codetanzania/ewea-event/commit/ba810addbd18ef83ef92a21e8975a4f462a1790e))
+
 #### 0.8.0 (2020-03-30)
 
 ##### New Features
