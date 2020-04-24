@@ -228,7 +228,8 @@ export const instructions = {
 
 /**
  * @name interventions
- * @description A brief human readable effect(s) an event.
+ * @description A brief human readable interventions and directives
+ * of an event.
  *
  * @type {object}
  * @property {object} type - schema(data) type
@@ -246,7 +247,7 @@ export const instructions = {
  * Affected victims were evacuated and relocated
  */
 export const interventions = {
-  type: String,
+  type: [String],
   trim: true,
   index: true,
   searchable: true,
@@ -289,6 +290,38 @@ export const impacts = {
 };
 
 /**
+ * @name constraints
+ * @description A brief human readable gaps and constraints
+ * about an event.
+ *
+ * @type {object}
+ * @property {object} type - schema(data) type
+ * @property {boolean} trim - force trimming
+ * @property {boolean} index - ensure database index
+ * @property {boolean} searchable - allow for searching
+ * @property {boolean} exportable - allow field use for exporting
+ * @property {object} fake - fake data generator options
+ *
+ * @author lally elias <lallyelias87@gmail.com>
+ * @since 0.1.0
+ * @version 0.1.0
+ * @instance
+ * @example
+ * Rehabilitation and reconstruction resources
+ */
+export const constraints = {
+  type: [String],
+  trim: true,
+  index: true,
+  searchable: true,
+  exportable: true,
+  fake: {
+    generator: 'lorem',
+    type: 'sentences',
+  },
+};
+
+/**
  * @name remarks
  * @description A brief human readable comments and recommendations
  * about an event.
@@ -309,14 +342,14 @@ export const impacts = {
  * Requested relief items should be provided to the victims immediately
  */
 export const remarks = {
-  type: String,
+  type: [String],
   trim: true,
   index: true,
   searchable: true,
   exportable: true,
   fake: {
     generator: 'lorem',
-    type: 'sentence',
+    type: 'sentences',
   },
 };
 

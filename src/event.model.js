@@ -50,6 +50,7 @@ import {
   instructions,
   interventions,
   impacts,
+  constraints,
   remarks,
   startedAt,
   endedAt,
@@ -69,7 +70,15 @@ const SCHEMA = mergeObjects(
   { causes, description, places },
   { areas },
   { reporter, agencies, focals },
-  { instructions, interventions, impacts, remarks, startedAt, endedAt }
+  {
+    instructions,
+    interventions,
+    impacts,
+    constraints,
+    remarks,
+    startedAt,
+    endedAt,
+  }
 );
 
 /**
