@@ -4,7 +4,7 @@ import {
   COLLECTION_NAME_EVENTCHANGELOG,
 } from '@codetanzania/ewea-internals';
 import { waterfall } from 'async';
-import { pick } from 'lodash';
+import { get, pick } from 'lodash';
 import { mergeObjects, idOf } from '@lykmapipo/common';
 import { copyInstance, createSchema, model } from '@lykmapipo/mongoose-common';
 import '@lykmapipo/mongoose-sequenceable';
@@ -150,6 +150,12 @@ ChangeLogSchema.pre('validate', function onPreValidate(done) {
  */
 ChangeLogSchema.methods.preValidate = function preValidate(done) {
   // TODO: ensureRelated or ensureDefaults
+
+  // ensure unit from question
+  if (this.unit) {
+    this.unit = get(this, 'question.relations.unit', this.unit);
+  }
+
   return done(null, this);
 };
 
