@@ -109,9 +109,9 @@ describe('Event Rest API', () => {
 
   it('should handle HTTP PATCH on /events/:id', (done) => {
     const { testPatch } = testRouter(options, eventRouter);
-    const { description } = event.fakeOnly('description');
+    const { description, remarks } = event.fakeOnly('description', 'remarks');
     const params = { id: event._id.toString() };
-    testPatch(params, { description })
+    testPatch(params, { description, remarks })
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {
@@ -127,9 +127,12 @@ describe('Event Rest API', () => {
 
   it('should handle HTTP PUT on /events/:id', (done) => {
     const { testPut } = testRouter(options, eventRouter);
-    const { description } = event.fakeOnly('description');
+    const { description, interventions } = event.fakeOnly(
+      'description',
+      'interventions'
+    );
     const params = { id: event._id.toString() };
-    testPut(params, { description })
+    testPut(params, { description, interventions })
       .expect(200)
       .expect('Content-Type', /json/)
       .end((error, { body }) => {

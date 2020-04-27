@@ -1,3 +1,13 @@
+#### 0.9.1 (2020-04-27)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([ee6c7de4](https://github.com/codetanzania/ewea-event/commit/ee6c7de4182dd0cf783d3d541b6f28782032772b))
+
+##### Bug Fixes
+
+* **event:**  compute changelog comment from array fields ([bbc82793](https://github.com/codetanzania/ewea-event/commit/bbc827937d02aaebb7b212124fcebcc95aed97e9))
+
 #### 0.9.0 (2020-04-24)
 
 ##### Chores

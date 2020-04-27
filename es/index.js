@@ -2031,6 +2031,7 @@ EventSchema.statics.preloadRelations = (event, done) => {
   const relations = {};
 
   // prepare predefines loader
+  // for predefine use _id: $in
   forEach(EVENT_RELATION_PREDEFINE_FIELDS, (criteria, relation) => {
     const related = get(event, relation);
     const relatedId = idOf(related) || related;
@@ -2174,7 +2175,7 @@ EventSchema.statics.updateWith = (criteria, changes, done) => {
  *
  * @author lally elias <lallyelias87@gmail.com>
  * @since 0.6.0
- * @version 0.1.0
+ * @version 0.2.0
  * @static
  * @example
  *
@@ -2183,6 +2184,8 @@ EventSchema.statics.updateWith = (criteria, changes, done) => {
  *
  */
 EventSchema.statics.updateWithChanges = (changes, done) => {
+  // TODO: save all changes in `changes` path and make use: 'changes'
+
   // ref
   const Event = model(MODEL_NAME_EVENT);
   const EventChangeLog = model(MODEL_NAME_EVENTCHANGELOG);
@@ -2194,14 +2197,19 @@ EventSchema.statics.updateWithChanges = (changes, done) => {
   const postChangeLog = (next) => {
     let changed = omit(changes, EVENT_UPDATE_IGNORED_FIELDS);
     // TODO ensure event fields(description, instructions etc) in changelog
-    const comment =
-      changes.causes ||
-      changes.impacts ||
-      changes.interventions ||
-      changes.remarks ||
-      changes.places ||
-      changes.instructions ||
-      changes.description;
+    // TODO: pack as changes object
+    const comment = join(
+      [].concat(
+        changes.causes ||
+          changes.description ||
+          changes.places ||
+          changes.instructions ||
+          changes.interventions ||
+          changes.impacts ||
+          changes.constraints ||
+          changes.remarks
+      )
+    );
     changed = mergeObjects(changed, { event: eventId, comment });
 
     // TODO use EventChangeLog.postWithChanges once
@@ -2211,6 +2219,7 @@ EventSchema.statics.updateWithChanges = (changes, done) => {
 
   // update event with changes
   const updateEvent = (changelog, next) => {
+    // TODO: track alert to event change time
     const criteria = { _id: eventId };
     return Event.updateWith(criteria, changes, next);
   };
@@ -2796,6 +2805,12 @@ ChangeLogSchema.pre('validate', function onPreValidate(done) {
  */
 ChangeLogSchema.methods.preValidate = function preValidate(done) {
   // TODO: ensureRelated or ensureDefaults
+
+  // ensure unit from question
+  if (this.unit) {
+    this.unit = get(this, 'question.relations.unit', this.unit);
+  }
+
   return done(null, this);
 };
 
