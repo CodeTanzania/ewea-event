@@ -133,6 +133,8 @@ export const sendEventUpdates = (event, changelog, done) => {
   // prepare updates
   // TODO: compute updates from other changelog attributes i.e
   // agencies, focals, areas, effect, need, impacts etc
+  // TODO: changes from event instructions, interventions,
+  // impacts, constraints, remarks,
   const updates = changelog.comment || 'N/A';
 
   // prepare notification body
