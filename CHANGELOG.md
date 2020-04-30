@@ -1,3 +1,13 @@
+#### 0.10.0 (2020-04-30)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([7cc97511](https://github.com/codetanzania/ewea-event/commit/7cc97511e506a03821264860cfff1b9c3b11d2a6))
+
+##### New Features
+
+* **event:**  add aggregation option on related schema fields ([f5c0f721](https://github.com/codetanzania/ewea-event/commit/f5c0f721ad4d079a6930ed188bdf76a27c9946a0))
+
 #### 0.9.1 (2020-04-27)
 
 ##### Chores
