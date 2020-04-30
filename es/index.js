@@ -241,6 +241,8 @@ const sendEventUpdates = (event, changelog, done) => {
   // prepare updates
   // TODO: compute updates from other changelog attributes i.e
   // agencies, focals, areas, effect, need, impacts etc
+  // TODO: changes from event instructions, interventions,
+  // impacts, constraints, remarks,
   const updates = changelog.comment || 'N/A';
 
   // prepare notification body
@@ -300,13 +302,13 @@ const group = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -345,13 +347,13 @@ const type = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -390,13 +392,13 @@ const level = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -435,13 +437,13 @@ const severity = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -480,13 +482,13 @@ const certainty = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -525,13 +527,13 @@ const status = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -570,13 +572,13 @@ const urgency = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -615,13 +617,13 @@ const response = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -1083,13 +1085,13 @@ const areas = {
   index: true,
   exists: true,
   duplicate: deduplicate,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
