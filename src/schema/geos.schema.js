@@ -46,13 +46,13 @@ export const areas = {
   index: true,
   exists: true,
   duplicate: deduplicate,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => join(v, ', ', 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 

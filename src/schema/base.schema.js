@@ -39,13 +39,13 @@ export const group = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -84,13 +84,13 @@ export const type = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -129,13 +129,13 @@ export const level = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -174,13 +174,13 @@ export const severity = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -219,13 +219,13 @@ export const certainty = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -264,13 +264,13 @@ export const status = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -309,13 +309,13 @@ export const urgency = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 
@@ -354,13 +354,13 @@ export const response = {
   // required: true,
   index: true,
   exists: true,
+  aggregatable: { unwind: true },
   autopopulate: PREDEFINE_OPTION_AUTOPOPULATE,
   taggable: true,
   exportable: {
     format: (v) => get(v, 'strings.name.en'),
     default: 'NA',
   },
-  aggregatable: { unwind: true },
   default: undefined,
 };
 

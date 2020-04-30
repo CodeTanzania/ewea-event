@@ -18,6 +18,7 @@ describe('Event Schema', () => {
     expect(group.options.index).to.be.true;
     // expect(group.options.required).to.be.true;
     expect(group.options.exists).to.be.true;
+    expect(group.options.aggregatable).to.exist.and.be.an('object');
     expect(group.options.autopopulate).to.exist;
     expect(group.options.taggable).to.exist;
     expect(group.options.exportable).to.exist;
@@ -37,6 +38,7 @@ describe('Event Schema', () => {
     expect(type.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(type.options.required).to.be.true;
     expect(type.options.exists).to.be.true;
+    expect(type.options.aggregatable).to.exist.and.be.an('object');
     expect(type.options.autopopulate).to.exist;
     expect(type.options.taggable).to.exist;
     expect(type.options.exportable).to.exist;
@@ -56,6 +58,8 @@ describe('Event Schema', () => {
     expect(level.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(level.options.required).to.be.true;
     expect(level.options.exists).to.be.true;
+    expect(level.options.aggregatable).to.exist.and.be.an('object');
+
     expect(level.options.autopopulate).to.exist;
     expect(level.options.taggable).to.exist;
     expect(level.options.exportable).to.exist;
@@ -75,6 +79,8 @@ describe('Event Schema', () => {
     expect(severity.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(severity.options.required).to.be.true;
     expect(severity.options.exists).to.be.true;
+    expect(severity.options.aggregatable).to.exist.and.be.an('object');
+
     expect(severity.options.autopopulate).to.exist;
     expect(severity.options.taggable).to.exist;
     expect(severity.options.exportable).to.exist;
@@ -94,6 +100,8 @@ describe('Event Schema', () => {
     expect(certainty.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(certainty.options.required).to.be.true;
     expect(certainty.options.exists).to.be.true;
+    expect(certainty.options.aggregatable).to.exist.and.be.an('object');
+
     expect(certainty.options.autopopulate).to.exist;
     expect(certainty.options.taggable).to.exist;
     expect(certainty.options.exportable).to.exist;
@@ -113,6 +121,8 @@ describe('Event Schema', () => {
     expect(status.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(status.options.required).to.be.true;
     expect(status.options.exists).to.be.true;
+    expect(status.options.aggregatable).to.exist.and.be.an('object');
+
     expect(status.options.autopopulate).to.exist;
     expect(status.options.taggable).to.exist;
     expect(status.options.exportable).to.exist;
@@ -132,6 +142,8 @@ describe('Event Schema', () => {
     expect(urgency.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(urgency.options.required).to.be.true;
     expect(urgency.options.exists).to.be.true;
+    expect(urgency.options.aggregatable).to.exist.and.be.an('object');
+
     expect(urgency.options.autopopulate).to.exist;
     expect(urgency.options.taggable).to.exist;
     expect(urgency.options.exportable).to.exist;
@@ -151,6 +163,8 @@ describe('Event Schema', () => {
     expect(response.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(response.options.required).to.be.true;
     expect(response.options.exists).to.be.true;
+    expect(response.options.aggregatable).to.exist.and.be.an('object');
+
     expect(response.options.autopopulate).to.exist;
     expect(response.options.taggable).to.exist;
     expect(response.options.exportable).to.exist;
@@ -275,6 +289,8 @@ describe('Event Schema', () => {
     expect(areas.options.ref).to.be.equal(Predefine.MODEL_NAME);
     // expect(areas.options.required).to.be.true;
     expect(areas.options.exists).to.be.true;
+    expect(areas.options.aggregatable).to.exist.and.be.an('object');
+
     expect(areas.options.autopopulate).to.exist;
     expect(areas.options.taggable).to.exist;
     expect(areas.options.exportable).to.exist;
