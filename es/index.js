@@ -1541,7 +1541,7 @@ const number = {
   exportable: true,
   sequenceable: {
     prefix: function prefix() {
-      const eventTypeCode = get(this, 'type.string.code', '');
+      const eventTypeCode = get(this, 'type.strings.code', '');
       const year = moment(new Date()).format('YYYY');
       return compact([eventTypeCode, year]).join('-');
     },
