@@ -1,3 +1,14 @@
+#### 0.11.1 (2020-06-15)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([a7eeb23d](https://github.com/codetanzania/ewea-event/commit/a7eeb23d299dca8bf458d16c61d63370462fcf02))
+  *  force latest versions ([a40722a8](https://github.com/codetanzania/ewea-event/commit/a40722a86c32987485ddace5f023d0a2e997a936))
+  *  force latest version & audit fix ([ebc19457](https://github.com/codetanzania/ewea-event/commit/ebc194577cbf11cd037f3c158d4cb17107edaebf))
+  *  force latest version & audit fix ([a6e2a447](https://github.com/codetanzania/ewea-event/commit/a6e2a447c88bab9f5084417787f803d75aeda7e4))
+  *  force latest version & audit fix ([c9c0dbfd](https://github.com/codetanzania/ewea-event/commit/c9c0dbfd4be798dff3d5e3e25458e3301e5ac56b))
+
 #### 0.11.0 (2020-05-05)
 
 ##### Chores
