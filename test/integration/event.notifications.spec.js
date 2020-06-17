@@ -4,8 +4,6 @@ import { Event } from '../../src';
 
 import {
   CHANNEL_EMAIL,
-  ENABLE_SYNC_TRANSPORT,
-  NOTIFICATION_CHANNELS,
   TEMPLATES_EVENT_NOTIFICATION_TITLE,
   TEMPLATES_EVENT_NOTIFICATION_MESSAGE,
   Campaign,
@@ -27,8 +25,6 @@ describe('Notification', () => {
 
   it('should parse & expose common config', () => {
     expect(CHANNEL_EMAIL).to.exist;
-    expect(ENABLE_SYNC_TRANSPORT).to.exist;
-    expect(NOTIFICATION_CHANNELS).to.exist;
     expect(TEMPLATES_EVENT_NOTIFICATION_TITLE).to.exist;
     expect(TEMPLATES_EVENT_NOTIFICATION_MESSAGE).to.exist;
   });

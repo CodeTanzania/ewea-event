@@ -1,25 +1,17 @@
 import { get, map } from 'lodash';
 import { uniq, parseTemplate } from '@lykmapipo/common';
-import {
-  getString,
-  getStringSet,
-  getBoolean,
-  isProduction,
-} from '@lykmapipo/env';
-import { CHANNEL_EMAIL, Campaign } from '@lykmapipo/postman';
+import { getString } from '@lykmapipo/env';
+import { CHANNEL_EMAIL, Campaign, sendCampaign } from '@lykmapipo/postman';
 
-export { CHANNEL_EMAIL, Campaign };
-
-export const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
+export { CHANNEL_EMAIL, Campaign, sendCampaign };
 
 export const SMTP_FROM_NAME = getString('SMTP_FROM_NAME', 'EWEA Notification');
 
-export const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
-  CHANNEL_EMAIL,
-]);
-
+// TODO event notification channels
+// TODO event changelog notification channels
 // TODO use localized templates
 // TODO per changelog field message template
+
 /* templates */
 export const TEMPLATES_EVENT_NOTIFICATION_FOOTER = '\n\nRegards,\n{sender}';
 export const TEMPLATES_EVENT_NOTIFICATION_TITLE =
@@ -35,32 +27,6 @@ export const TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE =
 // sendMessage
 // sendActionNotification
 // sendActionsNotification
-
-export const sendCampaign = (message, done) => {
-  // prepare campaign
-  const isCampaignInstance = message instanceof Campaign;
-  let campaign = isCampaignInstance ? message.toObject() : message;
-
-  // ensure campaign channels
-  campaign.channels = uniq(
-    [].concat(NOTIFICATION_CHANNELS).concat(message.channels)
-  );
-
-  // instantiate campaign
-  campaign = new Campaign(message);
-
-  // queue campaign in production
-  // or if is asynchronous send
-  if (isProduction() && !ENABLE_SYNC_TRANSPORT) {
-    campaign.queue();
-    done(null, campaign);
-  }
-
-  // direct send campaign in development & test
-  else {
-    campaign.send(done);
-  }
-};
 
 // send create event notification
 export const sendEventNotification = (event, done) => {
