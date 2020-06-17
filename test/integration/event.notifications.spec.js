@@ -11,7 +11,7 @@ import {
   Campaign,
   sendCampaign,
   sendEventNotification,
-} from '../../src/api/notification.api';
+} from '../../src/event.notifications';
 
 describe('Notification', () => {
   const level = Predefine.fake();

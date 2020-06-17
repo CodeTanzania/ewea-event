@@ -24,10 +24,7 @@ import {
   EVENT_RELATION_PREDEFINE_FIELDS,
 } from './internals';
 
-import {
-  sendEventUpdates,
-  sendEventNotification,
-} from './api/notification.api';
+import { sendEventUpdates, sendEventNotification } from './event.notifications';
 
 import {
   group,
