@@ -1,3 +1,14 @@
+#### 0.12.0 (2020-06-17)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([8580ad56](https://github.com/codetanzania/ewea-event/commit/8580ad5667777156af22623c73c5a3f17bc7c60e))
+
+##### Refactors
+
+* **notifications:**  use postman campaign helpers ([1dbad6c9](https://github.com/codetanzania/ewea-event/commit/1dbad6c92d1749ffb18d4f4e592061e3e0d33fd1))
+*  update test env & dependencies ([15ee5724](https://github.com/codetanzania/ewea-event/commit/15ee57244e7831ea344a1dfb51a76da68062a07b))
+
 #### 0.11.1 (2020-06-15)
 
 ##### Chores
