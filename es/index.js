@@ -1,6 +1,6 @@
 import { COLLECTION_NAME_EVENT, POPULATION_MAX_DEPTH, COLLECTION_NAME_EVENTCHANGELOG, MODEL_NAME_EVENT, MODEL_NAME_EVENTCHANGELOG } from '@codetanzania/ewea-internals';
 import { idOf, uniq, parseTemplate, join, compact, mergeObjects, pkg } from '@lykmapipo/common';
-import { getString, getBoolean, getStringSet, isProduction, apiVersion as apiVersion$1 } from '@lykmapipo/env';
+import { getString, apiVersion as apiVersion$1 } from '@lykmapipo/env';
 import { isObjectId, ObjectId, model, createSchema, copyInstance, connect } from '@lykmapipo/mongoose-common';
 import { mount } from '@lykmapipo/express-common';
 import { Router, getFor, schemaFor, downloadFor, postFor, getByIdFor, patchFor, putFor, deleteFor, start as start$1 } from '@lykmapipo/express-rest-actions';
@@ -11,7 +11,7 @@ import '@lykmapipo/mongoose-sequenceable';
 import actions from 'mongoose-rest-actions';
 import exportable from '@lykmapipo/mongoose-exportable';
 import { Predefine } from '@lykmapipo/predefine';
-import { CHANNEL_EMAIL, Campaign, Contact } from '@lykmapipo/postman';
+import { sendCampaign, Contact } from '@lykmapipo/postman';
 import { Point } from 'mongoose-geojson-schemas';
 import { Party } from '@codetanzania/emis-stakeholder';
 import moment from 'moment';
@@ -118,16 +118,13 @@ const deduplicate = (a, b) => {
   return idA === idB;
 };
 
-const ENABLE_SYNC_TRANSPORT = getBoolean('ENABLE_SYNC_TRANSPORT', false);
-
 const SMTP_FROM_NAME = getString('SMTP_FROM_NAME', 'EWEA Notification');
 
-const NOTIFICATION_CHANNELS = getStringSet('NOTIFICATION_CHANNELS', [
-  CHANNEL_EMAIL,
-]);
-
+// TODO event notification channels
+// TODO event changelog notification channels
 // TODO use localized templates
 // TODO per changelog field message template
+
 /* templates */
 const TEMPLATES_EVENT_NOTIFICATION_FOOTER = '\n\nRegards,\n{sender}';
 const TEMPLATES_EVENT_NOTIFICATION_TITLE =
@@ -143,32 +140,6 @@ const TEMPLATES_EVENT_STATUS_UPDATE_MESSAGE =
 // sendMessage
 // sendActionNotification
 // sendActionsNotification
-
-const sendCampaign = (message, done) => {
-  // prepare campaign
-  const isCampaignInstance = message instanceof Campaign;
-  let campaign = isCampaignInstance ? message.toObject() : message;
-
-  // ensure campaign channels
-  campaign.channels = uniq(
-    [].concat(NOTIFICATION_CHANNELS).concat(message.channels)
-  );
-
-  // instantiate campaign
-  campaign = new Campaign(message);
-
-  // queue campaign in production
-  // or if is asynchronous send
-  if (isProduction() && !ENABLE_SYNC_TRANSPORT) {
-    campaign.queue();
-    done(null, campaign);
-  }
-
-  // direct send campaign in development & test
-  else {
-    campaign.send(done);
-  }
-};
 
 // send create event notification
 const sendEventNotification = (event, done) => {
