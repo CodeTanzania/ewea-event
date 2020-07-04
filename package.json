@@ -1,6 +1,6 @@
 {
   "name": "@codetanzania/ewea-event",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "A representation of an entity which define and track an instance(or occurrence) of an emergency(or disaster) event.",
   "main": "lib/index.js",
   "module": "es/index.js",
